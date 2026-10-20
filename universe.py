@@ -76,6 +76,8 @@ def download(tickers):
 
 
 def scan_all(mkt, params, add_indicators, consensus, pct):
+    import candles
+    from tsx_scan import levels, gap_safe, level_table, RULES_NOTE
     data = download(get_tickers())
     rows = []
     for t, d in data.items():
@@ -84,13 +86,17 @@ def scan_all(mkt, params, add_indicators, consensus, pct):
             continue
         x = consensus.add_extra(add_indicators(d))
         a, b, c, dd = consensus.scanners(x, mkt)
-        votes = sum(int(s.iloc[-1]) for s in (a, b, c, dd))
-        import candles
-        rows.append({"ticker": t, "close": round(x["Close"].iloc[-1], 2), "votes": votes,
-                     "ret_3m": x["ret63"].iloc[-1],
+        xr = x.iloc[-1]
+        gap_ok = gap_safe(xr, params)
+        votes = int(a.iloc[-1]) + int(b.iloc[-1]) + int(bool(c.iloc[-1]) and gap_ok) + int(dd.iloc[-1])
+        rows.append({"ticker": t, "votes": votes, "ret_3m": x["ret63"].iloc[-1],
                      "pattern": candles.latest_names(x) if dd.iloc[-1] else "",
-                     "exchange": "TSX Venture" if t.endswith(".V") else "TSX"})
-    df = pd.DataFrame(rows, columns=["ticker", "close", "votes", "ret_3m", "pattern", "exchange"])
+                     "gap_risk": not gap_ok,
+                     "exchange": "TSX Venture" if t.endswith(".V") else "TSX",
+                     "max_hold_days": params["hold"], **levels(xr, params)})
+    df = pd.DataFrame(rows)
+    if df.empty:
+        return "\n## ALL CANADA: no data today", df, df
     full = df[df["votes"] == 4].sort_values("ret_3m", ascending=False)
     picks = []
     for _, r in full.iterrows():          # top 5 that don't report earnings soon
@@ -100,20 +106,16 @@ def scan_all(mkt, params, add_indicators, consensus, pct):
         if len(picks) == 5:
             break
     picks = pd.DataFrame(picks, columns=df.columns)
-    if not picks.empty:
-        picks["stop_loss"] = (picks["close"] * (1 - params["stop"])).round(2)
-        picks["take_profit"] = (picks["close"] * (1 + params["target"])).round(2)
 
     L = ["\n## ALL CANADA (TSX + TSX Venture) - consensus buys (4/4)"]
     L.append(f"Scanned {len(data)} stocks with price history; {len(df)} passed the safety filter "
              f"(price >= ${MIN_PRICE:.0f}, >= ${MIN_DOLLAR_VOL/1e6:.0f}M traded/day). "
-             f"{len(full)} got 4/4 votes (trend + momentum + volume/risk + bullish candle).\n")
+             f"{len(full)} got 4/4 votes. Stocks whose worst overnight gap-down in the past year "
+             f"was bigger than their stop are excluded.\n")
     if picks.empty:
         L.append("**No market-wide consensus today - no trade.**")
     else:
-        L.append("Top 5 by 3-month strength, earnings in next 10 days excluded:\n")
-        L.append("| Ticker | Exchange | Pattern | Close | 3-mo | Stop-loss | Take-profit | Max hold |\n|---|---|---|---|---|---|---|---|")
-        for _, r in picks.iterrows():
-            L.append(f"| {r.ticker} | {r.exchange} | {r.pattern} | {r.close} | {pct(r.ret_3m)} | {r.stop_loss} "
-                     f"| {r.take_profit} | {params['hold']}d |")
+        L.append("Top 5 by 3-month strength, earnings in next 10 days excluded.\n")
+        L.append(RULES_NOTE)
+        L.append(level_table(picks, extra_cols=[("Exchange", "exchange"), ("Pattern", "pattern")]))
     return "\n".join(L), picks, df

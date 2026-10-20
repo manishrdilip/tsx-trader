@@ -29,6 +29,7 @@ START = "2014-01-01"
 TRAIN_END = "2022-12-31"
 COST = 0.001               # 0.1% per side (spread/slippage, Wealthsimple has no commission)
 RISK_PER_TRADE = 0.02      # risk 2% of account per trade
+ACCOUNT = float(os.environ.get("ACCOUNT", "100"))   # account size for share counts (CAD)
 
 GOAL_WIN = 0.65
 GOAL_MONTHLY = 0.02
@@ -56,50 +57,107 @@ def load_prices(symbols):
 def add_indicators(df):
     d = df.copy()
     c = d["Close"]
-    d["sma5"] = c.rolling(5).mean()
-    d["sma20"] = c.rolling(20).mean()
-    d["sma50"] = c.rolling(50).mean()
-    d["sma200"] = c.rolling(200).mean()
+    for n in (5, 20, 50, 150, 200):
+        d[f"sma{n}"] = c.rolling(n).mean()
     delta = c.diff()
     up = delta.clip(lower=0).rolling(2).mean()
     dn = (-delta.clip(upper=0)).rolling(2).mean()
     d["rsi2"] = 100 - 100 / (1 + up / dn.replace(0, np.nan))
     d["hi20"] = d["High"].rolling(20).max().shift(1)
+    d["hi55"] = d["High"].rolling(55).max().shift(1)          # Turtle / Donchian
+    d["hi252"] = d["High"].rolling(252).max()                  # 52-week high
+    d["lo252"] = d["Low"].rolling(252).min()
+    d["mom12_1"] = c.shift(21) / c.shift(252) - 1              # 12-1 month momentum
     d["vol20"] = d["Volume"].rolling(20).mean()
+    pc = c.shift(1)
+    tr = pd.concat([d["High"] - d["Low"], (d["High"] - pc).abs(), (d["Low"] - pc).abs()], axis=1).max(axis=1)
+    d["atr14"] = tr.rolling(14).mean()
+    d["gap"] = d["Open"] / pc - 1
+    d["worst_gap_1y"] = d["gap"].rolling(252).min()            # biggest overnight drop in a year
     return d
 
 
 # ---------------------------------------------------------------- signals
+# Strategies with published evidence behind them:
+#   pullback / rsi2   - short-term mean reversion inside a long uptrend (Connors)
+#   breakout          - 20-day high on volume
+#   donchian          - 55-day high breakout (Turtle trading rules)
+#   momentum52        - near 52-week high + strong 12-1 month momentum
+#                       (Jegadeesh & Titman 1993; George & Hwang 2004)
+#   trend_template    - Minervini stage-2 trend template
 def entry_signal(d, strat, p):
-    up = d["Close"] > d["sma200"]
+    c = d["Close"]
+    up = c > d["sma200"]
     if strat == "pullback":
-        return up & (d["Low"] <= d["sma20"]) & (d["Close"] > d["sma20"])
+        return up & (d["Low"] <= d["sma20"]) & (c > d["sma20"])
     if strat == "rsi2":
         return up & (d["rsi2"] < p["rsi"])
     if strat == "breakout":
-        return up & (d["Close"] > d["hi20"]) & (d["Volume"] > 1.5 * d["vol20"])
+        return up & (c > d["hi20"]) & (d["Volume"] > 1.5 * d["vol20"])
+    if strat == "donchian":
+        return up & (c > d["hi55"])
+    if strat == "momentum52":
+        return up & (c > d["sma50"]) & (c >= 0.95 * d["hi252"]) & (d["mom12_1"] > 0.10)
+    if strat == "trend_template":
+        return ((c > d["sma50"]) & (d["sma50"] > d["sma150"]) & (d["sma150"] > d["sma200"])
+                & (d["sma200"] > d["sma200"].shift(21)) & (c >= 1.3 * d["lo252"])
+                & (c >= 0.75 * d["hi252"]))
     raise ValueError(strat)
 
 
-def backtest_one(d, mkt_up, strat, p):
-    """Signal at close -> buy next open. Exit on stop, target, or max hold."""
-    sig = entry_signal(d, strat, p) & mkt_up.reindex(d.index).fillna(False)
+MAX_GAP_UP = 0.02      # skip the trade if it opens > 2% above the signal close
+
+
+def exit_fracs(p, atr, price):
+    """Stop / target distance as a fraction of price. ATR-based when p has atr_stop."""
+    if "atr_stop" in p:
+        return p["atr_stop"] * atr / price, p["atr_tgt"] * atr / price
+    return p["stop"], p["target"]
+
+
+def levels(row, p, account=None):
+    """Live trading levels for a signal row (last bar of indicator frame)."""
+    close = float(row["Close"])
+    sf, tf = exit_fracs(p, float(row["atr14"]), close)
+    out = {"close": round(close, 2), "buy_max": round(close * (1 + MAX_GAP_UP), 2),
+           "stop_pct": sf, "target_pct": tf,
+           "stop_loss": round(close * (1 - sf), 2), "take_profit": round(close * (1 + tf), 2)}
+    account = account or ACCOUNT
+    risk_dollars = account * RISK_PER_TRADE
+    shares = int(min(risk_dollars / (close * sf), account / close)) if sf > 0 else 0
+    out["shares"] = shares
+    return out
+
+
+def gap_safe(row, p):
+    """Exclude stocks whose worst overnight gap in the last year was bigger than the stop."""
+    sf, _ = exit_fracs(p, float(row["atr14"]), float(row["Close"]))
+    wg = row.get("worst_gap_1y", np.nan)
+    return not (pd.notna(wg) and -wg > sf)
+
+
+def simulate(d, sig, p):
+    """Signal at close -> buy next open (skip if gaps up > 2%).
+    Exit: stop, target, or max hold. Stops/targets are measured from the ACTUAL entry price.
+    A gap down through the stop fills at the open (real-world loss is recorded)."""
     o, h, l, c = (d[k].values for k in ("Open", "High", "Low", "Close"))
-    idx = d.index
-    sigv = sig.values
-    trades = []
-    i, n = 0, len(d)
+    atr = d["atr14"].values
+    idx, sigv, n = d.index, sig.fillna(False).values, len(d)
+    trades, i = [], 0
     while i < n - 1:
-        if not sigv[i]:
+        if not sigv[i] or not np.isfinite(atr[i]):
             i += 1
             continue
         e = i + 1
         entry = o[e]
-        stop = entry * (1 - p["stop"])
-        target = entry * (1 + p["target"])
+        if entry > c[i] * (1 + MAX_GAP_UP):
+            i += 1
+            continue
+        sf, tf = exit_fracs(p, atr[i], c[i])
+        stop, target = entry * (1 - sf), entry * (1 + tf)
         exit_px, j = None, e
         for j in range(e, min(e + p["hold"], n)):
-            if l[j] <= stop:                  # stop first (conservative)
+            if l[j] <= stop:
                 exit_px = min(o[j], stop) if j > e else stop
                 break
             if h[j] >= target:
@@ -108,17 +166,21 @@ def backtest_one(d, mkt_up, strat, p):
         if exit_px is None:
             j = min(e + p["hold"] - 1, n - 1)
             exit_px = c[j]
-        ret = exit_px / entry - 1 - 2 * COST
-        trades.append((idx[e], idx[j], ret))
+        trades.append((idx[e], idx[j], exit_px / entry - 1 - 2 * COST, sf))
         i = j + 1
     return trades
 
 
-def stats(trades, stop):
+def backtest_one(d, mkt_up, strat, p):
+    sig = entry_signal(d, strat, p) & mkt_up.reindex(d.index).fillna(False)
+    return simulate(d, sig, p)
+
+
+def stats(trades, stop=None):
     if not trades:
         return None
-    t = pd.DataFrame(trades, columns=["entry", "exit", "ret"]).sort_values("exit")
-    frac = min(1.0, RISK_PER_TRADE / stop)          # position size from 2% risk
+    t = pd.DataFrame(trades, columns=["entry", "exit", "ret", "sf"]).sort_values("exit")
+    frac = (RISK_PER_TRADE / t["sf"]).clip(upper=1.0)        # size each trade so the stop = 2% risk
     acct = t["ret"] * frac
     equity = (1 + acct).cumprod()
     dd = (equity / equity.cummax() - 1).min()
@@ -138,13 +200,19 @@ def stats(trades, stop):
     }
 
 
+_ATR = [dict(atr_stop=s, atr_tgt=t, hold=h)
+        for s, t, h in itertools.product([2, 3], [3, 4, 6], [10, 20])]
 GRID = {
     "pullback": [dict(stop=s, target=t, hold=h)
-                 for s, t, h in itertools.product([0.03, 0.05, 0.08], [0.02, 0.03, 0.05], [5, 10])],
+                 for s, t, h in itertools.product([0.03, 0.05, 0.08], [0.02, 0.03, 0.05], [5, 10])] + _ATR,
     "rsi2": [dict(rsi=r, stop=s, target=t, hold=h)
-             for r, s, t, h in itertools.product([5, 10], [0.05, 0.08], [0.02, 0.03], [5, 10])],
+             for r, s, t, h in itertools.product([5, 10], [0.05, 0.08], [0.02, 0.03], [5, 10])]
+            + [dict(rsi=10, **a) for a in _ATR],
     "breakout": [dict(stop=s, target=t, hold=h)
-                 for s, t, h in itertools.product([0.03, 0.05], [0.04, 0.06, 0.08], [10])],
+                 for s, t, h in itertools.product([0.03, 0.05], [0.04, 0.06, 0.08], [10])] + _ATR,
+    "donchian": _ATR,
+    "momentum52": _ATR,
+    "trend_template": _ATR,
 }
 
 
@@ -156,7 +224,7 @@ def run_all(data, mkt_up, start=None, end=None):
             for s, d in data.items():
                 dd_ = d.loc[start:end] if (start or end) else d
                 all_tr += backtest_one(dd_, mkt_up, strat, p)
-            st = stats(all_tr, p["stop"])
+            st = stats(all_tr)
             if st:
                 rows.append({"strategy": strat, "params": p, **st})
     return pd.DataFrame(rows)
@@ -165,6 +233,24 @@ def run_all(data, mkt_up, start=None, end=None):
 # ---------------------------------------------------------------- main
 def pct(x):
     return f"{x*100:.2f}%"
+
+
+RULES_NOTE = ("**How to enter:** buy at the next open with a limit order no higher than *Buy max* "
+              "(skip if it opens above). After your order fills, set the stop and target as "
+              "**percentages of YOUR fill price** (Stop % / Target % columns). Shares = what keeps "
+              f"your loss at {RISK_PER_TRADE:.0%} of the account if the stop is hit.\n")
+
+
+def level_table(df, extra_cols=()):
+    hdr = ["Ticker", *[c for c, _ in extra_cols], "Close", "Buy max", "Stop %", "Target %",
+           "Stop (from close)", "Target (from close)", f"Shares (${ACCOUNT:,.0f} acct)", "Max hold"]
+    out = ["| " + " | ".join(hdr) + " |", "|" + "---|" * len(hdr)]
+    for _, r in df.iterrows():
+        cells = [r.ticker, *[str(r[k]) for _, k in extra_cols], r.close, r.buy_max,
+                 f"-{r.stop_pct*100:.1f}%", f"+{r.target_pct*100:.1f}%", r.stop_loss, r.take_profit,
+                 r.shares, f"{r.max_hold_days}d"]
+        out.append("| " + " | ".join(str(c) for c in cells) + " |")
+    return "\n".join(out)
 
 
 def main(data=None):
@@ -189,7 +275,7 @@ def main(data=None):
         tr = []
         for s, d in data.items():
             tr += backtest_one(d.loc["2023-01-01":], mkt_up, r["strategy"], r["params"])
-        st = stats(tr, r["params"]["stop"])
+        st = stats(tr)
         if st:
             test_rows.append({"strategy": r["strategy"], "params": r["params"], **st})
     test = pd.DataFrame(test_rows)
@@ -210,15 +296,12 @@ def main(data=None):
                            "sma50": round(x["sma50"], 2), "sma200": round(x["sma200"], 2),
                            "trend": trend})
         sig = entry_signal(d, champ["strategy"], champ["params"]).iloc[-1]
-        if sig and market_ok:
-            p = champ["params"]
-            sig_rows.append({"ticker": s, "close": round(x["Close"], 2),
-                             "stop_loss": round(x["Close"] * (1 - p["stop"]), 2),
-                             "take_profit": round(x["Close"] * (1 + p["target"]), 2),
-                             "max_hold_days": p["hold"]})
+        if sig and market_ok and gap_safe(x, champ["params"]):
+            sig_rows.append({"ticker": s, **levels(x, champ["params"]),
+                             "max_hold_days": champ["params"]["hold"]})
     trend_df = pd.DataFrame(trend_rows).sort_values("trend", ascending=False)
-    sig_df = pd.DataFrame(sig_rows, columns=["ticker", "close", "stop_loss",
-                                             "take_profit", "max_hold_days"])
+    sig_df = pd.DataFrame(sig_rows, columns=["ticker", "close", "buy_max", "stop_pct", "target_pct",
+                                             "stop_loss", "take_profit", "shares", "max_hold_days"])
     trend_df.to_csv(f"{OUT}/trend.csv", index=False)
     sig_df.to_csv(f"{OUT}/signals.csv", index=False)
 
@@ -244,10 +327,8 @@ def main(data=None):
     if sig_df.empty:
         L.append("No setups today. Doing nothing is a valid trade.")
     else:
-        L.append("Buy at next open only if you choose to; levels are from today's close.\n")
-        L.append("| Ticker | Close | Stop-loss | Take-profit | Max hold |\n|---|---|---|---|---|")
-        for _, r in sig_df.iterrows():
-            L.append(f"| {r.ticker} | {r.close} | {r.stop_loss} | {r.take_profit} | {r.max_hold_days}d |")
+        L.append(RULES_NOTE)
+        L.append(level_table(sig_df))
     L.append("\n## Trend status of watchlist")
     L.append("| Ticker | Close | 50d | 200d | Trend |\n|---|---|---|---|---|")
     for _, r in trend_df.iterrows():

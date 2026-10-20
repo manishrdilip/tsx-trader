@@ -53,32 +53,31 @@ def earnings_soon(ticker, days=10):
 
 
 def run(data, mkt, params, backtest_one, stats, pct, live=True):
+    import candles
+    from tsx_scan import simulate, levels, gap_safe, level_table, RULES_NOTE
     data = {s: add_extra(d) for s, d in data.items()}
     rows, consensus_sig = [], {}
     for s, d in data.items():
         a, b, c, dd = scanners(d, mkt)
         consensus_sig[s] = a & b & c & dd
         A, B, C, D = (bool(x.iloc[-1]) for x in (a, b, c, dd))
+        x = d.iloc[-1]
+        gap_ok = gap_safe(x, params)
         earn = earnings_soon(s) if (live and A and B and C and D) else False
-        import candles
-        rows.append({"ticker": s, "A_trend": A, "B_momentum": B, "C_volume_risk": C and not earn,
+        rows.append({"ticker": s, "A_trend": A, "B_momentum": B,
+                     "C_volume_risk": C and not earn and gap_ok,
                      "D_candle": D, "pattern": candles.latest_names(d) if D else "",
-                     "earnings_soon": earn, "close": round(d["Close"].iloc[-1], 2)})
+                     "earnings_soon": earn, "gap_risk": not gap_ok,
+                     "max_hold_days": params["hold"], **levels(x, params)})
     scan = pd.DataFrame(rows)
     scan["votes"] = scan[["A_trend", "B_momentum", "C_volume_risk", "D_candle"]].sum(axis=1)
-    buys = scan[scan["votes"] == 4].copy()
-    buys["stop_loss"] = (buys["close"] * (1 - params["stop"])).round(2)
-    buys["take_profit"] = (buys["close"] * (1 + params["target"])).round(2)
-    buys = buys.sort_values("ticker").head(5)
+    buys = scan[scan["votes"] == 4].sort_values("ticker").head(5)
 
-    # backtest the consensus rule with the same exits as the main strategy
     def bt(start):
         tr = []
         for s, d in data.items():
-            sig = consensus_sig[s]
-            dd = d.loc[start:].assign(_sig=sig.loc[start:])
-            tr += _bt_sig(dd, params)
-        return stats(tr, params["stop"])
+            tr += simulate(d.loc[start:], consensus_sig[s].loc[start:], params)
+        return stats(tr)
 
     full, oos = bt("2016-01-01"), bt("2023-01-01")
 
@@ -86,9 +85,8 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
     if buys.empty:
         L.append("**No consensus today - no trade.** This is the safety rule working.")
     else:
-        L.append("| Ticker | Pattern | Close | Stop-loss | Take-profit | Max hold |\n|---|---|---|---|---|---|")
-        for _, r in buys.iterrows():
-            L.append(f"| {r.ticker} | {r.pattern} | {r.close} | {r.stop_loss} | {r.take_profit} | {params['hold']}d |")
+        L.append(RULES_NOTE)
+        L.append(level_table(buys, extra_cols=[("Pattern", "pattern")]))
     L.append("\n### Does requiring agreement help? (consensus rule backtest)")
     L.append("| Period | Win | Monthly | Max DD | PF | Trades |\n|---|---|---|---|---|---|")
     for name, st in (("2016-today", full), ("2023-today (out-of-sample)", oos)):
@@ -100,36 +98,7 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
     L.append("\n### Scanner votes")
     L.append("| Ticker | A Trend | B Momentum | C Volume/Risk | D Candle | Votes |\n|---|---|---|---|---|---|")
     for _, r in scan.sort_values("votes", ascending=False).iterrows():
-        e = " (earnings soon)" if r.earnings_soon else ""
+        e = " (earnings soon)" if r.earnings_soon else (" (gap risk)" if r.gap_risk else "")
         L.append(f"| {r.ticker} | {'✅' if r.A_trend else '—'} | {'✅' if r.B_momentum else '—'} "
                  f"| {'✅' if r.C_volume_risk else '—'}{e} | {('✅ ' + r.pattern) if r.D_candle else '—'} | {r.votes}/4 |")
     return "\n".join(L), buys, scan
-
-
-def _bt_sig(d, p):
-    """Same exit logic as tsx_scan.backtest_one, driven by a precomputed signal."""
-    from tsx_scan import COST
-    o, h, l, c = (d[k].values for k in ("Open", "High", "Low", "Close"))
-    sigv, idx, n = d["_sig"].fillna(False).values, d.index, len(d)
-    trades, i = [], 0
-    while i < n - 1:
-        if not sigv[i]:
-            i += 1
-            continue
-        e = i + 1
-        entry = o[e]
-        stop, target = entry * (1 - p["stop"]), entry * (1 + p["target"])
-        exit_px, j = None, e
-        for j in range(e, min(e + p["hold"], n)):
-            if l[j] <= stop:
-                exit_px = min(o[j], stop) if j > e else stop
-                break
-            if h[j] >= target:
-                exit_px = max(o[j], target) if j > e else target
-                break
-        if exit_px is None:
-            j = min(e + p["hold"] - 1, n - 1)
-            exit_px = c[j]
-        trades.append((idx[e], idx[j], exit_px / entry - 1 - 2 * COST))
-        i = j + 1
-    return trades
