@@ -1,21 +1,21 @@
-ticker,A_trend,B_momentum,C_volume_risk,D_candle,pattern,earnings_soon,close,votes
-RY.TO,False,False,False,False,,False,279.24,0
-TD.TO,True,False,False,False,,False,171.31,1
-BNS.TO,True,True,False,False,,False,129.94,2
-BMO.TO,False,False,False,False,,False,234.98,0
-CM.TO,False,False,False,False,,False,158.73,0
-NA.TO,False,False,False,False,,False,203.94,0
-ENB.TO,False,False,False,False,,False,67.16,0
-CNQ.TO,True,True,False,False,,False,75.73,2
-SU.TO,True,False,False,False,,False,109.17,1
-TRP.TO,False,False,False,False,,False,86.67,0
-CVE.TO,True,True,False,False,,False,46.27,2
-CNR.TO,False,False,False,False,,False,169.93,0
-CP.TO,False,False,False,False,,False,122.65,0
-BN.TO,False,False,False,True,"Bullish Belt Hold, Bullish Engulfing, Tweezer Bottom",False,52.38,1
-MFC.TO,True,True,False,False,,False,62.36,2
-SLF.TO,True,False,False,False,,False,111.99,1
-SHOP.TO,True,True,False,True,"Bullish Belt Hold, Bullish Engulfing, Tweezer Bottom",False,245.46,3
-ATD.TO,True,False,False,False,,False,84.92,1
-L.TO,False,False,False,False,,False,69.37,0
-WCN.TO,True,False,False,False,,False,236.66,1
+ticker,A_trend,B_momentum,C_volume_risk,D_candle,pattern,earnings_soon,gap_risk,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares,votes
+RY.TO,False,False,False,False,,False,False,20,279.91,285.51,0.04251875141043162,0.08503750282086324,268.01,303.71,0,0
+TD.TO,True,False,False,False,,False,False,20,171.42,174.85,0.049158637566503335,0.09831727513300667,162.99,188.27,0,1
+BNS.TO,True,True,False,False,,False,False,20,130.03,132.63,0.04553744141420262,0.09107488282840524,124.11,141.87,0,2
+BMO.TO,False,False,False,False,,False,False,20,235.25,239.96,0.04695611458293798,0.09391222916587597,224.2,257.34,0,0
+CM.TO,False,False,False,False,,False,False,20,158.87,162.05,0.04848306839522687,0.09696613679045374,151.17,174.28,0,0
+NA.TO,False,False,False,False,,False,False,20,204.13,208.21,0.05535337543956409,0.11070675087912818,192.83,226.73,0,0
+ENB.TO,False,False,False,False,,False,False,20,67.11,68.45,0.04936462801793246,0.09872925603586492,63.8,73.74,0,0
+CNQ.TO,True,True,False,False,,False,True,20,75.69,77.2,0.07513724356290107,0.15027448712580213,70.0,87.06,0,2
+SU.TO,True,False,False,False,,False,False,20,109.18,111.36,0.0751707591880442,0.1503415183760884,100.97,125.59,0,1
+TRP.TO,False,False,False,False,,False,False,20,86.56,88.29,0.06391931144460586,0.12783862288921172,81.03,97.63,0,0
+CVE.TO,True,True,False,False,,False,False,20,46.24,47.17,0.09881381254286255,0.1976276250857251,41.68,55.38,0,2
+CNR.TO,False,False,False,False,,False,False,20,169.84,173.24,0.0520573734998897,0.1041147469997794,161.0,187.52,0,0
+CP.TO,False,False,False,False,,False,False,20,122.65,125.1,0.047958748431677585,0.09591749686335517,116.77,134.41,0,0
+BN.TO,False,False,False,True,"Bullish Belt Hold, Bullish Engulfing, Tweezer Bottom",False,False,20,52.35,53.4,0.06376795019951892,0.12753590039903784,49.02,59.03,0,1
+MFC.TO,True,True,False,False,,False,True,20,62.38,63.63,0.04747400537553788,0.09494801075107576,59.42,68.3,0,2
+SLF.TO,True,False,False,False,,False,False,20,112.0,114.24,0.042570196852392085,0.08514039370478417,107.23,121.54,0,1
+SHOP.TO,True,True,False,True,"Bullish Belt Hold, Bullish Engulfing, Tweezer Bottom",False,False,20,245.19,250.09,0.12540418236600248,0.25080836473200496,214.44,306.69,0,3
+ATD.TO,True,False,False,False,,False,False,20,84.93,86.63,0.05547941566724241,0.11095883133448482,80.22,94.36,0,1
+L.TO,False,False,False,False,,False,False,20,69.49,70.88,0.058682633317058606,0.11736526663411721,65.41,77.65,0,0
+WCN.TO,True,False,False,False,,False,False,20,236.71,241.44,0.06499818783639986,0.12999637567279973,221.32,267.48,0,1

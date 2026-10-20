@@ -1,1 +1,1 @@
-ticker,A_trend,B_momentum,C_volume_risk,D_candle,pattern,earnings_soon,close,votes,stop_loss,take_profit
+ticker,A_trend,B_momentum,C_volume_risk,D_candle,pattern,earnings_soon,gap_risk,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares,votes

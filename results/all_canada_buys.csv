@@ -1,3 +1,2 @@
-ticker,close,votes,ret_3m,pattern,exchange,stop_loss,take_profit
-CJ.TO,13.48,4,0.27318691525817007,Rising Three / Mat Hold,TSX,12.4,14.15
-AIF.TO,48.43,4,0.04169800356793485,Bullish Belt Hold,TSX,44.56,50.85
+ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
+AIF.TO,4,0.04040741281066196,Bullish Belt Hold,False,TSX,20,48.37,49.34,0.08578962426881634,0.17157924853763268,44.22,56.67,0
