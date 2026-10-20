@@ -252,6 +252,14 @@ def main(data=None):
     L.append("| Ticker | Close | 50d | 200d | Trend |\n|---|---|---|---|---|")
     for _, r in trend_df.iterrows():
         L.append(f"| {r.ticker} | {r.close} | {r.sma50} | {r.sma200} | {r.trend} |")
+    import consensus
+    cons_md, cons_buys, cons_scan = consensus.run(
+        data, mkt, champ["params"], backtest_one, stats, pct,
+        live=os.environ.get("GITHUB_ACTIONS") == "true")
+    cons_buys.to_csv(f"{OUT}/consensus_buys.csv", index=False)
+    cons_scan.to_csv(f"{OUT}/scanner_votes.csv", index=False)
+    L.insert(1, cons_md.split("\n### Does")[0] + "\n")   # consensus buys at the top
+    L.append(cons_md)
     report = "\n".join(L)
     with open(f"{OUT}/report.md", "w") as f:
         f.write(report)
