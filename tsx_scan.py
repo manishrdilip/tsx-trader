@@ -258,8 +258,18 @@ def main(data=None):
         live=os.environ.get("GITHUB_ACTIONS") == "true")
     cons_buys.to_csv(f"{OUT}/consensus_buys.csv", index=False)
     cons_scan.to_csv(f"{OUT}/scanner_votes.csv", index=False)
-    L.insert(1, cons_md.split("\n### Does")[0] + "\n")   # consensus buys at the top
     L.append(cons_md)
+    if os.environ.get("SKIP_UNIVERSE") != "1":
+        import universe
+        print("Scanning all TSX + TSX Venture stocks...")
+        try:
+            all_md, all_picks, all_df = universe.scan_all(mkt, champ["params"], add_indicators, consensus, pct)
+            all_picks.to_csv(f"{OUT}/all_canada_buys.csv", index=False)
+            all_df.to_csv(f"{OUT}/all_canada_votes.csv", index=False)
+            L.insert(1, all_md + "\n")
+        except Exception as e:
+            L.insert(1, f"\n## ALL CANADA scan failed today: {e}\n")
+    L.insert(1, cons_md.split("\n### Does")[0] + "\n")   # watchlist consensus at the top
     report = "\n".join(L)
     with open(f"{OUT}/report.md", "w") as f:
         f.write(report)
