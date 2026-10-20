@@ -36,7 +36,9 @@ def scanners(d, mkt):
     a = (d["Close"] > d["sma50"]) & (d["sma50"] > d["sma200"]) & m_up
     b = d["rsi14"].between(50, 70) & (d["macd"] > d["macd_sig"]) & (d["ret63"] > m_ret)
     c = (d["Volume"] > d["vol20"]) & (d["atr_pct"] < 0.03)
-    return a, b, c
+    import candles
+    dd = candles.signal(d)
+    return a, b, c, dd
 
 
 def earnings_soon(ticker, days=10):
@@ -54,15 +56,17 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
     data = {s: add_extra(d) for s, d in data.items()}
     rows, consensus_sig = [], {}
     for s, d in data.items():
-        a, b, c = scanners(d, mkt)
-        consensus_sig[s] = a & b & c
-        A, B, C = bool(a.iloc[-1]), bool(b.iloc[-1]), bool(c.iloc[-1])
-        earn = earnings_soon(s) if (live and A and B and C) else False
+        a, b, c, dd = scanners(d, mkt)
+        consensus_sig[s] = a & b & c & dd
+        A, B, C, D = (bool(x.iloc[-1]) for x in (a, b, c, dd))
+        earn = earnings_soon(s) if (live and A and B and C and D) else False
+        import candles
         rows.append({"ticker": s, "A_trend": A, "B_momentum": B, "C_volume_risk": C and not earn,
+                     "D_candle": D, "pattern": candles.latest_names(d) if D else "",
                      "earnings_soon": earn, "close": round(d["Close"].iloc[-1], 2)})
     scan = pd.DataFrame(rows)
-    scan["votes"] = scan[["A_trend", "B_momentum", "C_volume_risk"]].sum(axis=1)
-    buys = scan[scan["votes"] == 3].copy()
+    scan["votes"] = scan[["A_trend", "B_momentum", "C_volume_risk", "D_candle"]].sum(axis=1)
+    buys = scan[scan["votes"] == 4].copy()
     buys["stop_loss"] = (buys["close"] * (1 - params["stop"])).round(2)
     buys["take_profit"] = (buys["close"] * (1 + params["target"])).round(2)
     buys = buys.sort_values("ticker").head(5)
@@ -78,13 +82,13 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
 
     full, oos = bt("2016-01-01"), bt("2023-01-01")
 
-    L = ["\n## CONSENSUS BUY (all 3 scanners agree)"]
+    L = ["\n## WATCHLIST CONSENSUS BUY (all 4 scanners agree: trend, momentum, volume/risk, bullish candle)"]
     if buys.empty:
         L.append("**No consensus today - no trade.** This is the safety rule working.")
     else:
-        L.append("| Ticker | Close | Stop-loss | Take-profit | Max hold |\n|---|---|---|---|---|")
+        L.append("| Ticker | Pattern | Close | Stop-loss | Take-profit | Max hold |\n|---|---|---|---|---|---|")
         for _, r in buys.iterrows():
-            L.append(f"| {r.ticker} | {r.close} | {r.stop_loss} | {r.take_profit} | {params['hold']}d |")
+            L.append(f"| {r.ticker} | {r.pattern} | {r.close} | {r.stop_loss} | {r.take_profit} | {params['hold']}d |")
     L.append("\n### Does requiring agreement help? (consensus rule backtest)")
     L.append("| Period | Win | Monthly | Max DD | PF | Trades |\n|---|---|---|---|---|---|")
     for name, st in (("2016-today", full), ("2023-today (out-of-sample)", oos)):
@@ -94,11 +98,11 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
         else:
             L.append(f"| {name} | no trades | | | | |")
     L.append("\n### Scanner votes")
-    L.append("| Ticker | A Trend | B Momentum | C Volume/Risk | Votes |\n|---|---|---|---|---|")
+    L.append("| Ticker | A Trend | B Momentum | C Volume/Risk | D Candle | Votes |\n|---|---|---|---|---|---|")
     for _, r in scan.sort_values("votes", ascending=False).iterrows():
         e = " (earnings soon)" if r.earnings_soon else ""
         L.append(f"| {r.ticker} | {'✅' if r.A_trend else '—'} | {'✅' if r.B_momentum else '—'} "
-                 f"| {'✅' if r.C_volume_risk else '—'}{e} | {r.votes}/3 |")
+                 f"| {'✅' if r.C_volume_risk else '—'}{e} | {('✅ ' + r.pattern) if r.D_candle else '—'} | {r.votes}/4 |")
     return "\n".join(L), buys, scan
 
 
