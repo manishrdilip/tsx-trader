@@ -1,0 +1,31 @@
+name: Lab - download price history
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["lab/fetch_data.py", ".github/workflows/lab-data.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt pyarrow
+      - run: python lab/fetch_data.py
+      - name: Save data to the 'data' branch (keeps main small)
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git checkout --orphan data
+          git rm -rf --cached . > /dev/null
+          git add -f lab/data/prices.parquet
+          git commit -m "Price history $(date -u +%F)"
+          git push -f origin data
