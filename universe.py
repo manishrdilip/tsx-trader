@@ -18,6 +18,7 @@ import pandas as pd
 MIN_PRICE = 2.0
 MIN_DOLLAR_VOL = 1_000_000
 CACHE = "universe_tickers.json"
+LAST_DATA = {}          # filled by scan_all; reused by leaders.py
 URLS = {
     ".TO": "https://www.tsx.com/json/company-directory/search/tsx/%5E*",
     ".V": "https://www.tsx.com/json/company-directory/search/tsxv/%5E*",
@@ -78,9 +79,14 @@ def download(tickers):
 def scan_all(mkt, params, add_indicators, consensus, pct):
     import candles
     from tsx_scan import levels, gap_safe, level_table, RULES_NOTE
-    data = download(get_tickers())
+    global LAST_DATA
+    import stock_filter
+    data = download(sorted(set(get_tickers()) | {"XIU.TO"}))
+    LAST_DATA = data
     rows = []
     for t, d in data.items():
+        if not stock_filter.is_stock(t):      # no ETFs, BetaPro, CDRs, split corps
+            continue
         last = d.iloc[-20:]
         if d["Close"].iloc[-1] < MIN_PRICE or (last["Close"] * last["Volume"]).mean() < MIN_DOLLAR_VOL:
             continue
@@ -108,7 +114,7 @@ def scan_all(mkt, params, add_indicators, consensus, pct):
     picks = pd.DataFrame(picks, columns=df.columns)
 
     L = ["\n## ALL CANADA (TSX + TSX Venture) - consensus buys (4/4)"]
-    L.append(f"Scanned {len(data)} stocks with price history; {len(df)} passed the safety filter "
+    L.append(f"Scanned {len(data)} listings with price history; {len(df)} real companies passed the safety filter "
              f"(price >= ${MIN_PRICE:.0f}, >= ${MIN_DOLLAR_VOL/1e6:.0f}M traded/day). "
              f"{len(full)} got 4/4 votes. Stocks whose worst overnight gap-down in the past year "
              f"was bigger than their stop are excluded.\n")

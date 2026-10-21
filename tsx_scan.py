@@ -29,7 +29,7 @@ START = "2014-01-01"
 TRAIN_END = "2022-12-31"
 COST = 0.001               # 0.1% per side (spread/slippage, Wealthsimple has no commission)
 RISK_PER_TRADE = 0.02      # risk 2% of account per trade
-ACCOUNT = float(os.environ.get("ACCOUNT", "100"))   # account size for share counts (CAD)
+ACCOUNT = float(os.environ.get("ACCOUNT", "500"))   # account size for share counts (CAD)
 
 GOAL_WIN = 0.65
 GOAL_MONTHLY = 0.02
@@ -350,7 +350,20 @@ def main(data=None):
             L.insert(1, all_md + "\n")
         except Exception as e:
             L.insert(1, f"\n## ALL CANADA scan failed today: {e}\n")
-    L.insert(1, cons_md.split("\n### Does")[0] + "\n")   # watchlist consensus at the top
+        try:
+            import leaders, livelog
+            live = os.environ.get("GITHUB_ACTIONS") == "true"
+            sig, mkt_ok, month_end, asof = leaders.signals(universe.LAST_DATA)
+            lp_md, lp_picks = leaders.report(sig, mkt_ok, month_end, asof, ACCOUNT,
+                                             earnings_soon=consensus.earnings_soon if live else None)
+            sig.to_csv(f"{OUT}/leader_signals.csv", index=False)
+            livelog.update(universe.LAST_DATA)
+            if len(lp_picks):
+                livelog.add(lp_picks, asof)
+            L.insert(1, lp_md + "\n" + livelog.summary() + "\n")
+        except Exception as e:
+            L.insert(1, f"\n## LEADER PULLBACK scan failed today: {e}\n")
+    L.insert(2, cons_md.split("\n### Does")[0] + "\n")   # watchlist consensus below the leader section
     report = "\n".join(L)
     with open(f"{OUT}/report.md", "w") as f:
         f.write(report)

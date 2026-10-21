@@ -1,31 +1,39 @@
-name: Lab - download price history
+name: Lab - refresh history and backtest (monthly)
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["lab/fetch_data.py", ".github/workflows/lab-data.yml"]
+  schedule:
+    - cron: "17 10 1 * *"     # 1st of every month
 
 permissions:
   contents: write
 
 jobs:
-  fetch:
+  lab:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r requirements.txt pyarrow
+      - run: pip install -r lab/requirements.txt
+      - run: python lab/fetch_names.py
       - run: python lab/fetch_data.py
-      - name: Save data to the 'data' branch (keeps main small)
+      - run: python lab/run_lab.py
+      - run: python lab/refresh_card.py
+      - name: Save results to main, raw prices to the 'data' branch
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
+          git add universe_names.json lab/results
+          git commit -m "Lab refresh $(date -u +%F)" || echo "no changes"
+          git pull --rebase origin main
+          git push
+          cp lab/data/prices.parquet /tmp/prices.parquet
           git checkout --orphan data
           git rm -rf --cached . > /dev/null
+          mkdir -p lab/data && cp /tmp/prices.parquet lab/data/prices.parquet
           git add -f lab/data/prices.parquet
           git commit -m "Price history $(date -u +%F)"
           git push -f origin data
