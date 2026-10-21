@@ -1,14 +1,15 @@
 # TSX Scanner - data up to 2026-10-20
 ## ⭐ LEADER PULLBACK - the tested strategy (top section to act on)
-_Backtest 2009-01-02 to 2026-10-20, 249 real TSX/TSXV companies, max 5 positions:_ **18.5%/yr** (≈1.4%/month) vs XIC buy-and-hold 11.0%/yr · win rate 53.1% · avg win +13.0% / avg loss -8.7% · worst drawdown 30.3% · 5 losing years of 18.
+_Backtest 2009-01-02 to 2026-10-20, 249 real TSX/TSXV companies, max 2 positions:_ **26.2%/yr** (≈2.0%/month) vs XIC buy-and-hold 11.0%/yr · win rate 53.1% · avg win +13.0% / avg loss -8.7% · worst drawdown 34.4% · 4 losing years of 18.
 
-**How to trade:** buy at tomorrow's open with a limit no higher than *Buy max*. After it fills, set the stop and target as % of YOUR fill price. Sell at the close after 30 trading days if neither is hit. Use 1/5 of the account per position ($100 on $500); never more than 5 open at once - take the highest RS first.
+**Plan for a $100 account: up to 2 positions of $50.** Buy at tomorrow's open with a limit order at *Buy max* (skip if it opens higher). Right after it fills, enter the take-profit and stop-loss below (prices are from today's close; if you fill a few cents different, use the % columns on your fill price). If neither hits in 30 trading days, sell at the close.
 
-| Ticker | Company | RS | RSI2 | Close | Buy max | Stop % | Target % | Stop | Target | $ at risk |
+| Ticker | Company | Shares | Invest | Take profit at | Profit if hit | Stop-loss at | Loss if hit | Buy max | Target % | Stop % |
 |---|---|---|---|---|---|---|---|---|---|---|
-| MATR.TO | Mattr Corp. | 99 | 4.9 | 21.27 | 21.7 | -8.6% | +17.3% | 19.43 | 24.95 | $8.65 |
-| MSA.TO | Mineros S.A. | 95 | 1.5 | 9.12 | 9.3 | -11.6% | +23.3% | 8.06 | 11.24 | $11.64 |
-| ARE.TO | Aecon Group Inc. | 83 | 7.9 | 49.7 | 50.69 | -14.4% | +28.8% | 42.55 | 64.0 | $14.39 |
+| MATR.TO | Mattr Corp. | 2 | $42.54 | $24.95 | **+$7.36** | $19.43 | **-$3.68** | $21.7 | +17.3% | -8.6% |
+| MSA.TO | Mineros S.A. | 5 | $45.60 | $11.24 | **+$10.60** | $8.06 | **-$5.30** | $9.3 | +23.3% | -11.6% |
+
+_Fees: Wealthsimple charges no commission on TSX trades. Profit and loss above are before the bid-ask spread (a few cents a share)._
 
 ## Live paper-trade scorecard (picks logged before the outcome was known)
 No closed trades yet.
@@ -22,11 +23,11 @@ _Fewer than 30 closed trades: too few to judge yet. The backtest says ~53% winne
 
 
 ## ALL CANADA (TSX + TSX Venture) - consensus buys (4/4)
-Scanned 2962 listings with price history; 303 real companies passed the safety filter (price >= $2, >= $1M traded/day). 0 got 4/4 votes. Stocks whose worst overnight gap-down in the past year was bigger than their stop are excluded.
+Scanned 2559 listings with price history; 260 real companies passed the safety filter (price >= $2, >= $1M traded/day). 0 got 4/4 votes. Stocks whose worst overnight gap-down in the past year was bigger than their stop are excluded.
 
 **No market-wide consensus today - no trade.**
 
-_Generated 2026-10-21 00:44 UTC. Research only, not financial advice._
+_Generated 2026-10-21 00:57 UTC. Research only, not financial advice._
 
 ## Goal check (out-of-sample 2023-today)
 **Best strategy:** `trend_template` {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20}
@@ -53,13 +54,13 @@ _Generated 2026-10-21 00:44 UTC. Research only, not financial advice._
 ## Today's signals (TSX in uptrend)
 **How to enter:** buy at the next open with a limit order no higher than *Buy max* (skip if it opens above). After your order fills, set the stop and target as **percentages of YOUR fill price** (Stop % / Target % columns). Shares = what keeps your loss at 2% of the account if the stop is hit.
 
-| Ticker | Close | Buy max | Stop % | Target % | Stop (from close) | Target (from close) | Shares ($500 acct) | Max hold |
+| Ticker | Close | Buy max | Stop % | Target % | Stop (from close) | Target (from close) | Shares ($100 acct) | Max hold |
 |---|---|---|---|---|---|---|---|---|
-| TD.TO | 171.71 | 175.14 | -5.0% | +10.0% | 163.17 | 188.8 | 1 | 20d |
-| BNS.TO | 129.78 | 132.38 | -4.6% | +9.2% | 123.79 | 141.77 | 1 | 20d |
-| SU.TO | 110.11 | 112.31 | -7.5% | +14.9% | 101.9 | 126.52 | 1 | 20d |
-| CVE.TO | 46.65 | 47.58 | -9.8% | +19.6% | 42.08 | 55.79 | 2 | 20d |
-| SLF.TO | 111.95 | 114.19 | -4.3% | +8.5% | 107.18 | 121.49 | 2 | 20d |
+| TD.TO | 171.71 | 175.14 | -5.0% | +10.0% | 163.17 | 188.8 | 0 | 20d |
+| BNS.TO | 129.78 | 132.38 | -4.6% | +9.2% | 123.79 | 141.77 | 0 | 20d |
+| SU.TO | 110.11 | 112.31 | -7.5% | +14.9% | 101.9 | 126.52 | 0 | 20d |
+| CVE.TO | 46.65 | 47.58 | -9.8% | +19.6% | 42.08 | 55.79 | 0 | 20d |
+| SLF.TO | 111.95 | 114.19 | -4.3% | +8.5% | 107.18 | 121.49 | 0 | 20d |
 
 ## Trend status of watchlist
 | Ticker | Close | 50d | 200d | Trend |
@@ -91,7 +92,7 @@ _Generated 2026-10-21 00:44 UTC. Research only, not financial advice._
 ### Does requiring agreement help? (consensus rule backtest)
 | Period | Win | Monthly | Max DD | PF | Trades |
 |---|---|---|---|---|---|
-| 2016-today | 51.57% | 0.29% | 43.52% | 1.11 | 254 |
+| 2016-today | 51.97% | 0.33% | 43.52% | 1.13 | 254 |
 | 2023-today (out-of-sample) | 45.87% | -0.25% | 38.90% | 0.91 | 109 |
 
 ### Scanner votes
