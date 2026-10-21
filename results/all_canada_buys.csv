@@ -1,2 +1,1 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
-AIF.TO,4,0.04040741281066196,Bullish Belt Hold,False,TSX,20,48.37,49.34,0.08578962426881634,0.17157924853763268,44.22,56.67,0
