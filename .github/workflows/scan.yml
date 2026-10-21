@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "30 21 * * 1-5"
   workflow_dispatch:
+  push:                       # re-run whenever the scanner code changes
+    branches: [main]
+    paths: ["tsx_scan.py", "universe.py", "consensus.py", "candles.py", "leaders.py",
+            "livelog.py", "stock_filter.py", ".github/workflows/scan.yml"]
 
 permissions:
   contents: write
