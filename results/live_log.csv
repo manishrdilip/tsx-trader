@@ -1,0 +1,4 @@
+signal_date,ticker,close,buy_max,stop_pct,target_pct,status,entry_date,entry,exit_date,exit,ret
+2026-10-20,MATR.TO,21.27,21.7,0.08648,0.17296,pending,,,,,
+2026-10-20,MSA.TO,9.12,9.3,0.11639,0.23278,pending,,,,,
+2026-10-20,ARE.TO,49.7,50.69,0.14387,0.28773,pending,,,,,
