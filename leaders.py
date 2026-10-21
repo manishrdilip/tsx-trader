@@ -27,7 +27,7 @@ import stock_filter
 MARKET = "XIU.TO"
 STOP_ATR, TGT_ATR, HOLD = 3.0, 6.0, 30
 MAX_GAP = 0.02
-SLOTS = 5
+SLOTS = int(os.environ.get("SLOTS", "2"))    # $100 account: 2 positions of $50 (best tested)
 CARD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab", "results", "strategy_card.json")
 
 
@@ -106,7 +106,7 @@ def report(df, mkt_up, month_end, asof, account, earnings_soon=None):
     c = card()
     if c:
         lp, xb = c["leader_pullback"], c["xic_buy_hold"]
-        L.append(f"_Backtest {c['period']}, {c['universe']} real TSX/TSXV companies, max 5 positions:_ "
+        L.append(f"_Backtest {c['period']}, {c['universe']} real TSX/TSXV companies, max {c.get('slots', 5)} positions:_ "
                  f"**{pct(lp['cagr'])}/yr** (≈{pct(lp['monthly'])}/month) vs XIC buy-and-hold {pct(xb['cagr'])}/yr · "
                  f"win rate {pct(lp['win'])} · avg win +{pct(lp['avg_win'])} / avg loss {pct(lp['avg_loss'])} · "
                  f"worst drawdown {pct(lp['max_dd'])} · {lp['losing_years']} losing years of {lp['years']}.\n")
@@ -116,28 +116,36 @@ def report(df, mkt_up, month_end, asof, account, earnings_soon=None):
     if df.empty:
         L.append("**No leader pullbacks today - no trade.** Most days have none; that's normal.")
         return "\n".join(L), df
+    stake = account / SLOTS
     picks = []
     for _, r in df.iterrows():
         if earnings_soon and earnings_soon(r.ticker):
+            continue
+        if int(stake // r.buy_max) < 1:          # can't afford one whole share with this position size
             continue
         picks.append(r)
         if len(picks) == SLOTS:
             break
     picks = pd.DataFrame(picks)
     if picks.empty:
-        L.append("Signals today all report earnings within 10 days - skipped.")
+        L.append("Signals today are all reporting earnings soon or cost more than one position - no trade.")
         return "\n".join(L), picks
-    stake = account / SLOTS
-    L.append(f"**How to trade:** buy at tomorrow's open with a limit no higher than *Buy max*. After it fills, "
-             f"set the stop and target as % of YOUR fill price. Sell at the close after {HOLD} trading days "
-             f"if neither is hit. Use 1/{SLOTS} of the account per position (${stake:,.0f} on ${account:,.0f}); "
-             f"never more than {SLOTS} open at once - take the highest RS first.\n")
-    hdr = "| Ticker | Company | RS | RSI2 | Close | Buy max | Stop % | Target % | Stop | Target | $ at risk |"
+    L.append(f"**Plan for a ${account:,.0f} account: up to {SLOTS} positions of ${stake:,.0f}.** "
+             f"Buy at tomorrow's open with a limit order at *Buy max* (skip if it opens higher). "
+             f"Right after it fills, enter the take-profit and stop-loss below (prices are from today's close; "
+             f"if you fill a few cents different, use the % columns on your fill price). "
+             f"If neither hits in {HOLD} trading days, sell at the close.\n")
+    hdr = ("| Ticker | Company | Shares | Invest | Take profit at | Profit if hit | Stop-loss at | Loss if hit "
+           "| Buy max | Target % | Stop % |")
     L += [hdr, "|" + "---|" * 11]
     for _, r in picks.iterrows():
-        L.append(f"| {r.ticker} | {r.company[:28]} | {r.rs_rank} | {r.rsi2} | {r.close} | {r.buy_max} | "
-                 f"-{pct(r.stop_pct)} | +{pct(r.target_pct)} | {r.stop_loss} | {r.take_profit} | "
-                 f"${stake * r.stop_pct:,.2f} |")
+        sh = int(stake // r.buy_max)
+        inv = sh * r.close
+        L.append(f"| {r.ticker} | {r.company[:26]} | {sh} | ${inv:,.2f} | ${r.take_profit} | "
+                 f"**+${sh * (r.take_profit - r.close):,.2f}** | ${r.stop_loss} | **-${sh * (r.close - r.stop_loss):,.2f}** | "
+                 f"${r.buy_max} | +{pct(r.target_pct)} | -{pct(r.stop_pct)} |")
+    L.append(f"\n_Fees: Wealthsimple charges no commission on TSX trades. Profit and loss above are before the "
+             f"bid-ask spread (a few cents a share)._")
     if month_end:
         L.append("\n_Month-end window: these also qualify for the **quick-bounce** exit (sell at the first close "
                  "above the 5-day average, stop -8%). Tested: ~69% win rate but only ~+0.6% per trade - "

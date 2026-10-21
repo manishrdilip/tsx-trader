@@ -29,7 +29,7 @@ START = "2014-01-01"
 TRAIN_END = "2022-12-31"
 COST = 0.001               # 0.1% per side (spread/slippage, Wealthsimple has no commission)
 RISK_PER_TRADE = 0.02      # risk 2% of account per trade
-ACCOUNT = float(os.environ.get("ACCOUNT", "500"))   # account size for share counts (CAD)
+ACCOUNT = float(os.environ.get("ACCOUNT", "100"))   # account size for share counts (CAD)
 
 GOAL_WIN = 0.65
 GOAL_MONTHLY = 0.02
