@@ -1,0 +1,38 @@
+name: Position watcher (phone alerts)
+
+on:
+  schedule:
+    - cron: "*/10 13-21 * * 1-5"     # every 10 min, covers 9:30-4:00 Toronto in EDT and EST
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Send a test notification"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: watcher
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q yfinance pandas
+      - run: python watch.py ${{ inputs.test && '--test' || '' }}
+      - name: Save alert status
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add positions.csv
+          git commit -m "Watcher update $(date -u +%F' '%H:%M)" || exit 0
+          git pull --rebase origin main
+          git push

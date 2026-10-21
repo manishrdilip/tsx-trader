@@ -1,0 +1,3 @@
+ticker,shares,fill,stop,target,entry_date,exit_by,status,notes
+MATR.TO,2,21.29,19.45,24.97,2026-10-21,2026-12-01,open,Wealthsimple TFSA - stop-limit order placed; take-profit by alert
+MSA.TO,5,9.17,8.10,11.30,2026-10-21,2026-12-01,open,Wealthsimple TFSA - stop-limit order placed; take-profit by alert
