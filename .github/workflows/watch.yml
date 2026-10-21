@@ -3,6 +3,9 @@ name: Position watcher (phone alerts)
 on:
   schedule:
     - cron: "*/10 13-21 * * 1-5"     # every 10 min, covers 9:30-4:00 Toronto in EDT and EST
+  push:                              # editing .github/alert-test sends a test notification
+    branches: [main]
+    paths: [".github/alert-test"]
   workflow_dispatch:
     inputs:
       test:
@@ -27,7 +30,7 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -q yfinance pandas
-      - run: python watch.py ${{ inputs.test && '--test' || '' }}
+      - run: python watch.py ${{ (inputs.test || github.event_name == 'push') && '--test' || '' }}
       - name: Save alert status
         run: |
           git config user.name "github-actions"
