@@ -1,2 +1,3 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
-AIF.TO,4,0.08934202336911068,Bullish Belt Hold,False,TSX,20,49.06,50.04,0.0876623338755316,0.1753246677510632,44.76,57.66,0
+GFL.TO,4,0.12013785122891618,Tweezer Bottom,False,TSX,20,61.74,62.97,0.07859875630507906,0.15719751261015813,56.89,71.45,0
+GEI.TO,4,0.09111887317862832,Rising Three / Mat Hold,False,TSX,20,33.01,33.67,0.06348723786666771,0.12697447573333542,30.91,37.2,0
