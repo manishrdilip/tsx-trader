@@ -1,2 +1,1 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
-GFL.TO,4,0.16399322235391778,"Bullish Belt Hold, Tweezer Bottom",False,TSX,20,63.75,65.03,0.0786283530105183,0.1572567060210366,58.74,73.78,0
