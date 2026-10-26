@@ -4,7 +4,7 @@ A stock is a CONSENSUS BUY only when all three agree:
   A - Trend:      close > SMA50 > SMA200 and TSX (XIU) above its 200-day
   B - Momentum:   RSI(14) 50-70, MACD above signal, beating XIU over 3 months
   C - Volume/Risk: volume above 20-day avg, ATR < 3% of price,
-                  no earnings in the next 10 days (live scan only)
+                  no earnings in the next 20 days (live scan only)
 The consensus rule is also backtested so you can see if agreement helps.
 Research only - not financial advice.
 """
@@ -63,7 +63,7 @@ def run(data, mkt, params, backtest_one, stats, pct, live=True):
         A, B, C, D = (bool(x.iloc[-1]) for x in (a, b, c, dd))
         x = d.iloc[-1]
         gap_ok = gap_safe(x, params)
-        earn = earnings_soon(s) if (live and A and B and C and D) else False
+        earn = earnings_soon(s, days=20) if (live and A and B and C and D) else False
         rows.append({"ticker": s, "A_trend": A, "B_momentum": B,
                      "C_volume_risk": C and not earn and gap_ok,
                      "D_candle": D, "pattern": candles.latest_names(d) if D else "",

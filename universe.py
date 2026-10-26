@@ -81,7 +81,9 @@ def scan_all(mkt, params, add_indicators, consensus, pct):
     from tsx_scan import levels, gap_safe, level_table, RULES_NOTE
     global LAST_DATA
     import stock_filter
-    data = download(sorted(set(get_tickers()) | {"XIU.TO"}))
+    # Always include market ETF + sector ETFs so leaders.py can run the sector momentum filter
+    SECTOR_ETFS = ["XEG.TO", "XFN.TO", "XIT.TO", "XMA.TO", "XRE.TO", "XUT.TO", "XHC.TO"]
+    data = download(sorted(set(get_tickers()) | {"XIU.TO"} | set(SECTOR_ETFS)))
     LAST_DATA = data
     rows = []
     for t, d in data.items():
@@ -106,7 +108,7 @@ def scan_all(mkt, params, add_indicators, consensus, pct):
     full = df[df["votes"] == 4].sort_values("ret_3m", ascending=False)
     picks = []
     for _, r in full.iterrows():          # top 5 that don't report earnings soon
-        if consensus.earnings_soon(r.ticker):
+        if consensus.earnings_soon(r.ticker, days=20):
             continue
         picks.append(r)
         if len(picks) == 5:
