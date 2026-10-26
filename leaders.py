@@ -315,32 +315,26 @@ def report(df, mkt_up, month_end, asof, account, earnings_soon=None):
         # [NEW] Extended earnings blackout: 20 calendar days (was 10)
         if earnings_soon and earnings_soon(r.ticker, days=EARNINGS_BLACKOUT_DAYS):
             continue
-        if int(stake // r.buy_max) < 1:          # can't afford one whole share with this position size
-            continue
         picks.append(r)
         if len(picks) == SLOTS:
             break
     picks = pd.DataFrame(picks)
     if picks.empty:
-        L.append("Signals today are all reporting earnings soon or cost more than one position - no trade.")
+        L.append("Signals today are all reporting earnings soon - no trade.")
         return "\n".join(L), picks
-    L.append(f"**Plan for a ${account:,.0f} account: up to {SLOTS} positions of ${stake:,.0f}.** "
+    L.append(f"**{len(picks)} signal(s) today.** "
              f"Buy at tomorrow's open with a **limit order at or below Buy max** (cancel if it opens higher — no chasing). "
              f"Right after it fills, immediately place the take-profit (GTC limit) and stop-loss (stop-on-quote). "
              f"**Stagnation rule:** if the stock is flat or underwater after {STAGNATION_DAYS} trading days, "
              f"sell at market close — don't wait for the full stop. "
              f"Hard time exit: sell at close of day {HOLD} regardless.\n")
-    hdr = ("| Ticker | Company | Shares | Invest | Take profit | Profit if hit | Stop-loss | Loss if hit "
-           "| Buy max | Target % | Stop % | % from ATH | Candle | Sector |")
-    L += [hdr, "|" + "---|" * 14]
+    hdr = ("| Ticker | Company | Price | Buy max | Take profit | Target % | Stop-loss | Stop % | % from ATH | Candle | Sector |")
+    L += [hdr, "|" + "---|" * 11]
     for _, r in picks.iterrows():
-        sh = int(stake // r.buy_max)
-        inv = sh * r.close
         candle_info = f"✅ {r.candle_pattern[:20]}" if r.candle else "—"
         ath_info = f"+{abs(r.pct_from_ath):.1f}% above" if r.pct_from_ath <= 0 else f"{r.pct_from_ath:.1f}% below"
-        L.append(f"| {r.ticker} | {r.company[:24]} | {sh} | ${inv:,.2f} | ${r.take_profit} | "
-                 f"**+${sh * (r.take_profit - r.close):,.2f}** | ${r.stop_loss} | **-${sh * (r.close - r.stop_loss):,.2f}** | "
-                 f"${r.buy_max} | +{pct(r.target_pct)} | -{pct(r.stop_pct)} | {ath_info} | {candle_info} | {r.sector_etf} |")
+        L.append(f"| {r.ticker} | {r.company[:24]} | ${r.close} | ${r.buy_max} | ${r.take_profit} | "
+                 f"+{pct(r.target_pct)} | ${r.stop_loss} | -{pct(r.stop_pct)} | {ath_info} | {candle_info} | {r.sector_etf} |")
     L.append(f"\n_Fees: Wealthsimple charges no commission on TSX trades. Profit and loss above are before the "
              f"bid-ask spread (a few cents a share)._")
     L.append(f"\n**Filter summary (v2 Hybrid):** ATH clearance (≥15% below or above 52w-high) · "
