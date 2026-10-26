@@ -15,8 +15,10 @@ Signal (all at today's close, real operating companies only - no ETFs/CDRs/BetaP
   9. [NEW] OBV above its 10-day average (smart-money accumulation on the pullback)
   10. [NEW] Bullish candlestick pattern in the last 2 days (candles.py confirmation layer)
 
-Trade: buy next open (skip if it opens > 2% above today's close);
-       stop = 3 x ATR(14) below entry, target = 6 x ATR(14) above entry, exit at close after 30 trading days.
+Trade: buy next open with limit order (cancel if open > prior close × 1.01 — no gap chasing);
+       stop = 3 x ATR(14) below entry, target = 6 x ATR(14) above entry (honest 2:1 R:R).
+       Stagnation exit: if bars_held >= 8 AND close <= entry price, sell at market close (dead-money cut).
+       Hard time stop: exit at close of day 30 regardless.
 Sizing tested: up to 5 positions, 1/5 of the account each, strongest RS first.
 
 "Month-end bounce" variant (higher win rate, much smaller profit): same signal inside the last
@@ -37,7 +39,8 @@ import candles as candles_mod
 
 MARKET = "XIU.TO"
 STOP_ATR, TGT_ATR, HOLD = 3.0, 6.0, 30
-MAX_GAP = 0.02
+MAX_GAP = 0.01          # Anti-chase: cancel if open > prior close × 1.01 (was 0.02)
+STAGNATION_DAYS = 8     # Exit if bars_held >= 8 AND close <= entry (dead-money cut)
 SLOTS = int(os.environ.get("SLOTS", "2"))    # $100 account: 2 positions of $50 (best tested)
 CARD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "lab", "results", "strategy_card.json")
 
@@ -322,10 +325,11 @@ def report(df, mkt_up, month_end, asof, account, earnings_soon=None):
         L.append("Signals today are all reporting earnings soon or cost more than one position - no trade.")
         return "\n".join(L), picks
     L.append(f"**Plan for a ${account:,.0f} account: up to {SLOTS} positions of ${stake:,.0f}.** "
-             f"Buy at tomorrow's open with a limit order at *Buy max* (skip if it opens higher). "
-             f"Right after it fills, enter the take-profit and stop-loss below (prices are from today's close; "
-             f"if you fill a few cents different, use the % columns on your fill price). "
-             f"If neither hits in {HOLD} trading days, sell at the close.\n")
+             f"Buy at tomorrow's open with a **limit order at or below Buy max** (cancel if it opens higher — no chasing). "
+             f"Right after it fills, immediately place the take-profit (GTC limit) and stop-loss (stop-on-quote). "
+             f"**Stagnation rule:** if the stock is flat or underwater after {STAGNATION_DAYS} trading days, "
+             f"sell at market close — don't wait for the full stop. "
+             f"Hard time exit: sell at close of day {HOLD} regardless.\n")
     hdr = ("| Ticker | Company | Shares | Invest | Take profit | Profit if hit | Stop-loss | Loss if hit "
            "| Buy max | Target % | Stop % | % from ATH | Candle | Sector |")
     L += [hdr, "|" + "---|" * 14]
@@ -339,9 +343,10 @@ def report(df, mkt_up, month_end, asof, account, earnings_soon=None):
                  f"${r.buy_max} | +{pct(r.target_pct)} | -{pct(r.stop_pct)} | {ath_info} | {candle_info} | {r.sector_etf} |")
     L.append(f"\n_Fees: Wealthsimple charges no commission on TSX trades. Profit and loss above are before the "
              f"bid-ask spread (a few cents a share)._")
-    L.append(f"\n**Filter summary (v2):** ATH clearance (≥15% below or above 52w-high) · "
+    L.append(f"\n**Filter summary (v2 Hybrid):** ATH clearance (≥15% below or above 52w-high) · "
              f"Sector ETF above 50d MA · MACD histogram turned positive · OBV above 10d avg · "
-             f"RSI(2)<10 + Stoch<25 · Bullish candle last 2 days · {EARNINGS_BLACKOUT_DAYS}d earnings blackout_")
+             f"RSI(2)<10 + Stoch<25 · Bullish candle last 2 days · {EARNINGS_BLACKOUT_DAYS}d earnings blackout · "
+             f"Entry limit ≤ prior close ×1.01 · Stagnation exit day ≥{STAGNATION_DAYS} if flat/red_")
     if month_end:
         L.append("\n_Month-end window: these also qualify for the **quick-bounce** exit (sell at the first close "
                  "above the 5-day average, stop -8%). Tested: ~69% win rate but only ~+0.6% per trade - "
