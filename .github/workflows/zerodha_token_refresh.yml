@@ -26,7 +26,6 @@ jobs:
           playwright install chromium --with-deps
 
       - name: Refresh Zerodha token
-        working-directory: trade_verifier
         env:
           KITE_API_KEY:       ${{ secrets.KITE_API_KEY }}
           KITE_API_SECRET:    ${{ secrets.KITE_API_SECRET }}

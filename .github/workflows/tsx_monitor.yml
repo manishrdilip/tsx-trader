@@ -48,7 +48,6 @@ jobs:
         run: pip install anthropic requests
 
       - name: Verify trade via Claude
-        working-directory: trade_verifier
         env:
           ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

@@ -31,7 +31,6 @@ jobs:
         run: pip install kiteconnect anthropic requests
 
       - name: Run one poll cycle
-        working-directory: trade_verifier
         env:
           KITE_API_KEY:       ${{ secrets.KITE_API_KEY }}
           KITE_ACCESS_TOKEN:  ${{ secrets.KITE_ACCESS_TOKEN }}
