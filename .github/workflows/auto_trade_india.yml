@@ -1,0 +1,31 @@
+name: Auto-Trade India (Position Monitor)
+
+on:
+  schedule:
+    # Every 5 min, Mon–Fri, 3:45–10:00 UTC = 9:15 AM–3:30 PM IST
+    - cron: "*/5 3-10 * * 1-5"
+  workflow_dispatch:      # manual trigger for testing
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install kiteconnect anthropic requests --break-system-packages
+
+      - name: Run position monitor + auto-sell
+        env:
+          KITE_API_KEY:       ${{ secrets.KITE_API_KEY }}
+          KITE_ACCESS_TOKEN:  ${{ secrets.KITE_ACCESS_TOKEN }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python auto_trader.py monitor
