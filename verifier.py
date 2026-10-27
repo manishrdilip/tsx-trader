@@ -107,6 +107,12 @@ Respond ONLY with this JSON:
             messages=[{"role": "user", "content": prompt}]
         )
         raw = response.content[0].text.strip()
+        # Strip markdown code fences if Claude wrapped the JSON
+        if raw.startswith("```"):
+            raw = raw.split("```")[1]
+            if raw.startswith("json"):
+                raw = raw[4:]
+            raw = raw.strip()
         result = json.loads(raw)
         result["order_id"] = trade.get("order_id", "unknown")
         result["symbol"] = trade.get("symbol", "unknown")
