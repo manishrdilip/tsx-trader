@@ -1,0 +1,91 @@
+# TSX manual trade verifier — triggered manually after placing a Wealthsimple trade
+# TSX hours: 9:30–16:00 ET = 13:30–20:00 UTC
+name: TSX Trade Verifier
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "BUY or SELL"
+        required: true
+        type: choice
+        options: [BUY, SELL]
+      symbol:
+        description: "Stock symbol (e.g. MSA.TO)"
+        required: true
+        type: string
+      qty:
+        description: "Number of shares"
+        required: true
+        type: string
+      price:
+        description: "Execution price (CAD)"
+        required: true
+        type: string
+      avg_cost:
+        description: "Original buy price — SELL only (leave blank for BUY)"
+        required: false
+        type: string
+      scanner_signal:
+        description: "Was this triggered by the scanner?"
+        required: true
+        type: choice
+        options: ["yes", "no"]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install anthropic requests
+
+      - name: Verify trade via Claude
+        working-directory: trade_verifier
+        env:
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+          TRADE_ACTION:       ${{ github.event.inputs.action }}
+          TRADE_SYMBOL:       ${{ github.event.inputs.symbol }}
+          TRADE_QTY:          ${{ github.event.inputs.qty }}
+          TRADE_PRICE:        ${{ github.event.inputs.price }}
+          TRADE_AVG_COST:     ${{ github.event.inputs.avg_cost }}
+          SCANNER_SIGNAL:     ${{ github.event.inputs.scanner_signal }}
+        run: |
+          python - <<'EOF'
+          import os
+          from datetime import datetime
+          from verifier import verify_trade, format_alert
+          from notifier import send_telegram
+
+          avg_cost_str = os.environ.get("TRADE_AVG_COST", "").strip()
+
+          trade = {
+              "symbol":       os.environ["TRADE_SYMBOL"].upper(),
+              "action":       os.environ["TRADE_ACTION"].upper(),
+              "qty":          int(os.environ["TRADE_QTY"]),
+              "price":        float(os.environ["TRADE_PRICE"]),
+              "order_id":     f"gh-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+              "triggered_by": "scanner" if os.environ["SCANNER_SIGNAL"] == "yes" else "manual",
+              "timestamp":    datetime.now().isoformat(),
+          }
+          if trade["action"] == "SELL" and avg_cost_str:
+              trade["avg_cost"] = float(avg_cost_str)
+
+          result = verify_trade(trade, portfolio="tsx")
+          alert  = format_alert(result)
+          print(alert.replace("*","").replace("`",""))
+          send_telegram(alert)
+
+          # Fail the workflow if Claude flagged the trade
+          if result["verdict"] == "FLAG":
+              raise SystemExit("Trade flagged — see Telegram alert.")
+          EOF

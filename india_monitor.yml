@@ -1,0 +1,117 @@
+# Runs India monitor every 5 min during NSE market hours
+# 9:15–15:30 IST = 03:45–10:00 UTC
+name: India Trade Monitor
+
+on:
+  schedule:
+    - cron: "*/5 3-10 * * 1-5"
+  workflow_dispatch:   # manual trigger anytime from GitHub UI
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore seen-orders cache
+        uses: actions/cache@v4
+        with:
+          path: india_seen_orders.json
+          key: india-seen-orders-${{ github.run_id }}
+          restore-keys: |
+            india-seen-orders-
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install kiteconnect anthropic requests
+
+      - name: Run one poll cycle
+        working-directory: trade_verifier
+        env:
+          KITE_API_KEY:       ${{ secrets.KITE_API_KEY }}
+          KITE_ACCESS_TOKEN:  ${{ secrets.KITE_ACCESS_TOKEN }}
+          ANTHROPIC_API_KEY:  ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python - <<'EOF'
+          import os, json, logging
+          from pathlib import Path
+          from kiteconnect import KiteConnect
+          from verifier import verify_trade, format_alert
+          from notifier import send_telegram
+
+          logging.basicConfig(level=logging.INFO)
+          log = logging.getLogger(__name__)
+
+          # State file is restored from cache; persists across runs within the same day
+          STATE_FILE = Path("india_seen_orders.json")
+          seen = set(json.loads(STATE_FILE.read_text())) if STATE_FILE.exists() else set()
+
+          kite = KiteConnect(api_key=os.environ["KITE_API_KEY"])
+          kite.set_access_token(os.environ["KITE_ACCESS_TOKEN"])
+
+          try:
+              orders = kite.orders()
+              new_seen = set(seen)
+
+              for order in orders:
+                  oid    = order.get("order_id", "")
+                  status = order.get("status", "")
+
+                  if status != "COMPLETE" or oid in seen:
+                      continue
+
+                  new_seen.add(oid)
+                  symbol = order.get("tradingsymbol", "")
+                  action = order.get("transaction_type", "").upper()
+
+                  log.info("New completed order: %s %s x%s @ %s",
+                           action, symbol,
+                           order.get("filled_quantity", 0),
+                           order.get("average_price", 0))
+
+                  trade = {
+                      "symbol":       symbol,
+                      "action":       action,
+                      "qty":          order.get("filled_quantity", 0),
+                      "price":        order.get("average_price", 0),
+                      "order_id":     oid,
+                      "triggered_by": "manual",
+                      "timestamp":    str(order.get("order_timestamp", "")),
+                  }
+
+                  if action == "SELL":
+                      # Try to find avg cost from holdings
+                      try:
+                          for h in kite.holdings():
+                              if h["tradingsymbol"] == symbol:
+                                  trade["avg_cost"] = h["average_price"]
+                                  break
+                      except Exception:
+                          pass
+
+                  result = verify_trade(trade, portfolio="india")
+                  alert  = format_alert(result)
+                  log.info("Verdict for %s: %s", oid, result["verdict"])
+                  send_telegram(alert)
+
+              # Save updated seen list for cache
+              STATE_FILE.write_text(json.dumps(list(new_seen)))
+
+          except Exception as e:
+              log.error("Monitor error: %s", e)
+              send_telegram(f"⚠️ India monitor error: {e}")
+          EOF
+
+      - name: Save seen-orders cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: india_seen_orders.json
+          key: india-seen-orders-${{ github.run_id }}

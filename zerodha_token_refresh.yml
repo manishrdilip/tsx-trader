@@ -1,0 +1,53 @@
+# Runs every morning at 3:30 AM UTC = 9:00 AM IST, Mon–Fri
+# Logs into Zerodha, gets a fresh access_token, pushes it to GitHub Secrets
+# so india_monitor.yml always has a valid token.
+name: Zerodha Token Refresh
+
+on:
+  schedule:
+    - cron: "30 3 * * 1-5"   # 9:00 AM IST, Mon–Fri
+  workflow_dispatch:           # manual trigger if needed
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install playwright kiteconnect pyotp PyNaCl requests
+          playwright install chromium --with-deps
+
+      - name: Refresh Zerodha token
+        working-directory: trade_verifier
+        env:
+          KITE_API_KEY:       ${{ secrets.KITE_API_KEY }}
+          KITE_API_SECRET:    ${{ secrets.KITE_API_SECRET }}
+          KITE_USER_ID:       ${{ secrets.KITE_USER_ID }}
+          KITE_PASSWORD:      ${{ secrets.KITE_PASSWORD }}
+          KITE_TOTP_SECRET:   ${{ secrets.KITE_TOTP_SECRET }}
+          GH_TOKEN:           ${{ secrets.GH_TOKEN }}
+          GH_REPO:            ${{ github.repository }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID:   ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python zerodha_token_refresh.py
+
+      - name: Trigger india monitor immediately after token refresh
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo:  context.repo.repo,
+              workflow_id: "india_monitor.yml",
+              ref: "main"
+            });
