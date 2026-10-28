@@ -1,11 +1,11 @@
-# Runs every morning at 3:30 AM UTC = 9:00 AM IST, Mon–Fri
+# Runs every weekday at 2:45 AM UTC = 8:15 AM IST, before the India monitors start (8:30 IST)
 # Logs into Zerodha, gets a fresh access_token, pushes it to GitHub Secrets
 # so india_monitor.yml always has a valid token.
 name: Zerodha Token Refresh
 
 on:
   schedule:
-    - cron: "30 3 * * 1-5"   # 9:00 AM IST, Mon–Fri
+    - cron: "45 2 * * 1-5"   # 8:15 AM IST, Mon–Fri
   workflow_dispatch:           # manual trigger if needed
 
 jobs:

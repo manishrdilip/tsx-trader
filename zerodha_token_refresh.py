@@ -3,7 +3,7 @@ Zerodha daily token auto-refresh.
 Logs into Kite using Playwright, extracts request_token from redirect,
 generates access_token, then pushes it to GitHub Secrets automatically.
 
-Runs as a GitHub Action every morning at 3:30 AM UTC (9:00 AM IST).
+Runs as a GitHub Action every weekday at 2:45 AM UTC (8:15 AM IST), before the India monitors start.
 
 Required GitHub Secrets:
   KITE_API_KEY       — from kite.trade/account/apps
@@ -52,6 +52,16 @@ async def get_request_token() -> str:
         browser = await p.chromium.launch(headless=True)
         page    = await browser.new_page()
 
+        # Catch request_token from any request/redirect, even if the app's
+        # redirect URL itself doesn't load (e.g. 127.0.0.1).
+        found = {}
+        def _grab(url: str):
+            m = re.search(r"request_token=([^&]+)", url)
+            if m:
+                found.setdefault("token", m.group(1))
+        page.on("request", lambda req: _grab(req.url))
+        page.on("framenavigated", lambda fr: _grab(fr.url))
+
         # Navigate to Kite login
         await page.goto(KITE_LOGIN_URL)
         await page.wait_for_load_state("networkidle")
@@ -60,30 +70,35 @@ async def get_request_token() -> str:
         await page.fill('input[type="text"]', USER_ID)
         await page.fill('input[type="password"]', PASSWORD)
         await page.click('button[type="submit"]')
-        await page.wait_for_load_state("networkidle")
 
-        # Fill TOTP (2FA)
-        totp = pyotp.TOTP(TOTP_SECRET).now()
-        log.info("Generated TOTP: %s", totp)
-        await page.fill('input[type="number"], input[label="External TOTP"]', totp)
-        await page.click('button[type="submit"]')
+        # Fill TOTP (2FA). Kite submits on its own once 6 digits are typed,
+        # so the submit button may never become clickable: don't wait on it.
+        totp_box = page.locator('input[type="number"], input[label="External TOTP"]').first
+        await totp_box.wait_for(timeout=20000)
+        await totp_box.fill(pyotp.TOTP(TOTP_SECRET).now())
+        log.info("TOTP entered.")
+        try:
+            await page.click('button[type="submit"]', timeout=3000)
+        except Exception:
+            pass   # already auto-submitted
 
-        # Wait for redirect to callback URL containing request_token
         log.info("Waiting for redirect with request_token...")
         for _ in range(30):
-            url = page.url
-            if "request_token=" in url:
-                match = re.search(r"request_token=([^&]+)", url)
-                if match:
-                    request_token = match.group(1)
-                    log.info("Got request_token: %s...", request_token[:8])
-                    await browser.close()
-                    return request_token
+            _grab(page.url)
+            if "token" in found:
+                log.info("Got request_token.")
+                await browser.close()
+                return found["token"]
             await asyncio.sleep(1)
 
-        # Fallback: check for TOTP field still visible (wrong TOTP timing)
+        # Show what the page says (e.g. "Invalid TOTP") instead of a bare timeout
+        try:
+            msg = (await page.locator(".error, .su-message, .text-red").first.inner_text(timeout=2000)).strip()
+        except Exception:
+            msg = ""
+        url = page.url.split("?")[0]
         await browser.close()
-        raise RuntimeError("Timed out waiting for request_token in redirect URL.")
+        raise RuntimeError(f"No request_token after login (page: {url}{', message: ' + msg if msg else ''}).")
 
 # ── Step 2: Generate access_token from request_token ─────────────────────────
 
@@ -91,7 +106,7 @@ def generate_access_token(request_token: str) -> str:
     kite = KiteConnect(api_key=API_KEY)
     data = kite.generate_session(request_token, api_secret=API_SECRET)
     access_token = data["access_token"]
-    log.info("Generated access_token: %s...", access_token[:8])
+    log.info("Generated access_token.")
     return access_token
 
 # ── Step 3: Push access_token to GitHub Secrets ───────────────────────────────
