@@ -36,7 +36,7 @@ import pandas as pd
 from kiteconnect import KiteConnect
 from notifier import send_telegram
 from verifier import verify_trade, format_alert
-from risk_levels import levels, round_to_tick, wilder_atr
+from risk_levels import MAX_STOP_PCT, levels, round_to_tick, wilder_atr
 from auto_trader_orders import place_limit_buy, place_exit_gtt
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -49,6 +49,15 @@ SELL_BUFFER = 0.002       # legacy exits: accept at most 0.2% below LTP
 # Legacy losing positions — sell immediately regardless of P&L
 # (already far past stop-loss; holding costs more than cutting)
 LEGACY_LOSSES = {"APCL", "WIPRO", "TRIDENT", "IBULLSLTD"}
+
+def sell_reason(symbol: str, pnl_pct: float):
+    """Why this holding must be sold now, or None. Past the playbook stop (-MAX_STOP_PCT%)
+    a GTT stop can't be placed anyway (it would sit above the market), so we exit."""
+    if symbol in LEGACY_LOSSES:
+        return f"Legacy loss position — auto-closing (P&L: {pnl_pct:+.2f}%)"
+    if pnl_pct <= -MAX_STOP_PCT:
+        return f"Past the {MAX_STOP_PCT:g}% stop limit ({pnl_pct:+.2f}%) — closing"
+    return None
 
 # ── Kite setup ────────────────────────────────────────────────────────────────
 
@@ -183,10 +192,10 @@ def run_monitor():
             f"{status_icon} `{symbol}` {qty} shares | avg ₹{avg_cost:.2f} | LTP ₹{ltp:.2f} | {pnl_pct:+.2f}%"
         )
 
-        if symbol in LEGACY_LOSSES:
+        reason = sell_reason(symbol, pnl_pct)
+        if reason:
             if selling is None or symbol in selling:
                 continue    # sell order already working (or order book unknown)
-            reason = f"Legacy loss position — auto-closing (P&L: {pnl_pct:+.2f}%)"
             try:
                 tick = float(instrument(kite, symbol, exchange)["tick_size"])
                 order_id = place_limit_sell(kite, symbol, qty, ltp, tick, exchange)
@@ -240,6 +249,24 @@ def run_monitor():
         send_telegram("\n".join(summary_lines))
     else:
         notify_once("summary", "\n".join(summary_lines))   # quiet runs: one summary a day
+
+def run_plan():
+    """Read-only preview: what run_monitor would do with today's holdings. No orders, no Telegram."""
+    kite = get_kite()
+    protected, selling = active_gtt_symbols(kite), open_sell_symbols(kite)
+    print(f"{'SYMBOL':<12}{'QTY':>6}{'AVG':>10}{'LTP':>10}{'P&L%':>8}   ACTION")
+    for h in kite.holdings():
+        s, q, avg, ltp = h["tradingsymbol"], h.get("quantity", 0), h.get("average_price", 0), h.get("last_price", 0)
+        if q <= 0 or avg <= 0:
+            continue
+        pnl = (ltp - avg) / avg * 100
+        if sell_reason(s, pnl):
+            act = "SELL (sell order already open)" if s in selling else "SELL at open (limit LTP-0.2%)"
+        elif s in protected:
+            act = "keep (stop/target GTT already active)"
+        else:
+            act = "keep, place stop/target GTT"
+        print(f"{s:<12}{q:>6}{avg:>10.2f}{ltp:>10.2f}{pnl:>+8.1f}   {act}")
 
 # ── Auto-buy ──────────────────────────────────────────────────────────────────
 
@@ -321,7 +348,7 @@ def run_buy(symbol: str, qty: int, price: float):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python auto_trader.py monitor")
+        print("Usage: python auto_trader.py monitor | plan   (plan = read-only preview)")
         print("       python auto_trader.py buy SYMBOL QTY PRICE")
         sys.exit(1)
 
@@ -329,6 +356,9 @@ if __name__ == "__main__":
 
     if mode == "monitor":
         run_monitor()
+
+    elif mode == "plan":
+        run_plan()
 
     elif mode == "buy":
         if len(sys.argv) != 5:
