@@ -10,6 +10,7 @@ Research only - not financial advice.
 """
 import json
 import os
+import time
 import urllib.request
 
 import numpy as np
@@ -58,21 +59,64 @@ def get_tickers():
     return tickers
 
 
-def download(tickers):
+CHUNK = 150
+MIN_BARS = 210
+COLS = ["Open", "High", "Low", "Close", "Volume"]
+
+
+def _fetch(chunk):
+    # No custom requests.Session: yfinance >= 0.2.54 uses curl_cffi and rejects one.
     import yfinance as yf
-    out = {}
-    for k in range(0, len(tickers), 400):
-        chunk = tickers[k:k + 400]
-        raw = yf.download(chunk, period="18mo", auto_adjust=True, group_by="ticker",
-                          threads=True, progress=False)
-        for t in chunk:
+    return yf.download(chunk, period="18mo", auto_adjust=True, group_by="ticker",
+                       threads=True, progress=False)
+
+
+def _extract(raw, chunk, out):
+    """Keep tickers with enough history; return the ones that came back empty (likely throttled)."""
+    missing = []
+    for t in chunk:
+        try:
+            d = (raw[t] if len(chunk) > 1 else raw)[COLS].dropna()
+        except (KeyError, TypeError):
+            missing.append(t)
+            continue
+        if len(d) >= MIN_BARS:
+            out[t] = d
+        elif d.empty:
+            missing.append(t)
+    return missing
+
+
+def download(tickers, retries=3):
+    out, failed = {}, []
+    for k in range(0, len(tickers), CHUNK):
+        chunk = tickers[k:k + CHUNK]
+        for attempt in range(retries):
             try:
-                d = raw[t][["Open", "High", "Low", "Close", "Volume"]].dropna()
-                if len(d) >= 210:
-                    out[t] = d
+                failed += _extract(_fetch(chunk), chunk, out)
+                break
+            except Exception as e:
+                wait = 5 * 2 ** attempt
+                print(f"  chunk {k}: {type(e).__name__} {e}; retry in {wait}s")
+                time.sleep(wait)
+        else:
+            failed += chunk
+        print(f"  prices: {min(k + CHUNK, len(tickers))}/{len(tickers)}, {len(out)} usable")
+        time.sleep(1.0)
+
+    if failed:                                   # one slow second pass for throttled names
+        print(f"  retrying {len(failed)} empty tickers")
+        time.sleep(30)
+        still = []
+        for k in range(0, len(failed), 50):
+            chunk = failed[k:k + 50]
+            try:
+                still += _extract(_fetch(chunk), chunk, out)
             except Exception:
-                pass
-        print(f"  prices: {min(k + 400, len(tickers))}/{len(tickers)}")
+                still += chunk
+            time.sleep(2)
+        if still:
+            print(f"  WARNING: no data for {len(still)} tickers, e.g. {still[:10]}")
     return out
 
 

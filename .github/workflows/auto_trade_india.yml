@@ -19,7 +19,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install kiteconnect anthropic requests --break-system-packages
+        run: pip install kiteconnect anthropic requests pandas --break-system-packages
 
       - name: Run position monitor + auto-sell
         env:
