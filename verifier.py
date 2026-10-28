@@ -21,7 +21,7 @@ import re
 import anthropic
 
 from news_check import headline_risk, to_yahoo
-from risk_levels import MAX_STOP_PCT, STOP_ATR, TARGET_ATR
+from risk_levels import MAX_STOP_PCT, STOP_ATR, TARGET_ATR, levels, wilder_atr
 
 MODEL = os.environ.get("VERIFIER_MODEL", "claude-sonnet-4-6")
 client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
@@ -76,6 +76,23 @@ def _yahoo_symbol(trade: dict, portfolio: str) -> str:
     return f"{sym}.NS"
 
 
+def _attach_levels(trade: dict, ysym: str, portfolio: str) -> None:
+    """Manual / monitor BUYs arrive without stop/target: compute them from Yahoo daily
+    bars with the same rule auto_trader uses, so Claude checks real numbers."""
+    if trade.get("stop") and trade.get("target"):
+        return
+    try:
+        import yfinance as yf
+        bars = yf.Ticker(ysym).history(period="3mo", auto_adjust=False)
+        tick = 0.05 if portfolio == "india" else 0.01
+        lv = levels(float(trade["price"]), wilder_atr(bars), tick)
+        trade.update(atr14=lv["atr"], stop=lv["stop"], target=lv["target"],
+                     stop_capped_at_8pct=lv["capped"],
+                     levels_source="computed by verifier from Yahoo daily bars")
+    except Exception as e:
+        trade["levels_source"] = f"could not compute ATR levels: {type(e).__name__}"
+
+
 def verify_trade(trade: dict, portfolio: str = "tsx") -> dict:
     plan = PLANS.get(portfolio, PLANS["tsx"])
     side = trade.get("action") or trade.get("side") or trade.get("transaction_type") or ""
@@ -83,7 +100,10 @@ def verify_trade(trade: dict, portfolio: str = "tsx") -> dict:
 
     news = None
     if is_buy:
-        news = headline_risk(_yahoo_symbol(trade, portfolio), company=trade.get("company"))
+        trade = dict(trade)                     # don't mutate the caller's dict
+        ysym = _yahoo_symbol(trade, portfolio)
+        _attach_levels(trade, ysym, portfolio)
+        news = headline_risk(ysym, company=trade.get("company"))
         if news["status"] == "FLAG":            # hard rule: no Claude call needed to block it
             return {
                 "verdict": "FLAG", "reason": news["reason"], "bugs": [],
@@ -111,9 +131,13 @@ ORDER (stop/target here were computed by code from ATR; check they follow the ex
 {json.dumps(trade, indent=2, default=str)}
 {news_block}
 Checks:
-1. symbol present, price > 0, qty > 0, order type is LIMIT for buys.
-2. BUY: if stop/target are given, they match the exit rule within one tick (manual TSX entries
-   may omit them: then just state the expected levels in suggestion); signal fields satisfy entry_signal.
+1. symbol present, price > 0, qty > 0. If order_type is given for a BUY it must be LIMIT;
+   manual broker entries (no order_type field) are fine without it.
+2. BUY: stop/target match the exit rule within one tick; put the stop and target in "suggestion"
+   so the trader can set them. If levels_source says they could not be computed, FLAG.
+   Entry signal: the scanner applies entry_signal, so triggered_by "scanner" counts as a valid
+   signal; do NOT flag just because the individual indicator values are not listed.
+   triggered_by "manual" or "unknown" means no scanner signal: FLAG as off-plan.
 3. SELL: reason is one of target, stop, time/stagnation exit, or manual, and matches the prices.
 Use FLAG for any rule break, ERROR only for malformed data.
 
