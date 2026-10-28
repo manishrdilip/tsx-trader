@@ -1,142 +1,113 @@
 """
-Core Claude API trade verification engine.
-Called by both india_monitor.py and tsx_monitor.py
+Claude risk check for every order. Corrected version of the reviewer's patch:
+
+- KEEPS a current model. "claude-sonnet-4-6" is a valid, supported model ID.
+  The reviewer's suggestions ("claude-3-5-sonnet-20241022", "claude-3-7-sonnet-20250219")
+  are both RETIRED and would make every call fail. The model is read from an env var
+  so you can upgrade (e.g. to "claude-sonnet-5-5") without a code change.
+- Plan rules are generated from risk_levels.py, so they match the backtest
+  (3x ATR stop, 6x ATR target) instead of the old +3% / -1%.
+- Gives Claude the computed stop/target so it checks numbers, not vibes.
+- format_alert() kept unchanged: india_monitor, tsx_monitor and auto_trader import it.
 """
+from __future__ import annotations
 
 import json
+import os
+import re
+
 import anthropic
 
-client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from env
+from risk_levels import MAX_STOP_PCT, STOP_ATR, TARGET_ATR
 
-# ── Plan rules (mirrors your memory files) ──────────────────────────────────
+MODEL = os.environ.get("VERIFIER_MODEL", "claude-sonnet-4-6")
+client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY
+
+_ATR_RULES = (
+    f"stop = entry - {STOP_ATR:g} x ATR14 (never more than {MAX_STOP_PCT:g}% below entry); "
+    f"target = entry + {TARGET_ATR:g} x ATR14"
+)
 
 PLANS = {
-    "india": {
-        "broker": "Zerodha/Kite (NSE/BSE)",
-        "strategy": "Swing trading (weeks/months)",
-        "entry_signal": "Scanner confirms bullish setup, uptrend only, bullish candlestick pattern",
-        "profit_target_pct": 3.0,
-        "stop_loss_pct": 1.0,
-        "monthly_goal_pct": 2.5,
-        "max_positions": 10,
-        "currency": "INR (₹)",
-        "notes": "New trades only. Legacy positions (APCL, WIPRO, TRIDENT, IBULLSLTD) being closed."
-    },
     "tsx": {
-        "broker": "Wealthsimple TFSA (TSX)",
-        "strategy": "Leader Pullback swing trading",
-        "entry_signal": "Multiple independent scans ALL agree on same stock, bullish candlestick pattern, uptrend only, enter at market open after evening scan",
-        "profit_target_pct": 3.0,
-        "stop_loss_pct": 1.0,
-        "monthly_goal_pct": 2.0,
-        "max_positions": 5,
-        "currency": "CAD ($)",
-        "notes": "Max $100 CAD in play initially. Only enter when all scans agree."
-    }
+        "broker": "Wealthsimple (manual orders, TSX)",
+        "strategy": "Leader Pullback swing trade",
+        "entry_signal": "Stage-2 uptrend, 12-month RS rank > 80, RSI(2) < 10, Stoch < 25, "
+                        "sector momentum, no earnings inside the hold",
+        "exits": _ATR_RULES,
+        "currency": "CAD",
+    },
+    "india": {
+        "broker": "Zerodha Kite (NSE, CNC delivery)",
+        "strategy": "Stage-2 swing trade",
+        "entry_signal": "Confirmed uptrend + volume expansion, limit order near LTP",
+        "exits": _ATR_RULES,
+        "currency": "INR",
+    },
 }
 
+_SCHEMA = """{
+  "verdict": "APPROVED" | "FLAG" | "ERROR",
+  "reason": "one sentence",
+  "bugs": [],
+  "violations": [],
+  "suggestion": "one concrete next step",
+  "pnl_check": {"actual_pnl_pct": null, "vs_target": null}
+}"""
 
-def verify_trade(trade: dict, portfolio: str = "india") -> dict:
-    """
-    Verifies a trade against the plan. Returns structured verdict.
 
-    trade dict keys:
-        symbol       str   e.g. "SUZLON" or "MSA.TO"
-        action       str   "BUY" or "SELL"
-        qty          int   number of shares
-        price        float execution price
-        order_id     str   broker order ID
-        avg_cost     float (for SELL only) original buy price
-        triggered_by str   "scanner" | "manual" | "unknown"
-        timestamp    str   ISO datetime
+def _extract_json(text: str) -> dict:
+    """Accepts bare JSON or JSON inside a ``` fence."""
+    m = re.search(r"\{.*\}", text, re.S)
+    if not m:
+        raise ValueError("no JSON object in model reply")
+    return json.loads(m.group(0))
 
-    Returns:
-        verdict      str   "APPROVED" | "FLAG" | "ERROR"
-        reason       str   brief plain-English explanation
-        bugs         list  any code/logic bugs detected
-        violations   list  plan rule violations
-        suggestion   str   what to do now
-        pnl_check    dict  for SELL: actual vs target/stop
-    """
-    plan = PLANS.get(portfolio)
-    if not plan:
-        return {"verdict": "ERROR", "reason": f"Unknown portfolio: {portfolio}"}
 
-    prompt = f"""You are a strict trade verification system for a swing trader.
-Your job: check if this trade follows the plan EXACTLY and flag any bugs or violations.
-Be fast and precise. Respond ONLY with valid JSON, no extra text.
+def verify_trade(trade: dict, portfolio: str = "tsx") -> dict:
+    plan = PLANS.get(portfolio, PLANS["tsx"])
+    prompt = f"""You are the risk manager for a small personal swing-trading account.
+Check this order strictly against the plan. Reply with JSON only, matching the schema.
 
-=== PLAN ({portfolio.upper()}) ===
-Broker: {plan['broker']}
-Strategy: {plan['strategy']}
-Entry signal required: {plan['entry_signal']}
-Profit target: +{plan['profit_target_pct']}% from entry
-Stop-loss: -{plan['stop_loss_pct']}% from entry
-Monthly goal: {plan['monthly_goal_pct']}%
-Currency: {plan['currency']}
-Notes: {plan['notes']}
+PLAN ({portfolio.upper()}):
+{json.dumps(plan, indent=2)}
 
-=== TRADE DETAILS ===
-{json.dumps(trade, indent=2)}
+ORDER (stop/target here were computed by code from ATR; check they follow the exit rule):
+{json.dumps(trade, indent=2, default=str)}
 
-=== VERIFICATION TASKS ===
-1. BUY trade: Was there a valid scanner signal? Is entry reasonable?
-2. SELL trade: Calculate actual P&L%. Did it hit +{plan['profit_target_pct']}% target or -{plan['stop_loss_pct']}% stop? Or was it an early/late exit?
-3. Any bugs: wrong symbol format, zero quantity, price = 0, missing fields?
-4. Any plan violations: no signal, wrong direction, sizing issues?
+Checks:
+1. symbol present, price > 0, qty > 0, order type is LIMIT for buys.
+2. BUY: if stop/target are given, they match the exit rule within one tick (manual TSX entries
+   may omit them: then just state the expected levels in suggestion); signal fields satisfy entry_signal.
+3. SELL: reason is one of target, stop, time/stagnation exit, or manual, and matches the prices.
+Use FLAG for any rule break, ERROR only for malformed data.
 
-Respond ONLY with this JSON:
-{{
-  "verdict": "APPROVED" or "FLAG" or "ERROR",
-  "reason": "one sentence plain English",
-  "bugs": ["list bugs found, or empty list"],
-  "violations": ["list plan violations, or empty list"],
-  "suggestion": "what to do right now",
-  "pnl_check": {{
-    "entry_price": null or number,
-    "exit_price": null or number,
-    "actual_pnl_pct": null or number,
-    "vs_target": null or "hit target" or "below target" or "hit stop" or "exceeded stop"
-  }}
-}}"""
+SCHEMA:
+{_SCHEMA}"""
 
     try:
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
+        resp = client.messages.create(
+            model=MODEL,
             max_tokens=600,
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
         )
-        raw = response.content[0].text.strip()
-        # Strip markdown code fences if Claude wrapped the JSON
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-            raw = raw.strip()
-        result = json.loads(raw)
-        result["order_id"] = trade.get("order_id", "unknown")
-        result["symbol"] = trade.get("symbol", "unknown")
-        result["portfolio"] = portfolio
-        return result
-    except json.JSONDecodeError as e:
-        return {
+        text = "".join(b.text for b in resp.content if b.type == "text")
+        result = _extract_json(text)
+    except Exception as e:  # never let the verifier crash the trader
+        result = {
             "verdict": "ERROR",
-            "reason": f"Claude returned non-JSON: {str(e)}",
-            "raw_response": raw,
-            "bugs": ["verifier.py: JSON parse failed"],
+            "reason": f"{type(e).__name__}: {e}",
+            "bugs": [type(e).__name__],
             "violations": [],
-            "suggestion": "Check Claude API response manually",
-            "pnl_check": {}
+            "suggestion": "Check ANTHROPIC_API_KEY and VERIFIER_MODEL",
         }
-    except Exception as e:
-        return {
-            "verdict": "ERROR",
-            "reason": str(e),
-            "bugs": [f"verifier.py exception: {type(e).__name__}"],
-            "violations": [],
-            "suggestion": "Check API key and network",
-            "pnl_check": {}
-        }
+    result.update(
+        order_id=trade.get("order_id", "N/A"),
+        symbol=trade.get("symbol", "N/A"),
+        portfolio=portfolio,
+        model=MODEL,
+    )
+    return result
 
 
 def format_alert(result: dict) -> str:
@@ -149,10 +120,10 @@ def format_alert(result: dict) -> str:
         f"Reason: {result.get('reason', '')}",
     ]
     if result.get("bugs"):
-        lines.append("🐛 Bugs: " + " | ".join(result["bugs"]))
+        lines.append("🐛 Bugs: " + " | ".join(map(str, result["bugs"])))
     if result.get("violations"):
-        lines.append("📋 Violations: " + " | ".join(result["violations"]))
-    pnl = result.get("pnl_check", {})
+        lines.append("📋 Violations: " + " | ".join(map(str, result["violations"])))
+    pnl = result.get("pnl_check") or {}
     if pnl.get("actual_pnl_pct") is not None:
         lines.append(f"P&L: `{pnl['actual_pnl_pct']:+.2f}%` ({pnl.get('vs_target', '')})")
     if result.get("suggestion"):
