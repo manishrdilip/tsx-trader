@@ -48,7 +48,7 @@ SELL_BUFFER = 0.002       # legacy exits: accept at most 0.2% below LTP
 
 # Legacy losing positions — sell immediately regardless of P&L
 # (already far past stop-loss; holding costs more than cutting)
-LEGACY_LOSSES = {"APCL", "WIPRO", "TRIDENT", "IBULLSLTD"}
+LEGACY_LOSSES = {"APCL", "WIPRO", "TRIDENT", "IBULLSLTD", "11DPD"}
 
 # ── Kite setup ────────────────────────────────────────────────────────────────
 
