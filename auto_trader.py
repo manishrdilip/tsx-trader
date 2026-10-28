@@ -36,7 +36,7 @@ import pandas as pd
 from kiteconnect import KiteConnect
 from notifier import send_telegram
 from verifier import verify_trade, format_alert
-from risk_levels import MAX_STOP_PCT, levels, round_to_tick, wilder_atr
+from risk_levels import levels, round_to_tick, wilder_atr
 from auto_trader_orders import place_limit_buy, place_exit_gtt
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -46,17 +46,15 @@ log = logging.getLogger(__name__)
 
 SELL_BUFFER = 0.002       # legacy exits: accept at most 0.2% below LTP
 
-# Legacy losing positions — sell immediately regardless of P&L
+# SELL LIST: holdings to close immediately, regardless of P&L (edit this set to change it)
 # (already far past stop-loss; holding costs more than cutting)
 LEGACY_LOSSES = {"APCL", "WIPRO", "TRIDENT", "IBULLSLTD"}
 
 def sell_reason(symbol: str, pnl_pct: float):
-    """Why this holding must be sold now, or None. Past the playbook stop (-MAX_STOP_PCT%)
-    a GTT stop can't be placed anyway (it would sit above the market), so we exit."""
+    """Why this holding must be sold now, or None. Only the named SELL list is sold;
+    everything else keeps running on the stop/target (GTT) rules."""
     if symbol in LEGACY_LOSSES:
-        return f"Legacy loss position — auto-closing (P&L: {pnl_pct:+.2f}%)"
-    if pnl_pct <= -MAX_STOP_PCT:
-        return f"Past the {MAX_STOP_PCT:g}% stop limit ({pnl_pct:+.2f}%) — closing"
+        return f"On the sell list — closing (P&L: {pnl_pct:+.2f}%)"
     return None
 
 # ── Kite setup ────────────────────────────────────────────────────────────────
