@@ -1,9 +1,11 @@
 name: Auto-Trade India (Position Monitor)
 
 on:
-  schedule:
-    # Every 5 min, Mon–Fri, 3:45–10:00 UTC = 9:15 AM–3:30 PM IST
-    - cron: "*/5 3-10 * * 1-5"
+  # Schedule off: Zerodha only accepts API orders from a registered static IP, and
+  # GitHub's IPs change every run. This now runs on the India laptop (india_laptop/).
+  # schedule:
+  #   # Every 5 min, Mon–Fri, 3:45–10:00 UTC = 9:15 AM–3:30 PM IST
+  #   - cron: "*/5 3-10 * * 1-5"
   workflow_dispatch:      # manual trigger for testing
 
 jobs:

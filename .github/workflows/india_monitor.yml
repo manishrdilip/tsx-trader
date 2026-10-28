@@ -3,8 +3,10 @@
 name: India Trade Monitor
 
 on:
-  schedule:
-    - cron: "*/5 3-10 * * 1-5"
+  # Schedule off: Zerodha only accepts API orders from a registered static IP, and
+  # GitHub's IPs change every run. This now runs on the India laptop (india_laptop/).
+  # schedule:
+  #   - cron: "*/5 3-10 * * 1-5"
   workflow_dispatch:   # manual trigger anytime from GitHub UI
 
 jobs:
