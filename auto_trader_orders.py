@@ -23,11 +23,25 @@ BUY_BUFFER = 0.002      # pay at most 0.2% above LTP
 FILL_TIMEOUT_S = 60
 
 
+_TICK_CACHE: dict[str, dict[str, float]] = {}
+
+
+def _ticks(kite, exchange: str) -> dict[str, float]:
+    """Download the instrument list once per run (it's several MB) and keep symbol -> tick."""
+    if exchange not in _TICK_CACHE:
+        _TICK_CACHE[exchange] = {
+            ins["tradingsymbol"]: float(ins["tick_size"]) for ins in kite.instruments(exchange)
+        }
+    return _TICK_CACHE[exchange]
+
+
 def tick_size(kite, symbol: str, exchange: str = "NSE") -> float:
-    for ins in kite.instruments(exchange):          # cache this list once per run in real code
-        if ins["tradingsymbol"] == symbol:
-            return float(ins["tick_size"])
-    raise KeyError(f"{exchange}:{symbol} not found")
+    # No silent 0.05 fallback: NSE tick sizes vary by price band, and a wrong tick
+    # gets the order rejected. An unknown symbol is a bug upstream, so fail loudly.
+    try:
+        return _ticks(kite, exchange)[symbol]
+    except KeyError:
+        raise KeyError(f"{exchange}:{symbol} not in Kite instrument list") from None
 
 
 def place_limit_buy(kite, symbol: str, qty: int, ltp: float, tick: float,

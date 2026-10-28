@@ -33,6 +33,10 @@ def round_to_tick(price: float, tick: float, side: str) -> float:
     """Round to the exchange tick. Stops round down, targets/buy limits round up,
     so rounding never makes the trade riskier than planned."""
     import math
+    from decimal import Decimal
+    # Keep as many decimals as the tick has (0.005 -> 3), min 2. Decimal also handles
+    # ticks that str() prints in exponent form, e.g. 1e-05.
+    decimals = max(2, -Decimal(str(tick)).normalize().as_tuple().exponent)
     steps = price / tick
     if abs(steps - round(steps)) < 1e-6:      # already on a tick (float noise)
         steps = round(steps)
@@ -40,7 +44,7 @@ def round_to_tick(price: float, tick: float, side: str) -> float:
         steps = math.floor(steps)
     else:
         steps = math.ceil(steps)
-    return round(steps * tick, 2)
+    return round(steps * tick, decimals)
 
 
 def levels(entry: float, atr: float, tick: float = 0.05) -> dict:

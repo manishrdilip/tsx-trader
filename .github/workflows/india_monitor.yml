@@ -28,7 +28,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install kiteconnect anthropic requests
+        run: pip install kiteconnect anthropic requests yfinance
 
       - name: Run one poll cycle
         env:
