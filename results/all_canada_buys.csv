@@ -1,2 +1,3 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
 CHR.TO,4,0.23669967258067315,Bullish Belt Hold,False,TSX,20,30.5,31.11,0.07138177215075883,0.14276354430151766,28.32,34.85,0
+POU.TO,4,0.18199687185221713,"Bullish Belt Hold, Morning Star",False,TSX,20,34.79,35.49,0.07414966577329307,0.14829933154658614,32.21,39.95,0

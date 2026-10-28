@@ -12,9 +12,9 @@ Open: 6 · waiting for entry: 0 · skipped (opened above buy max): 0
 | Ticker | Signal | Entry | Last | Unrealized |
 |---|---|---|---|---|
 | MATR.TO | 2026-10-20 | 21.29 | 20.46 | -4.1% |
-| MSA.TO | 2026-10-20 | 9.17 | 8.88 | -3.4% |
+| MSA.TO | 2026-10-20 | 9.17 | 8.98 | -2.3% |
 | ARE.TO | 2026-10-20 | 50.0 | 50.27 | +0.3% |
-| MSA.TO | 2026-10-21 | 8.94 | 8.88 | -0.9% |
+| MSA.TO | 2026-10-21 | 8.94 | 8.98 | +0.2% |
 | ARE.TO | 2026-10-21 | 48.25 | 50.27 | +4.0% |
 | ATH.TO | 2026-10-22 | 11.97 | 11.91 | -0.7% |
 _Fewer than 30 closed trades: too few to judge yet. The backtest says ~53% winners; expect long losing streaks along the way._
@@ -26,7 +26,7 @@ _Fewer than 30 closed trades: too few to judge yet. The backtest says ~53% winne
 
 
 ## ALL CANADA (TSX + TSX Venture) - consensus buys (4/4)
-Scanned 1920 listings with price history; 192 real companies passed the safety filter (price >= $2, >= $1M traded/day). 1 got 4/4 votes. Stocks whose worst overnight gap-down in the past year was bigger than their stop are excluded.
+Scanned 3042 listings with price history; 311 real companies passed the safety filter (price >= $2, >= $1M traded/day). 2 got 4/4 votes. Stocks whose worst overnight gap-down in the past year was bigger than their stop are excluded.
 
 Top 5 by 3-month strength, earnings in next 10 days excluded.
 
@@ -35,8 +35,9 @@ Top 5 by 3-month strength, earnings in next 10 days excluded.
 | Ticker | Exchange | Pattern | Close | Buy max | Stop % | Target % | Stop (from close) | Target (from close) | Shares ($100 acct) | Max hold |
 |---|---|---|---|---|---|---|---|---|---|---|
 | CHR.TO | TSX | Bullish Belt Hold | 30.5 | 31.11 | -7.1% | +14.3% | 28.32 | 34.85 | 0 | 20d |
+| POU.TO | TSX | Bullish Belt Hold, Morning Star | 34.79 | 35.49 | -7.4% | +14.8% | 32.21 | 39.95 | 0 | 20d |
 
-_Generated 2026-10-28 00:38 UTC. Research only, not financial advice._
+_Generated 2026-10-28 01:21 UTC. Research only, not financial advice._
 
 ## Goal check (out-of-sample 2023-today)
 **Best strategy:** `trend_template` {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20}
@@ -55,10 +56,10 @@ _Generated 2026-10-28 00:38 UTC. Research only, not financial advice._
 | Strategy | Params | Win | Monthly | Max DD | PF | Trades |
 |---|---|---|---|---|---|---|
 | trend_template | {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20} | 55.88% | 4.41% | 34.67% | 1.52 | 417 |
-| breakout | {'atr_stop': 2, 'atr_tgt': 6, 'hold': 20} | 50.74% | 2.66% | 29.04% | 1.50 | 203 |
-| breakout | {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20} | 59.30% | 1.94% | 26.41% | 1.48 | 199 |
-| breakout | {'atr_stop': 3, 'atr_tgt': 4, 'hold': 20} | 58.45% | 1.24% | 27.36% | 1.29 | 207 |
-| breakout | {'atr_stop': 3, 'atr_tgt': 3, 'hold': 20} | 61.32% | 1.12% | 25.78% | 1.27 | 212 |
+| pullback | {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20} | 55.53% | 3.60% | 42.64% | 1.49 | 470 |
+| breakout | {'atr_stop': 3, 'atr_tgt': 6, 'hold': 20} | 59.09% | 1.89% | 26.42% | 1.47 | 198 |
+| breakout | {'atr_stop': 3, 'atr_tgt': 4, 'hold': 20} | 58.25% | 1.19% | 27.36% | 1.28 | 206 |
+| breakout | {'atr_stop': 3, 'atr_tgt': 3, 'hold': 20} | 61.14% | 1.08% | 25.79% | 1.26 | 211 |
 
 ## Today's signals (TSX in uptrend)
 **How to enter:** buy at the next open with a limit order no higher than *Buy max* (skip if it opens above). After your order fills, set the stop and target as **percentages of YOUR fill price** (Stop % / Target % columns). Shares = what keeps your loss at 2% of the account if the stop is hit.
@@ -108,8 +109,8 @@ _Generated 2026-10-28 00:38 UTC. Research only, not financial advice._
 ### Does requiring agreement help? (consensus rule backtest)
 | Period | Win | Monthly | Max DD | PF | Trades |
 |---|---|---|---|---|---|
-| 2016-today | 51.75% | 0.30% | 41.72% | 1.12 | 257 |
-| 2023-today (out-of-sample) | 46.79% | -0.18% | 36.95% | 0.93 | 109 |
+| 2016-today | 51.56% | 0.29% | 42.30% | 1.11 | 256 |
+| 2023-today (out-of-sample) | 46.30% | -0.20% | 37.57% | 0.92 | 108 |
 
 ### Scanner votes
 | Ticker | A Trend | B Momentum | C Volume/Risk | D Candle | Votes |
