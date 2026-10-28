@@ -11,12 +11,21 @@ Fixes in the reviewer's version:
 - "Feed unavailable" is returned as status UNKNOWN, never as all clear.
 - TSX symbols need Yahoo's ".TO" (".V" for TSXV) suffix; to_yahoo() adds it.
 
-Runs where Yahoo is reachable (your PC / GitHub Actions), not in a Claude cloud session.
+Source: Google News RSS first (no key needed; Yahoo's news feed returned zero items
+for every symbol in Oct 2026), Yahoo as backup. Google searches by company name
+(universe_names.json for TSX, the Kite instrument name for India when the caller
+passes it) and keeps only headlines that mention the company or its ticker.
 """
 from __future__ import annotations
 
+import json
+import os
 import re
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import datetime, timedelta, timezone
+from email.utils import parsedate_to_datetime
 
 RED_FLAGS = [
     r"bought deal", r"private placement", r"(share|equity|stock) offering",
@@ -45,20 +54,86 @@ def _parse(item: dict) -> tuple[str, datetime | None]:
             when = datetime.fromisoformat(c["pubDate"].replace("Z", "+00:00"))
         except ValueError:
             pass
-    elif item.get("providerPublishTime"):                   # old format: epoch seconds
+    elif item.get("providerPublishTime"):  # old yfinance format / Google RSS: epoch seconds                   # old format: epoch seconds
         when = datetime.fromtimestamp(item["providerPublishTime"], tz=timezone.utc)
     return title.strip(), when
 
 
-def headline_risk(symbol: str, days: int = 14, limit: int = 10, news: list | None = None) -> dict:
-    """status: CLEAR | FLAG | UNKNOWN. Pass `news` to test without network."""
-    if news is None:
+_NAMES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "universe_names.json")
+_NAMES: dict | None = None
+_SUFFIX = re.compile(
+    r"[,.]?\s+(inc|incorporated|ltd|limited|corp|corporation|co|company|plc|trust|fund|"
+    r"holdings?|group|class [a-z]|cl [a-z])\.?$", re.I)
+
+
+def company_name(symbol: str) -> str | None:
+    """'SHOP.TO' -> 'Shopify', from universe_names.json (TSX / TSXV only)."""
+    global _NAMES
+    if _NAMES is None:
         try:
-            import yfinance as yf
-            news = yf.Ticker(symbol).news or []
-        except Exception as e:
-            return {"status": "UNKNOWN", "reason": f"news feed unavailable: {type(e).__name__}",
-                    "headlines": [], "hits": []}
+            with open(_NAMES_FILE, encoding="utf-8") as f:
+                _NAMES = json.load(f)
+        except (OSError, ValueError):
+            _NAMES = {}
+    row = _NAMES.get(symbol) or {}
+    return row.get("company") or row.get("name")
+
+
+def _clean(name: str) -> str:
+    name = re.sub(r"\s+", " ", name.replace("&amp;", "&")).strip()
+    for _ in range(3):                                   # "Foo Holdings Inc." -> "Foo"
+        name = _SUFFIX.sub("", name).strip(" ,.")
+    return name
+
+
+def _google_news(query: str, india: bool) -> list:
+    """Google News RSS search, returned as old-format yfinance items."""
+    hl, gl = ("en-IN", "IN") if india else ("en-CA", "CA")
+    url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(query)
+           + f"&hl={hl}&gl={gl}&ceid={gl}:en")
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        root = ET.fromstring(r.read())
+    items = []
+    for it in root.iter("item"):
+        title = (it.findtext("title") or "").strip()
+        try:
+            when = int(parsedate_to_datetime(it.findtext("pubDate")).timestamp())
+        except (TypeError, ValueError):
+            when = None
+        items.append({"title": title, "providerPublishTime": when})
+    return items
+
+
+def fetch_news(symbol: str, company: str | None = None, days: int = 14) -> tuple[list, str]:
+    """Returns (items, source). Google News by company name, then Yahoo."""
+    base = re.sub(r"\.(TO|V|NS|BO)$", "", symbol, flags=re.I).replace("-", ".")
+    india = symbol.upper().endswith((".NS", ".BO"))
+    name = _clean(company or company_name(symbol) or base)
+    words = name.split()
+    keys = {" ".join(words[:2]).lower()} if len(words) >= 2 else {name.lower()}
+    if len(base) >= 3:
+        keys.add(base.lower())
+    try:
+        items = _google_news(f'"{name}" {"share" if india else "stock"} when:{days}d', india)
+        items = [i for i in items if any(k in i["title"].lower() for k in keys)]
+        if items:
+            return items, "google"
+    except Exception:
+        pass
+    try:
+        import yfinance as yf
+        return yf.Ticker(symbol).news or [], "yahoo"
+    except Exception:
+        return [], "none"
+
+
+def headline_risk(symbol: str, days: int = 14, limit: int = 10, news: list | None = None,
+                  company: str | None = None) -> dict:
+    """status: CLEAR | FLAG | UNKNOWN. Pass `news` to test without network."""
+    source = "given"
+    if news is None:
+        news, source = fetch_news(symbol, company, days)
     cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     rows = []
     for item in news[:limit]:
@@ -72,4 +147,4 @@ def headline_risk(symbol: str, days: int = 14, limit: int = 10, news: list | Non
         status, reason = "CLEAR", f"{len(rows)} recent headlines, no red flags"
     else:
         status, reason = "UNKNOWN", f"no headlines in the last {days} days (not proof of safety)"
-    return {"status": status, "reason": reason, "headlines": rows, "hits": hits}
+    return {"status": status, "reason": reason, "headlines": rows, "hits": hits, "source": source}
