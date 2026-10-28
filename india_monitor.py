@@ -11,6 +11,7 @@ Setup:
 Zerodha market hours: 9:15 AM – 3:30 PM IST (Mon–Fri)
 """
 
+import local_env  # noqa: F401  (.env / .kite_token when running on the India laptop)
 import os
 import json
 import time

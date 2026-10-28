@@ -1,11 +1,13 @@
-# Runs every weekday at 2:45 AM UTC = 8:15 AM IST, before the India monitors start (8:30 IST)
-# Logs into Zerodha, gets a fresh access_token, pushes it to GitHub Secrets
-# so india_monitor.yml always has a valid token.
+# Daily Zerodha login -> fresh access_token. Now runs on the India laptop at 8:15 AM IST
+# (india_laptop/setup.ps1); the schedule here is off. Manual runs still push the token
+# to the KITE_ACCESS_TOKEN secret for any Kite workflow you trigger by hand.
 name: Zerodha Token Refresh
 
 on:
-  schedule:
-    - cron: "45 2 * * 1-5"   # 8:15 AM IST, Mon–Fri
+  # Schedule off: Zerodha only accepts API orders from a registered static IP, and
+  # GitHub's IPs change every run. This now runs on the India laptop (india_laptop/).
+  # schedule:
+  #   - cron: "45 2 * * 1-5"   # 8:15 AM IST, Mon–Fri
   workflow_dispatch:           # manual trigger if needed
 
 jobs:

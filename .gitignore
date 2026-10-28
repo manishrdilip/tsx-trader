@@ -1,3 +1,8 @@
 __pycache__/
 *.pyc
 lab/data/
+.env
+.kite_token
+india_seen_orders.json
+india_laptop/logs/
+.alerted_today.json

@@ -25,11 +25,12 @@ Env vars required:
   ANTHROPIC_API_KEY (for buy-mode verification)
 """
 
+import local_env  # noqa: F401  (.env / .kite_token when running on the India laptop)
 import os
 import sys
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import pandas as pd
 from kiteconnect import KiteConnect
@@ -64,14 +65,50 @@ def instrument(kite: KiteConnect, symbol: str, exchange: str = "NSE") -> dict:
         _INSTRUMENTS[exchange] = {i["tradingsymbol"]: i for i in kite.instruments(exchange)}
     return _INSTRUMENTS[exchange][symbol]
 
-def daily_bars(kite: KiteConnect, symbol: str, exchange: str = "NSE", days: int = 90) -> pd.DataFrame:
-    """Daily OHLC (oldest first) with the High/Low/Close columns risk_levels expects."""
-    token = instrument(kite, symbol, exchange)["instrument_token"]
-    rows = kite.historical_data(token, datetime.now() - timedelta(days=days), datetime.now(), "day")
-    return pd.DataFrame(rows).rename(columns={"open": "Open", "high": "High", "low": "Low", "close": "Close"})
+def daily_bars(kite: KiteConnect, symbol: str, exchange: str = "NSE") -> pd.DataFrame:
+    """Daily OHLC (oldest first) with the High/Low/Close columns risk_levels expects.
+    From Yahoo: Kite's historical API is a paid add-on this app doesn't have
+    ("Insufficient permission for that call")."""
+    import yfinance as yf
+    ysym = symbol.removesuffix("-BE") + (".BO" if exchange == "BSE" else ".NS")
+    bars = yf.Ticker(ysym).history(period="3mo", auto_adjust=False)
+    if bars.empty:
+        raise ValueError(f"no Yahoo price history for {ysym}")
+    return bars
 
 def active_gtt_symbols(kite: KiteConnect) -> set:
     return {g["condition"]["tradingsymbol"] for g in kite.get_gtts() if g.get("status") == "active"}
+
+_LIVE = {"OPEN", "OPEN PENDING", "TRIGGER PENDING", "VALIDATION PENDING", "PUT ORDER REQ RECEIVED",
+         "MODIFY PENDING", "MODIFY VALIDATION PENDING", "AMO REQ RECEIVED"}
+
+def open_sell_symbols(kite: KiteConnect) -> set:
+    """Symbols with a sell order still working today, so a 5-minute rerun doesn't sell twice."""
+    return {o["tradingsymbol"] for o in kite.orders()
+            if o.get("transaction_type") == "SELL" and o.get("status") in _LIVE}
+
+# ── Telegram, at most once per day per alert ─────────────────────────────────
+
+ALERT_STATE = local_env.ROOT / ".alerted_today.json"
+
+def notify_once(key: str, msg: str):
+    """The laptop runs this every 5 minutes; repeat the same alert at most once a day."""
+    today = datetime.now().strftime("%Y-%m-%d")
+    try:
+        state = json.loads(ALERT_STATE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        state = {}
+    if state.get("date") != today:
+        state = {"date": today, "keys": []}
+    if key in state["keys"]:
+        log.info("(already alerted today) %s", msg.splitlines()[0])
+        return
+    send_telegram(msg)
+    state["keys"].append(key)
+    try:
+        ALERT_STATE.write_text(json.dumps(state), encoding="utf-8")
+    except OSError:
+        pass
 
 # ── Trade execution ───────────────────────────────────────────────────────────
 
@@ -98,7 +135,7 @@ def run_monitor():
     """
     Check all holdings. Close legacy losers; make sure every other holding
     has an active GTT stop/target at the exchange.
-    Designed to run once per GitHub Actions invocation (not a loop).
+    Runs once per call; the India laptop calls it every 5 minutes.
     """
     kite = get_kite()
 
@@ -112,14 +149,19 @@ def run_monitor():
 
     if not holdings:
         log.info("No holdings found.")
-        send_telegram("ℹ️ Auto-trader: no open holdings.")
+        notify_once("no-holdings", "ℹ️ Auto-trader: no open holdings.")
         return
 
     try:
         protected = active_gtt_symbols(kite)
     except Exception as e:
-        send_telegram(f"⚠️ Auto-trader: failed to fetch GTTs — {e}")
+        notify_once("gtt-list", f"⚠️ Auto-trader: failed to fetch GTTs — {e}")
         protected = None    # unknown: don't risk placing duplicate GTTs this run
+    try:
+        selling = open_sell_symbols(kite)
+    except Exception as e:
+        notify_once("order-list", f"⚠️ Auto-trader: failed to fetch orders — {e}")
+        selling = None      # unknown: don't risk a second sell order this run
 
     actions_taken = []
     summary_lines = ["📊 *Position Scan — India*", ""]
@@ -142,6 +184,8 @@ def run_monitor():
         )
 
         if symbol in LEGACY_LOSSES:
+            if selling is None or symbol in selling:
+                continue    # sell order already working (or order book unknown)
             reason = f"Legacy loss position — auto-closing (P&L: {pnl_pct:+.2f}%)"
             try:
                 tick = float(instrument(kite, symbol, exchange)["tick_size"])
@@ -161,7 +205,7 @@ def run_monitor():
             except Exception as e:
                 err = f"⚠️ Auto-sell FAILED for {symbol}: {e}"
                 log.error(err)
-                send_telegram(err)
+                notify_once(f"sell-fail:{symbol}", err)
             continue
 
         # Every other holding must have an exchange-side stop/target (GTT OCO)
@@ -182,7 +226,7 @@ def run_monitor():
         except Exception as e:
             err = f"⚠️ GTT exit FAILED for {symbol}: {e}"
             log.error(err)
-            send_telegram(err)
+            notify_once(f"gtt-fail:{symbol}", err)
 
     # Send position summary
     summary_lines.append("")
@@ -192,7 +236,10 @@ def run_monitor():
         summary_lines.append("⏸ No action needed (exits are held as GTTs at the exchange).")
     summary_lines.append(f"_Scanned at {datetime.now().strftime('%Y-%m-%d %H:%M IST')}_")
 
-    send_telegram("\n".join(summary_lines))
+    if actions_taken:
+        send_telegram("\n".join(summary_lines))
+    else:
+        notify_once("summary", "\n".join(summary_lines))   # quiet runs: one summary a day
 
 # ── Auto-buy ──────────────────────────────────────────────────────────────────
 

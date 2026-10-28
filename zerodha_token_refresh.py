@@ -16,9 +16,11 @@ Required GitHub Secrets:
   GH_REPO            — your repo in owner/repo format (e.g. dilip/trade-verifier)
 """
 
+import local_env  # noqa: F401  (.env when running on the India laptop)
 import os
 import re
 import sys
+from pathlib import Path
 import json
 import base64
 import asyncio
@@ -39,8 +41,9 @@ API_SECRET  = os.environ["KITE_API_SECRET"]
 USER_ID     = os.environ["KITE_USER_ID"]
 PASSWORD    = os.environ["KITE_PASSWORD"]
 TOTP_SECRET = os.environ["KITE_TOTP_SECRET"]
-GH_TOKEN    = os.environ["GH_TOKEN"]
-GH_REPO     = os.environ["GH_REPO"]   # e.g. "dilip/trade-verifier"
+GH_TOKEN    = os.environ.get("GH_TOKEN", "")   # optional on the laptop: also update the GitHub secret
+GH_REPO     = os.environ.get("GH_REPO", "manishrdilip/tsx-trader")
+TOKEN_FILE  = local_env.TOKEN_FILE            # read by auto_trader / india_monitor on the laptop
 
 KITE_LOGIN_URL = f"https://kite.trade/connect/login?api_key={API_KEY}&v=3"
 
@@ -151,8 +154,14 @@ async def main():
     try:
         request_token = await get_request_token()
         access_token  = generate_access_token(request_token)
-        push_github_secret("KITE_ACCESS_TOKEN", access_token)
-        log.info("🎉 Token refresh complete. india_monitor will use the new token.")
+        TOKEN_FILE.write_text(access_token, encoding="utf-8")
+        log.info("Saved token to %s", TOKEN_FILE.name)
+        if GH_TOKEN:
+            push_github_secret("KITE_ACCESS_TOKEN", access_token)
+        log.info("🎉 Token refresh complete.")
+        if not os.environ.get("GITHUB_ACTIONS"):
+            from notifier import send_telegram
+            send_telegram("🔑 Zerodha token refreshed on the India laptop.")
     except Exception as e:
         log.error("Token refresh FAILED: %s", e)
         # Notify via Telegram if configured
