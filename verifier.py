@@ -9,6 +9,8 @@ Claude risk check for every order. Corrected version of the reviewer's patch:
   (3x ATR stop, 6x ATR target) instead of the old +3% / -1%.
 - Gives Claude the computed stop/target so it checks numbers, not vibes.
 - format_alert() kept unchanged: india_monitor, tsx_monitor and auto_trader import it.
+- BUYs get a headline check first (news_check.py): a red-flag headline blocks the
+  trade without calling Claude; otherwise the recent headlines go into the prompt.
 """
 from __future__ import annotations
 
@@ -18,6 +20,7 @@ import re
 
 import anthropic
 
+from news_check import headline_risk, to_yahoo
 from risk_levels import MAX_STOP_PCT, STOP_ATR, TARGET_ATR
 
 MODEL = os.environ.get("VERIFIER_MODEL", "claude-sonnet-4-6")
@@ -64,8 +67,40 @@ def _extract_json(text: str) -> dict:
     return json.loads(m.group(0))
 
 
+def _yahoo_symbol(trade: dict, portfolio: str) -> str:
+    sym = trade.get("symbol", "")
+    if portfolio == "tsx":
+        return to_yahoo(sym, trade.get("exchange", "TSX"))
+    if sym.endswith("-BE"):                     # auto_trader routes these to BSE
+        return f"{sym[:-3]}.BO"
+    return f"{sym}.NS"
+
+
 def verify_trade(trade: dict, portfolio: str = "tsx") -> dict:
     plan = PLANS.get(portfolio, PLANS["tsx"])
+    side = trade.get("action") or trade.get("side") or trade.get("transaction_type") or ""
+    is_buy = str(side).upper() == "BUY"
+
+    news = None
+    if is_buy:
+        news = headline_risk(_yahoo_symbol(trade, portfolio))
+        if news["status"] == "FLAG":            # hard rule: no Claude call needed to block it
+            return {
+                "verdict": "FLAG", "reason": news["reason"], "bugs": [],
+                "violations": ["headline red flag"],
+                "suggestion": "Skip this entry; re-check after the news settles",
+                "news": news, "order_id": trade.get("order_id", "N/A"),
+                "symbol": trade.get("symbol", "N/A"), "portfolio": portfolio, "model": None,
+            }
+
+    news_block = "" if news is None else f"""
+RECENT HEADLINES (status {news['status']}: {news['reason']}):
+{json.dumps(news['headlines'], indent=2)}
+If status is UNKNOWN, say so in "reason" and use FLAG unless everything else is clean.
+Also FLAG any headline suggesting dilution, an executive exit, an investigation or a halt,
+even if worded differently from the usual phrases.
+"""
+
     prompt = f"""You are the risk manager for a small personal swing-trading account.
 Check this order strictly against the plan. Reply with JSON only, matching the schema.
 
@@ -74,7 +109,7 @@ PLAN ({portfolio.upper()}):
 
 ORDER (stop/target here were computed by code from ATR; check they follow the exit rule):
 {json.dumps(trade, indent=2, default=str)}
-
+{news_block}
 Checks:
 1. symbol present, price > 0, qty > 0, order type is LIMIT for buys.
 2. BUY: if stop/target are given, they match the exit rule within one tick (manual TSX entries
@@ -106,6 +141,7 @@ SCHEMA:
         symbol=trade.get("symbol", "N/A"),
         portfolio=portfolio,
         model=MODEL,
+        news=news,
     )
     return result
 

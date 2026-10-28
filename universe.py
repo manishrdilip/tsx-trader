@@ -72,18 +72,28 @@ def _fetch(chunk):
 
 
 def _extract(raw, chunk, out):
-    """Keep tickers with enough history; return the ones that came back empty (likely throttled)."""
+    """Handles both column layouts: MultiIndex (ticker, field), which recent yfinance
+    returns even for a single ticker with group_by="ticker", and flat columns, which
+    older versions return for a one-ticker download."""
     missing = []
+    multi = isinstance(raw.columns, pd.MultiIndex)
+    have = set(raw.columns.get_level_values(0)) if multi else set()
     for t in chunk:
         try:
-            d = (raw[t] if len(chunk) > 1 else raw)[COLS].dropna()
+            if multi and t in have:
+                d = raw[t][COLS].dropna()
+            elif not multi and len(chunk) == 1:
+                d = raw[COLS].dropna()
+            else:
+                missing.append(t)
+                continue
         except (KeyError, TypeError):
             missing.append(t)
             continue
         if len(d) >= MIN_BARS:
             out[t] = d
         elif d.empty:
-            missing.append(t)
+            missing.append(t)   # empty = probably throttled; short history = genuinely new listing
     return missing
 
 

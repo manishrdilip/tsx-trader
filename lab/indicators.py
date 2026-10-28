@@ -1,7 +1,13 @@
 """Vectorised indicators on wide (date x ticker) frames.
 Everything uses only data up to and including the signal day (no look-ahead)."""
+import os
+import sys
+
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+from market_filter import market_ok_series  # noqa: E402
 
 
 def load_panel(path="lab/data/prices.parquet", exclude=()):
@@ -100,6 +106,6 @@ def build(p, market="XIU.TO"):
     I["ret63_rank"] = C.pct_change(63).where(liquid).rank(axis=1, pct=True)
     I["liquid"] = liquid
     mc = C[market]
-    I["mkt_up"] = (mc > sma(mc, 200))
+    I["mkt_up"] = market_ok_series(mc)       # same rule as leaders.py (market_filter.py)
     I["mkt_up50"] = (mc > sma(mc, 50)) & I["mkt_up"]
     return I

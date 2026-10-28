@@ -35,6 +35,7 @@ import numpy as np
 import pandas as pd
 
 import stock_filter
+from market_filter import market_ok
 import candles as candles_mod
 
 MARKET = "XIU.TO"
@@ -192,8 +193,7 @@ def signals(data):
     atr = tr.ewm(alpha=1 / 14, adjust=False, min_periods=14).mean()
 
     # --- Market filter ---
-    m = C[MARKET]
-    mkt_up = bool(m.iloc[-1] > m.rolling(200).mean().iloc[-1])
+    mkt_up = market_ok(C[MARKET])     # same rule as the lab backtest (market_filter.py)
 
     # Month-end window
     today = C.index[-1]
