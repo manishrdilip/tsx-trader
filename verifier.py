@@ -138,6 +138,8 @@ Checks:
    Entry signal: the scanner applies entry_signal, so triggered_by "scanner" counts as a valid
    signal; do NOT flag just because the individual indicator values are not listed.
    triggered_by "manual" or "unknown" means no scanner signal: FLAG as off-plan.
+   Stops are rounded DOWN and targets UP to the tick on purpose; that is not a mismatch.
+   "timestamp" is when this check ran, not when the order was placed: ignore time of day.
 3. SELL: reason is one of target, stop, time/stagnation exit, or manual, and matches the prices.
 Use FLAG for any rule break, ERROR only for malformed data.
 
