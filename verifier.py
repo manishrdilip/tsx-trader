@@ -83,7 +83,7 @@ def verify_trade(trade: dict, portfolio: str = "tsx") -> dict:
 
     news = None
     if is_buy:
-        news = headline_risk(_yahoo_symbol(trade, portfolio))
+        news = headline_risk(_yahoo_symbol(trade, portfolio), company=trade.get("company"))
         if news["status"] == "FLAG":            # hard rule: no Claude call needed to block it
             return {
                 "verdict": "FLAG", "reason": news["reason"], "bugs": [],

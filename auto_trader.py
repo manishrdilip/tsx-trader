@@ -206,7 +206,8 @@ def run_buy(symbol: str, qty: int, price: float):
     exchange = "BSE" if symbol.endswith("-BE") else "NSE"
 
     try:
-        tick = float(instrument(kite, symbol, exchange)["tick_size"])
+        ins = instrument(kite, symbol, exchange)
+        tick = float(ins["tick_size"])
         bars = daily_bars(kite, symbol, exchange)
         lv = levels(price, wilder_atr(bars), tick)
     except Exception as e:
@@ -216,6 +217,7 @@ def run_buy(symbol: str, qty: int, price: float):
 
     trade = {
         "symbol":       symbol,
+        "company":      ins.get("name") or symbol,   # Kite name, used for the headline search
         "action":       "BUY",
         "order_type":   "LIMIT",
         "qty":          qty,
