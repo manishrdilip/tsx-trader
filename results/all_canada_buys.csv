@@ -1,3 +1,1 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
-CHR.TO,4,0.21776606251272512,Bullish Belt Hold,False,TSX,20,30.87,31.49,0.06906847360221709,0.13813694720443417,28.74,35.13,0
-POW.TO,4,0.04207922886053295,Three White Soldiers,False,TSX,20,96.8,98.74,0.05773312748080576,0.11546625496161152,91.21,107.98,0
