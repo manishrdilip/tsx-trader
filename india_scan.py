@@ -80,8 +80,8 @@ def score_stock(d: pd.DataFrame) -> float:
 def regime_ok(mkt: pd.DataFrame) -> tuple[bool, str]:
     if mkt.empty or len(mkt) < 200:
         return True, "(market data incomplete)"
-    current = mkt["Close"].iloc[-1]
-    sma200 = mkt["sma200"].iloc[-1]
+    current = float(mkt["Close"].iloc[-1])
+    sma200 = float(mkt["sma200"].iloc[-1])
     ok = current > sma200
     note = f"Nifty {current:.0f} vs 200d {sma200:.0f}"
     if not ok:
@@ -107,6 +107,8 @@ def run():
     for sym in UNIVERSE + [MARKET]:
         try:
             df = yf.download(sym, period="18mo", auto_adjust=True, progress=False)
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
             if df is None or df.empty or len(df) < 100:
                 continue
             data[sym] = add_indicators(df)
