@@ -2,7 +2,9 @@
 
 Personal swing-trading system for TSX (Canada) and NSE (India).
 
-**Primary scanner (use this one):** `tsx_scan_v2_6_fixed.py`
+**Primary TSX scanner:** `tsx_scan_v2_6_fixed.py`  
+**India scanner:** `india_scan.py`  
+**Improved risk helpers:** `risk_manager.py`
 
 ---
 
@@ -11,11 +13,11 @@ Personal swing-trading system for TSX (Canada) and NSE (India).
 ```bash
 pip install -r requirements.txt
 
-# Run the primary scanner (uses $10,000 account size by default)
+# TSX scanner (uses $10,000 account size by default)
 ACCOUNT=10000 python tsx_scan_v2_6_fixed.py
 
-# Or set a different account size
-ACCOUNT=25000 python tsx_scan_v2_6_fixed.py
+# India scanner (generates results/india_report.md + optional Telegram)
+ACCOUNT=10000 python india_scan.py
 ```
 
 Results appear in the `results/` folder.
@@ -26,14 +28,14 @@ Results appear in the `results/` folder.
 
 | Component | Purpose |
 |-----------|---------|
-| `tsx_scan_v2_6_fixed.py` | **Primary** TSX scanner (2/4 votes + regime + liquidity + ATR) |
+| `tsx_scan_v2_6_fixed.py` | Primary TSX scanner (2/4 votes + regime + liquidity + ATR) |
+| `india_scan.py` | **New** — daily NSE large-cap scanner + report |
+| `risk_manager.py` | **New** — volatility/regime-aware position sizing (1.5% base, half in weak markets, portfolio risk cap) |
 | `auto_trader.py` | India (Zerodha) position monitor + auto GTT exits |
 | `verifier.py` | Claude risk check after every trade → Telegram alert |
 | `risk_levels.py` | Single source of truth for ATR stops/targets (3× / 6×) |
-| `cache_manager.py` | Speeds up scans (30 sec after first run) |
-| GitHub Actions | Daily TSX scan + India order monitoring |
-
-Older scanners (`tsx_scan.py`, `_v2`, `_v2_5`) are kept only for reference.
+| `cache_manager.py` | Speeds up scans |
+| GitHub Actions | Daily TSX scan + India scan + order monitoring |
 
 ---
 
@@ -52,38 +54,28 @@ Older scanners (`tsx_scan.py`, `_v2`, `_v2_5`) are kept only for reference.
 ## Zerodha daily token
 
 ```bash
-python zerodha_token_refresh.py   # or your preferred method
+python zerodha_token_refresh.py
 ```
 Then update the `KITE_ACCESS_TOKEN` secret (or use the automated refresh workflow).
 
 ---
 
-## India auto-trader
+## India
 
-Runs every 5 min during market hours via GitHub Actions (`india_monitor.yml`).
-- Places exchange-side GTT OCO exits (stop + target)
-- Closes legacy losers
-- Sends Telegram alerts
+- **Scanner:** `india_scan.py` (or the `India Daily Scan` workflow) produces `results/india_report.md` and can send a Telegram summary.
+- **Auto-trader:** Runs on the India laptop (or manually) to place GTT exits on holdings.
 
 ---
 
-## TSX verification
-
-Wealthsimple has no API, so trigger manually after each trade:
-
-```bash
-python tsx_monitor.py manual --trade BUY --symbol MSA.TO --qty 5 --price 9.50 --signal yes
-```
-
-Or use the GitHub Actions workflow “TSX Trade Verifier”.
-
----
-
-## Risk rules (from `risk_levels.py`)
+## Risk rules
 
 - Stop = entry − 3 × ATR14 (capped at −8%)
 - Target = entry + 6 × ATR14
-- Risk per trade ≈ 2% of account (adjusted for overlapping positions)
+- Base risk per trade = **1.5%** (down from 2%)
+- Automatically halved when the market is below its 200-day SMA
+- Portfolio open-risk cap ≈ 6%
+
+Use `risk_manager.py` helpers in new code for consistent sizing.
 
 ---
 
