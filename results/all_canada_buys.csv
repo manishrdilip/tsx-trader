@@ -1,1 +1,4 @@
 ticker,votes,ret_3m,pattern,gap_risk,exchange,max_hold_days,close,buy_max,stop_pct,target_pct,stop_loss,take_profit,shares
+DSG.TO,4,0.1743730276380293,"Bullish Pin Bar, Dragonfly Doji",False,TSX,20,128.77,131.35,0.08892935947231972,0.17785871894463945,117.32,151.67,0
+KXS.TO,4,0.12872796306562995,"Bullish Pin Bar, Hammer",False,TSX,20,192.64,196.49,0.08942847264384422,0.17885694528768845,175.41,227.1,0
+CGY.TO,4,0.07240108167740722,"Bullish Belt Hold, Bullish Engulfing, Bullish Pin Bar, Hammer, Morning Star",False,TSX,20,85.14,86.84,0.08154640344542731,0.16309280689085462,78.2,99.03,0
