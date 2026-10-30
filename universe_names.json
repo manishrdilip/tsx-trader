@@ -259,6 +259,10 @@
 "company": "Atlas Engineered Products Ltd.",
 "name": "Atlas Engineered Products Ltd."
 },
+"AETR.TO": {
+"company": "Aetherion Technologies Inc.",
+"name": "Aetherion Tech Inc"
+},
 "AFC-P.V": {
 "company": "AF3 Capital Corp.",
 "name": "AF3 Capital Corp."
@@ -790,10 +794,6 @@
 "ARTI.TO": {
 "company": "Evolve Artificial Intelligence Fund",
 "name": "Evl Art Int Fnd UN"
-},
-"ARU-WT-B.V": {
-"company": "Aurania Resources Ltd.",
-"name": "Aurania Resources Ltd. wt 21oct2026"
 },
 "ARU.V": {
 "company": "Aurania Resources Ltd.",
@@ -1659,6 +1659,10 @@
 "company": "Brookfield Corporation",
 "name": "Brookfield CoA PR54"
 },
+"BN-PF-N.TO": {
+"company": "Brookfield Corporation",
+"name": "Brookfield Crp Sr 56"
+},
 "BN-PR-B.TO": {
 "company": "Brookfield Corporation",
 "name": "Brookfld Corp Pr 2"
@@ -2226,6 +2230,10 @@
 "CAMB.V": {
 "company": "Cambria Gold Mines Inc.",
 "name": "Cambria Gold Mines Inc."
+},
+"CAML.TO": {
+"company": "Central Asia Metals plc",
+"name": "Central Asia Metals"
 },
 "CAMO-B.TO": {
 "company": "Evolve Global Defense & Aerospace Index ETF",
@@ -3959,10 +3967,6 @@
 "company": "Canyon Creek Food Company Ltd.",
 "name": "Canyon Creek Food Company Ltd."
 },
-"CYG.V": {
-"company": "Cygnus Metals Limited",
-"name": "Cygnus Metals Limited"
-},
 "CYH.TO": {
 "company": "iShares Global Monthly Dividend Index ETF (CAD-Hedged)",
 "name": "iShares GlblMoDiv Un"
@@ -4392,19 +4396,19 @@
 "name": "Draxos Capital Corp."
 },
 "DRCU.TO": {
-"company": "Desjardins RI Active Canadian Bond - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Active Canadian Bond ETF",
 "name": "Desjardins RI CA Bnd"
 },
 "DRFC.TO": {
-"company": "Desjardins RI Canada Multifactor - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Multifactor Canadian Equity ETF",
 "name": "DesjardnsRI CA MF0Em"
 },
 "DRFD.TO": {
-"company": "DesjardinsRIDeveloped ex-USAex-Canada Multifactor-Net-ZeroEmissionsPathwayETF",
+"company": "Desjardins RI Multifactor International Equity ETF",
 "name": "DesjardinsRI DevUSCA"
 },
 "DRFE.TO": {
-"company": "Desjardins RI Emerging Markets Multifactor - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Multifactor Emerging Markets Equity ETF",
 "name": "DesjardnRI EmergMkMF"
 },
 "DRFG.TO": {
@@ -4412,7 +4416,7 @@
 "name": "Desjardins RI GblETF"
 },
 "DRFU.TO": {
-"company": "Desjardins RI USA Multifactor - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Multifactor American Equity ETF",
 "name": "DesjardnRI US MFN0Em"
 },
 "DRM.TO": {
@@ -4420,19 +4424,19 @@
 "name": "DREAM Unltd Cl A SV"
 },
 "DRMC.TO": {
-"company": "Desjardins RI Canada - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Canadian Equity ETF",
 "name": "DesjardinsRI CdaNZEm"
 },
 "DRMD.TO": {
-"company": "Desjardins RI Developed ex-USA ex-Canada - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI International Equity ETF",
 "name": "DesjardnRIDvUS-CA NZ"
 },
 "DRME.TO": {
-"company": "Desjardins RI Emerging Markets - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI Emerging Markets Equity ETF",
 "name": "DesjardnRI EmgMktNZ"
 },
 "DRMU.TO": {
-"company": "Desjardins RI USA - Net-Zero Emissions Pathway ETF",
+"company": "Desjardins RI American Equity ETF",
 "name": "DesjardnsRI US NZ Em"
 },
 "DRT-DB-A.TO": {
@@ -4455,9 +4459,21 @@
 "company": "Dividend Select 15 Corp.",
 "name": "Dividend Select 15Eq"
 },
+"DSAM.TO": {
+"company": "Dynamic Systematic U.S. Equity ETF",
+"name": "Dynamic Syst US Eq E"
+},
+"DSCA.TO": {
+"company": "Dynamic Systematic Canadian Equity ETF",
+"name": "Dynamic Syst CAD EqE"
+},
 "DSG.TO": {
 "company": "Descartes Systems Group Inc. (The)",
 "name": "Descartes Systems"
+},
+"DSIT.TO": {
+"company": "Dynamic Systematic International Equity ETF",
+"name": "Dynamic Syst Int Eq"
 },
 "DSV.TO": {
 "company": "Discovery Mining Ltd.",
@@ -6083,6 +6099,10 @@
 "company": "Fort Technology Inc.",
 "name": "Fort Technology Inc."
 },
+"FORU.TO": {
+"company": "ForAll Core & More U.S. Equity Index ETF",
+"name": "ForAll Cr&Mr US Eq I"
+},
 "FOXT.V": {
 "company": "Fox Tungsten Ltd.",
 "name": "Fox Tungsten Ltd."
@@ -6216,7 +6236,7 @@
 "name": "Financial 15 Splt A"
 },
 "FTNT.TO": {
-"company": "Fortinet CDR",
+"company": "Fortinet CDR (CAD Hedged)",
 "name": "Fortinet CDR CAD HD"
 },
 "FTRC.V": {
@@ -7070,10 +7090,6 @@
 "GX.V": {
 "company": "Guardian Exploration Inc.",
 "name": "Guardian Exploration Inc."
-},
-"GXY-P.V": {
-"company": "Galaxy Ventures Inc.",
-"name": "Galaxy Ventures Inc."
 },
 "GZD.V": {
 "company": "Grizzly Discoveries Inc.",
@@ -8479,6 +8495,10 @@
 "company": "Juno International Corporation",
 "name": "Juno International Corporation"
 },
+"JUNO.V": {
+"company": "Juno Industries Ltd.",
+"name": "Juno Industries Ltd."
+},
 "JVR-P.V": {
 "company": "JVR Ventures Inc.",
 "name": "JVR Ventures Inc."
@@ -9055,6 +9075,10 @@
 "company": "Lotus Creek Exploration Inc.",
 "name": "Lotus Creek Exploration Inc."
 },
+"LTCE.TO": {
+"company": "Lysander-Triasima Canadian Equity Fund",
+"name": "Lysander-Tria C Eq F"
+},
 "LTH.V": {
 "company": "Lithium Ionic Corp.",
 "name": "Lithium Ionic Corp."
@@ -9092,7 +9116,7 @@
 "name": "lululemon CDR Hgd"
 },
 "LUME.TO": {
-"company": "Lumentum CDR",
+"company": "Lumentum CDR (CAD Hedged)",
 "name": "Lumentum CDR CAD HD"
 },
 "LUN.TO": {
@@ -9743,6 +9767,10 @@
 "company": "Mackenzie Modus International Equity ETF",
 "name": "Mackenzie Mod Int Eq"
 },
+"MMEM.TO": {
+"company": "Mackenzie Modus Emerging Markets Equity ETF",
+"name": "Mack Modus Emrg Mk E"
+},
 "MMET.V": {
 "company": "Miata Metals Corp.",
 "name": "Miata Metals Corp."
@@ -10219,6 +10247,10 @@
 "company": "National Bank of Canada",
 "name": "Nat'l Bank of Canada"
 },
+"NACM.V": {
+"company": "North Atlantic Critical Metals Corp.",
+"name": "North Atlantic Critical Metals Corp."
+},
 "NACO.TO": {
 "company": "Ninepoint Alternative Credit Opportunities Fund",
 "name": "Ninept Alt Cr Opp Fd"
@@ -10399,6 +10431,14 @@
 "company": "Northern Dynasty Minerals Ltd.",
 "name": "Nthrn Dynasty Min J"
 },
+"NEBP.TO": {
+"company": "NEI Balanced ETF Portfolio",
+"name": "NEI Balanced ETF Prt"
+},
+"NECP.TO": {
+"company": "NEI Conservative Income ETF Portfolio",
+"name": "NEI Cons Inc ETF Prt"
+},
 "NED.V": {
 "company": "New Destiny Mining Corp.",
 "name": "New Destiny Mining Corp."
@@ -10407,6 +10447,10 @@
 "company": "NextEra Energy CDR (CAD Hedged)",
 "name": "NextEra CDR Hgd"
 },
+"NEGP.TO": {
+"company": "NEI Growth ETF Portfolio",
+"name": "NEI Growth ETF Prtfo"
+},
 "NEO.TO": {
 "company": "Neo Performance Materials Inc.",
 "name": "Neo Perform Material"
@@ -10414,6 +10458,10 @@
 "NEQT.TO": {
 "company": "NBI Equity ETF Portfolio",
 "name": "NBI Eq Portfolio"
+},
+"NESB.TO": {
+"company": "NEI Global Short-Term Bond Fund",
+"name": "NEI Glb Shrt Trm BdF"
 },
 "NET-UN.V": {
 "company": "Canadian Net Real Estate Investment Trust",
@@ -10790,6 +10838,10 @@
 "NSGE.TO": {
 "company": "NBI Sustainable Global Equity ETF",
 "name": "NBI SustainGlblEq Un"
+},
+"NSKY.V": {
+"company": "North Sky Metals Corp.",
+"name": "North Sky Metals Corp."
 },
 "NSSB.TO": {
 "company": "NBI Sustainable Canadian Short Term Bond ETF",
@@ -11939,10 +11991,6 @@
 "company": "Prospector Metals Corp.",
 "name": "Prospector Metals Corp."
 },
-"PPR.TO": {
-"company": "Prairie Provident Resources Inc.",
-"name": "Prairie Provident J"
-},
 "PPTA.TO": {
 "company": "Perpetua Resources Corp.",
 "name": "Perpetua Res Corp. J"
@@ -12944,7 +12992,7 @@
 "name": "Rockhaven Resources Ltd"
 },
 "RKLB.TO": {
-"company": "Rocket Lab CDR",
+"company": "Rocket Lab CDR (CAD Hedged)",
 "name": "Rocket Lab CDR CAD H"
 },
 "RKLC.TO": {
@@ -13042,10 +13090,6 @@
 "ROOF.V": {
 "company": "Northstar Clean Technologies Inc.",
 "name": "Northstar Clean Technologies Inc."
-},
-"ROOT.TO": {
-"company": "Roots Corporation",
-"name": "Roots Corporation"
 },
 "ROS.V": {
 "company": "Roscan Gold Corporation",
@@ -13907,6 +13951,10 @@
 "company": "Siemens CDR (CAD Hedged)",
 "name": "Siemens CDR CAD Hed"
 },
+"SMP.V": {
+"company": "Southern Empire Resources Corp.",
+"name": "Southern Empire Resources Corp."
+},
 "SMVP-U.TO": {
 "company": "HAMILTON CHAMPIONS TM U.S. Dividend Index ETF",
 "name": "HAMILTN CHA UsDvd US"
@@ -13936,7 +13984,7 @@
 "name": "Silver Range Resources Ltd."
 },
 "SNOW.TO": {
-"company": "Snowflake CDR",
+"company": "Snowflake CDR (CAD Hedged)",
 "name": "Snowflake CDR CAD HD"
 },
 "SNV.V": {
@@ -14323,6 +14371,10 @@
 "company": "Stardust Solar Energy Inc.",
 "name": "Stardust Solar Energy Inc."
 },
+"SUNV.V": {
+"company": "Sun Valley Minerals Inc.",
+"name": "Sun Valley Minerals Inc."
+},
 "SURF-UN.V": {
 "company": "Starlight U.S. Residential Fund (Multi-Family) Investment LP",
 "name": "Starlight U.S. Residential Fund (Multi-Family) Investment LP"
@@ -14471,6 +14523,10 @@
 "company": "TransAlta Corporation",
 "name": "TransAlta Corp."
 },
+"TAG.V": {
+"company": "TruSilver Metals Corp.",
+"name": "TruSilver Metals Corp."
+},
 "TAJ.V": {
 "company": "Tajiri Resources Corp.",
 "name": "Tajiri Resources Corp."
@@ -14538,10 +14594,6 @@
 "TBLL.V": {
 "company": "Tombill Mines Limited",
 "name": "Tombill Mines Limited"
-},
-"TBLZ-P.V": {
-"company": "Trail Blazer Capital Corp.",
-"name": "Trail Blazer Capital Corp."
 },
 "TBNK.TO": {
 "company": "TD Canadian Bank Dividend Index ETF",
@@ -15931,10 +15983,6 @@
 "company": "Vitalist Inc.",
 "name": "Vitalist Inc."
 },
-"VITL-DB-H.TO": {
-"company": "Vital Infrastructure Property Trust",
-"name": "Vital Infra 6.25Db"
-},
 "VITL-DB-I.TO": {
 "company": "Vital Infrastructure Property Trust",
 "name": "Vital Infrast 7.75Db"
@@ -15984,7 +16032,7 @@
 "name": "Velan Inc. SV"
 },
 "VLO.TO": {
-"company": "Valero Energy CDR",
+"company": "Valero Energy CDR (CAD Hedged)",
 "name": "Valero Enrgy CDR CAD"
 },
 "VLX.V": {
@@ -16122,10 +16170,6 @@
 "VVL.TO": {
 "company": "Vanguard Global Value Factor ETF",
 "name": "Vanguard GlbValFactr"
-},
-"VVO.TO": {
-"company": "Vanguard Global Minimum Volatility ETF",
-"name": "Vanguard GlbMinVoltl"
 },
 "VVSG.TO": {
 "company": "Vanguard Canadian Ultra-Short Government Bond Index ETF",
@@ -16391,10 +16435,6 @@
 "company": "Wheaton Precious Metals Corp.",
 "name": "Wheaton Precious Mtl"
 },
-"WPRT.TO": {
-"company": "Westport Fuel Systems Inc.",
-"name": "Westport Fuel Sys"
-},
 "WRG.TO": {
 "company": "Western Energy Services Corp.",
 "name": "Western Energy Serv"
@@ -16458,10 +16498,6 @@
 "WWA-P.V": {
 "company": "Whitewater Acquisition Corp.",
 "name": "Whitewater Acquisition Corp."
-},
-"WWT.V": {
-"company": "Water Ways Technologies Inc.",
-"name": "Water Ways Technologies Inc."
 },
 "WXM.TO": {
 "company": "CI Morningstar Canada Momentum Index ETF",
