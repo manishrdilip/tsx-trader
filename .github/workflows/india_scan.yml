@@ -1,0 +1,34 @@
+# Daily India scanner — runs after market close (approx 16:00 IST = 10:30 UTC)
+name: India Daily Scan
+
+on:
+  schedule:
+    - cron: "30 10 * * 1-5"   # weekdays 10:30 UTC
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install yfinance pandas requests
+
+      - name: Run India scanner
+        env:
+          ACCOUNT: "10000"
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python india_scan.py
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: india-report
+          path: results/india_report.md
