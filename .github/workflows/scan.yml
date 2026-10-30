@@ -4,10 +4,23 @@ on:
   schedule:
     - cron: "30 21 * * 1-5"
   workflow_dispatch:
-  push:                       # re-run whenever the scanner code changes
+  push:
     branches: [main]
-    paths: ["tsx_scan.py", "universe.py", "consensus.py", "candles.py", "leaders.py",
-            "livelog.py", "stock_filter.py", ".github/workflows/scan.yml"]
+    paths:
+      - "tsx_scan_v2_6_fixed.py"
+      - "tsx_scan_v2_5.py"
+      - "tsx_scan_v2.py"
+      - "tsx_scan.py"
+      - "cache_manager.py"
+      - "universe.py"
+      - "universe_v2.py"
+      - "consensus.py"
+      - "candles.py"
+      - "leaders.py"
+      - "livelog.py"
+      - "stock_filter.py"
+      - "risk_levels.py"
+      - ".github/workflows/scan.yml"
 
 permissions:
   contents: write
@@ -22,7 +35,10 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: python tsx_scan.py
+      - name: Run primary scanner (v2.6 fixed)
+        run: python tsx_scan_v2_6_fixed.py
+        env:
+          ACCOUNT: "10000"
       - name: Save results to repo
         run: |
           git config user.name "github-actions"
