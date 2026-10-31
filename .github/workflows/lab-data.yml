@@ -33,12 +33,13 @@ jobs:
           print(tsx.head(30).to_string(index=False))
           PY
       - run: python lab/run_lab.py
+      - run: python lab/export_check.py
       - run: python lab/refresh_card.py
       - name: Save results to main
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add universe_names.json lab/results
+          git add universe_names.json lab/results results/tdry_check.csv results/tdry_signals.csv
           git commit -m "Lab refresh $(date -u +%F)" || echo "no changes"
           git pull --rebase origin main
           git push
