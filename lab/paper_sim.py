@@ -45,12 +45,12 @@ def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
     raw = pd.read_parquet(path)
     raw["Date"] = pd.to_datetime(raw["Date"]).dt.tz_localize(None)
     raw["ticker"] = raw["ticker"].astype(str)
-    mkt_raw = raw[raw.ticker == "XIU.TO"].set_index("Date").sort_index()
+    mkt_raw = raw[raw.ticker == "XIU.TO"].drop_duplicates("Date").set_index("Date").sort_index()
     mkt = mkt_raw.assign(sma200=mkt_raw.Close.rolling(200).mean())
     tsx = raw[raw.ticker.str.endswith((".TO", ".V")) & (raw.ticker != "XIU.TO") & (raw.ticker != "XIC.TO")]
     data = {}
     for t, g in tsx.groupby("ticker"):
-        g = g.set_index("Date").sort_index()
+        g = g.drop_duplicates("Date").set_index("Date").sort_index()
         if len(g) < 260:
             continue
         data[t] = add_extra(g)
