@@ -75,6 +75,47 @@ def download_batch(chunk):
     return None
 
 
+def download_single(t):
+    for attempt in range(RETRIES):
+        try:
+            raw = yf.download(t, start=START, auto_adjust=True, progress=False)
+            if raw is not None and not raw.empty:
+                return raw
+        except Exception as e:
+            print(f"  single retry {t} {attempt+1}: {e}", flush=True)
+        time.sleep(5 * (attempt + 1))
+    return None
+
+
+def process_ticker(t, raw, frames, failed, kept, is_single=False):
+    m = market_of(t)
+    try:
+        if is_single:
+            d = raw[["Open", "High", "Low", "Close", "Volume"]].dropna()
+        else:
+            d = raw[t][["Open", "High", "Low", "Close", "Volume"]].dropna()
+    except Exception:
+        failed.append((t, "no data returned by Yahoo"))
+        return False
+    if t not in BENCHMARKS:
+        rule = RULES[m]
+        if len(d) < 300:
+            failed.append((t, f"only {len(d)} bars"))
+            return False
+        dv = (d["Close"] * d["Volume"]).rolling(20).mean()
+        ok = (dv >= rule["min_dvol"]) & (d["Close"] >= rule["min_price"])
+        if ok.sum() < MIN_DAYS:
+            failed.append((t, "below liquidity filter"))
+            return False
+    d = d.astype({"Open": "float32", "High": "float32", "Low": "float32", "Close": "float32"})
+    d["Volume"] = d["Volume"].astype("int64")
+    d["ticker"] = t
+    d["market"] = m if t not in BENCHMARKS else "BENCH"
+    frames.append(d.reset_index().rename(columns={"index": "Date"}))
+    kept[m] = kept.get(m, 0) + 1
+    return True
+
+
 def main():
     os.makedirs("lab/data", exist_ok=True)
     universe = {"TSX": tsx_universe(), "US": us_universe(), "NSE": nse_universe()}
@@ -83,6 +124,7 @@ def main():
     all_tickers = [t for m in universe for t in universe[m]] + BENCHMARKS
     frames, failed = [], []
     kept = {"TSX": 0, "US": 0, "NSE": 0}
+    retry_single = []
 
     for k in range(0, len(all_tickers), BATCH):
         chunk = all_tickers[k:k + BATCH]
@@ -91,30 +133,28 @@ def main():
             failed += [(t, "batch download failed after retries") for t in chunk]
             continue
         for t in chunk:
-            m = market_of(t)
-            try:
-                d = raw[t][["Open", "High", "Low", "Close", "Volume"]].dropna()
-            except Exception:
-                failed.append((t, "no data returned by Yahoo"))
-                continue
-            if t not in BENCHMARKS:
-                rule = RULES[m]
-                if len(d) < 300:
-                    failed.append((t, f"only {len(d)} bars"))
-                    continue
-                dv = (d["Close"] * d["Volume"]).rolling(20).mean()
-                ok = (dv >= rule["min_dvol"]) & (d["Close"] >= rule["min_price"])
-                if ok.sum() < MIN_DAYS:
-                    failed.append((t, "below liquidity filter"))
-                    continue
-            d = d.astype({"Open": "float32", "High": "float32", "Low": "float32", "Close": "float32"})
-            d["Volume"] = d["Volume"].astype("int64")
-            d["ticker"] = t
-            d["market"] = m if t not in BENCHMARKS else "BENCH"
-            frames.append(d.reset_index().rename(columns={"index": "Date"}))
-            kept[m] = kept.get(m, 0) + 1
+            if not process_ticker(t, raw, frames, failed, kept):
+                # If it failed with no data, queue for single retry
+                if failed and failed[-1][0] == t and failed[-1][1] == "no data returned by Yahoo":
+                    retry_single.append(t)
+                    failed.pop()  # remove so we can re-add after retry
         print(f"{min(k+BATCH, len(all_tickers))}/{len(all_tickers)} kept={kept}", flush=True)
         time.sleep(2)
+
+    # Retry tickers that returned no data in batch, one at a time
+    if retry_single:
+        print(f"Retrying {len(retry_single)} tickers one-by-one...", flush=True)
+        for t in retry_single:
+            raw = download_single(t)
+            if raw is None:
+                failed.append((t, "no data returned by Yahoo (single retry failed)"))
+                continue
+            process_ticker(t, raw, frames, failed, kept, is_single=True)
+            time.sleep(0.5)
+
+    if not frames:
+        print("No data kept", flush=True)
+        return
 
     df = pd.concat(frames, ignore_index=True)
     df["ticker"] = df["ticker"].astype("category")

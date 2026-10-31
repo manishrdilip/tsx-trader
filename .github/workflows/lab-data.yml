@@ -20,9 +20,21 @@ jobs:
       - run: pip install -r lab/requirements.txt
       - run: python lab/fetch_names.py
       - run: python lab/fetch_data.py
+      - name: Summarize failed downloads
+        run: |
+          python - << 'PY'
+          import pandas as pd
+          df = pd.read_csv("lab/data/failed.csv")
+          print(f"Total failures: {len(df)}")
+          print("\nCount by reason:")
+          print(df["reason"].value_counts().to_string())
+          tsx = df[df["ticker"].str.endswith((".TO", ".V"))]
+          print(f"\nFirst 30 TSX/TSXV failures ({len(tsx)} total):")
+          print(tsx.head(30).to_string(index=False))
+          PY
       - run: python lab/run_lab.py
       - run: python lab/refresh_card.py
-      - name: Save results to main, raw prices to the 'data' branch
+      - name: Save results to main
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
@@ -30,10 +42,3 @@ jobs:
           git commit -m "Lab refresh $(date -u +%F)" || echo "no changes"
           git pull --rebase origin main
           git push
-          cp lab/data/prices.parquet /tmp/prices.parquet
-          git checkout --orphan data
-          git rm -rf --cached . > /dev/null
-          mkdir -p lab/data && cp /tmp/prices.parquet lab/data/prices.parquet
-          git add -f lab/data/prices.parquet
-          git commit -m "Price history $(date -u +%F)"
-          git push -f origin data
