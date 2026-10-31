@@ -1,10 +1,9 @@
-"""Day-by-day paper trading of the 4/4 TSX consensus system, Oct 2025 - Oct 2026.
-Start $5,000 CAD. Each day: manage open positions with that day's prices, then
-enter yesterday's 4/4 signals at today's open. Costs 0.1% per side.
-Rules copied from consensus.py (A trend, B momentum, C volume/risk, D candle)
-and risk_levels.py (stop 3xATR, target 6xATR, max stop 8%).
-Gap-chase, earnings and live-only checks are not replayed (no history for them).
-Writes {OUT}/paper_sim_daily.csv, {OUT}/paper_sim_trades.csv, {OUT}/paper_sim_summary.txt
+"""Day-by-day paper trading of the 4/4 system, one market at a time.
+MARKET = TSX | US | NSE (env var). Starting cash, costs and benchmark depend on the market.
+Each day: manage open positions with that day's prices, then enter yesterday's 4/4 signals
+at today's open. Rules from consensus.py (A trend, B momentum, C volume/risk, D candle) and
+risk_levels.py (stop 3xATR capped at 8%, target 6xATR). Gap-chase and earnings checks are
+not replayed (no historical data). Outputs go to results/<MARKET>/.
 """
 import os, sys, math
 import numpy as np
@@ -14,10 +13,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import candles  # noqa: E402
 
+MARKET = os.environ.get("MARKET", "TSX").upper()
+CFG = {
+    #        benchmark   cash (local)  cost/side  label
+    "TSX": dict(bench="XIU.TO", cash=5000.0, cost=0.001, ccy="CAD"),
+    "US":  dict(bench="SPY",    cash=5000.0, cost=0.001, ccy="USD"),
+    "NSE": dict(bench="NIFTYBEES.NS", cash=420000.0, cost=0.003, ccy="INR"),  # ~USD 5,000
+}[MARKET]
 START = pd.Timestamp(os.environ.get("SIM_START", "2016-10-31"))
 END = pd.Timestamp(os.environ.get("SIM_END", "2026-10-30"))
-OUT = os.environ.get("SIM_OUT", "results")
-CASH0, MAX_POS, RISK, COST = 5000.0, 4, 0.015, 0.001
+OUT = os.environ.get("SIM_OUT", f"results/{MARKET}")
+CASH0, COST = CFG["cash"], CFG["cost"]
+MAX_POS, RISK = 4, 0.015
 STOP_ATR, TGT_ATR, MAX_STOP, HOLD = 3.0, 6.0, 0.08, 20
 
 
@@ -41,43 +48,45 @@ def add_extra(d):
     return d
 
 
+def in_market(t, m):
+    if m == "TSX":
+        return t.endswith((".TO", ".V")) and t not in ("XIU.TO", "XIC.TO")
+    if m == "NSE":
+        return t.endswith(".NS") and t != "NIFTYBEES.NS"
+    return not t.endswith((".TO", ".V", ".NS")) and t not in ("SPY",)
+
+
 def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
     raw = pd.read_parquet(path)
     raw["Date"] = pd.to_datetime(raw["Date"]).dt.tz_localize(None)
     raw["ticker"] = raw["ticker"].astype(str)
-    mkt_raw = raw[raw.ticker == "XIU.TO"].drop_duplicates("Date").set_index("Date").sort_index()
+    mkt_raw = raw[raw.ticker == CFG["bench"]].drop_duplicates("Date").set_index("Date").sort_index()
     mkt = mkt_raw.assign(sma200=mkt_raw.Close.rolling(200).mean())
-    tsx = raw[raw.ticker.str.endswith((".TO", ".V")) & (raw.ticker != "XIU.TO") & (raw.ticker != "XIC.TO")]
+    sub = raw[raw.ticker.map(lambda t: in_market(t, MARKET))]
     data = {}
-    for t, g in tsx.groupby("ticker"):
+    for t, g in sub.groupby("ticker"):
         g = g.drop_duplicates("Date").set_index("Date").sort_index()
-        if len(g) < 260:
-            continue
-        data[t] = add_extra(g)
-    print(f"TSX tickers with enough history: {len(data)}", flush=True)
+        if len(g) >= 260:
+            data[t] = add_extra(g)
+    print(f"{MARKET}: tickers with enough history: {len(data)}, benchmark {CFG['bench']} rows {len(mkt)}", flush=True)
 
     m_up = (mkt["Close"] > mkt["sma200"])
     m_ret = mkt["Close"].pct_change(63)
-
     sig, bars = {}, {}
     for t, d in data.items():
         a = (d.Close > d.sma50) & (d.sma50 > d.sma200) & m_up.reindex(d.index).fillna(False)
         b = d.rsi14.between(50, 70) & (d.macd > d.macd_sig) & (d.ret63 > m_ret.reindex(d.index))
         c = (d.Volume > d.vol20) & (d.atr_pct < 0.03)
-        dd = candles.signal(d)
-        sig[t] = (a & b & c & dd.reindex(d.index).fillna(False)).fillna(False)
+        dd = candles.signal(d).reindex(d.index).fillna(False)
+        sig[t] = (a & b & c & dd).fillna(False)
         bars[t] = d
 
     dates = sorted(set().union(*[set(d.index) for d in bars.values()]))
     dates = [x for x in dates if START <= x <= END]
-    cash, equity = CASH0, CASH0
-    positions = {}   # ticker -> dict
-    pending = []     # signals from prior close, to enter at today's open
-    prev_day = {}
-    trades, daily = [], []
+    cash = CASH0
+    positions, pending, prev_day, trades, daily = {}, [], {}, [], []
 
     for today in dates:
-        # 1) manage open positions on today's bar
         for t in list(positions):
             p = positions[t]
             if today not in bars[t].index:
@@ -98,17 +107,17 @@ def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
                 cash += proceeds
                 trades.append({"ticker": t, "entry_date": p["entry_date"].date(), "entry": round(p["entry"], 4),
                                "exit_date": today.date(), "exit": round(exit_px, 4), "shares": p["shares"],
-                               "pnl_cad": round(proceeds - p["cost"], 2),
+                               "pnl": round(proceeds - p["cost"], 2),
                                "ret_pct": round(100 * (exit_px / p["entry"] - 1), 2), "reason": why})
                 del positions[t]
 
-        # 2) enter yesterday's signals at today's open
         for t in pending:
             if t in positions or len(positions) >= MAX_POS or today not in bars[t].index:
                 continue
-            r = bars[t].loc[today]
-            entry = float(r.Open)
-            atr = float(bars[t].at[prev_day[t], "atr14"]) if prev_day.get(t) in bars[t].index else float("nan")
+            if prev_day.get(t) not in bars[t].index:
+                continue
+            entry = float(bars[t].loc[today].Open)
+            atr = float(bars[t].at[prev_day[t], "atr14"])
             if not (atr > 0) or math.isnan(entry):
                 continue
             stop = max(entry - STOP_ATR * atr, entry * (1 - MAX_STOP))
@@ -125,20 +134,16 @@ def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
             cash -= cost
             positions[t] = {"entry": entry, "stop": stop, "target": target, "shares": shares,
                             "entry_date": today, "days": 0, "cost": cost}
-        pending = []
-        prev_day = {}
+        pending, prev_day = [], {}
 
-        # 3) collect today's signals to enter tomorrow
         for t, s in sig.items():
             if today in s.index and bool(s.loc[today]):
                 pending.append(t)
                 prev_day[t] = today
 
-        # 4) mark to market at close
         mtm = sum(p["shares"] * float(bars[k].loc[today].Close) for k, p in positions.items() if today in bars[k].index)
-        equity = cash + mtm
         daily.append({"date": today.date(), "cash": round(cash, 2), "open_positions": len(positions),
-                      "equity": round(equity, 2)})
+                      "equity": round(cash + mtm, 2)})
 
     dfd = pd.DataFrame(daily)
     dft = pd.DataFrame(trades)
@@ -146,15 +151,20 @@ def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
     dfd.to_csv(f"{OUT}/paper_sim_daily.csv", index=False)
     dft.to_csv(f"{OUT}/paper_sim_trades.csv", index=False)
 
+    # benchmark buy and hold over the same period
+    bm = mkt.loc[(mkt.index >= dfd.date.iloc[0].isoformat()) & (mkt.index <= pd.Timestamp(dfd.date.iloc[-1]))]
+    bench_ret = 100 * (bm.Close.iloc[-1] / bm.Close.iloc[0] - 1) if len(bm) else float("nan")
     peak = dfd.equity.cummax()
     mdd = ((dfd.equity - peak) / peak).min() * 100
-    wins = (dft.pnl_cad > 0).sum() if len(dft) else 0
+    wins = (dft.pnl > 0).sum() if len(dft) else 0
+    final = dfd.equity.iloc[-1]
     lines = [
-        f"Start $5,000 CAD, {START.date()} to {END.date()}",
-        f"Final equity: ${dfd.equity.iloc[-1]:,.2f}  ({100*(dfd.equity.iloc[-1]/CASH0-1):+.2f}%)",
+        f"Market {MARKET}, start {CASH0:,.0f} {CFG['ccy']}, {dfd.date.iloc[0]} to {dfd.date.iloc[-1]}",
+        f"Final equity: {final:,.2f} {CFG['ccy']} ({100*(final/CASH0-1):+.2f}%)",
+        f"Benchmark {CFG['bench']} buy and hold: {bench_ret:+.2f}%",
         f"Max drawdown: {mdd:.2f}%",
         f"Trades: {len(dft)}  winners: {wins}  win rate: {100*wins/len(dft) if len(dft) else 0:.1f}%",
-        f"Open at end: {len(positions)} positions, value ${sum(p['shares']*float(bars[k].loc[dates[-1]].Close) for k,p in positions.items()):,.2f}",
+        f"Exits: {dft.reason.value_counts().to_dict() if len(dft) else {}}",
     ]
     open(f"{OUT}/paper_sim_summary.txt", "w").write("\n".join(lines) + "\n")
     print("\n".join(lines), flush=True)
