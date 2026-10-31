@@ -20,6 +20,12 @@ jobs:
       - run: pip install -r lab/requirements.txt
       - run: python lab/fetch_names.py
       - run: python lab/fetch_data.py
+      - name: Publish full price file as a release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view data-latest >/dev/null 2>&1 || gh release create data-latest --title "Price history (latest)" --notes "Daily prices, all markets, 2008 to latest. Rebuilt by the lab-data workflow." --prerelease
+          gh release upload data-latest lab/data/prices.parquet --clobber
       - name: Summarize failed downloads
         run: |
           python - << 'PY'

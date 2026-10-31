@@ -4,7 +4,7 @@ enter yesterday's 4/4 signals at today's open. Costs 0.1% per side.
 Rules copied from consensus.py (A trend, B momentum, C volume/risk, D candle)
 and risk_levels.py (stop 3xATR, target 6xATR, max stop 8%).
 Gap-chase, earnings and live-only checks are not replayed (no history for them).
-Writes results/paper_sim_daily.csv, results/paper_sim_trades.csv, results/paper_sim_summary.txt
+Writes {OUT}/paper_sim_daily.csv, {OUT}/paper_sim_trades.csv, {OUT}/paper_sim_summary.txt
 """
 import os, sys, math
 import numpy as np
@@ -14,7 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import candles  # noqa: E402
 
-START, END = pd.Timestamp("2025-10-01"), pd.Timestamp("2026-10-30")
+START = pd.Timestamp(os.environ.get("SIM_START", "2016-10-31"))
+END = pd.Timestamp(os.environ.get("SIM_END", "2026-10-30"))
+OUT = os.environ.get("SIM_OUT", "results")
 CASH0, MAX_POS, RISK, COST = 5000.0, 4, 0.015, 0.001
 STOP_ATR, TGT_ATR, MAX_STOP, HOLD = 3.0, 6.0, 0.08, 20
 
@@ -39,7 +41,7 @@ def add_extra(d):
     return d
 
 
-def main(path="lab/data/prices.parquet"):
+def main(path=os.environ.get("PRICES", "lab/data/prices.parquet")):
     raw = pd.read_parquet(path)
     raw["Date"] = pd.to_datetime(raw["Date"]).dt.tz_localize(None)
     raw["ticker"] = raw["ticker"].astype(str)
@@ -140,9 +142,9 @@ def main(path="lab/data/prices.parquet"):
 
     dfd = pd.DataFrame(daily)
     dft = pd.DataFrame(trades)
-    os.makedirs("results", exist_ok=True)
-    dfd.to_csv("results/paper_sim_daily.csv", index=False)
-    dft.to_csv("results/paper_sim_trades.csv", index=False)
+    os.makedirs(OUT, exist_ok=True)
+    dfd.to_csv(f"{OUT}/paper_sim_daily.csv", index=False)
+    dft.to_csv(f"{OUT}/paper_sim_trades.csv", index=False)
 
     peak = dfd.equity.cummax()
     mdd = ((dfd.equity - peak) / peak).min() * 100
@@ -154,7 +156,7 @@ def main(path="lab/data/prices.parquet"):
         f"Trades: {len(dft)}  winners: {wins}  win rate: {100*wins/len(dft) if len(dft) else 0:.1f}%",
         f"Open at end: {len(positions)} positions, value ${sum(p['shares']*float(bars[k].loc[dates[-1]].Close) for k,p in positions.items()):,.2f}",
     ]
-    open(f"results/paper_sim_summary.txt", "w").write("\n".join(lines) + "\n")
+    open(f"{OUT}/paper_sim_summary.txt", "w").write("\n".join(lines) + "\n")
     print("\n".join(lines), flush=True)
 
 
