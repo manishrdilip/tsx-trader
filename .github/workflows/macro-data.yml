@@ -1,0 +1,41 @@
+name: Macro and cross-asset data (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  macro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install yfinance pandas
+      - name: Download commodities, Google, banks, miners
+        run: |
+          python - <<'PY'
+          import yfinance as yf, pandas as pd, os
+          tickers = ["CL=F","GC=F","SI=F","GOOGL","NVDA","MSFT","JPM","RY.TO","TD.TO","BNS.TO","ABX.TO","AEM.TO","K.TO","SU.TO","CNQ.TO","XIU.TO","SPY"]
+          d = yf.download(tickers, start="2016-10-01", end="2026-10-31", auto_adjust=True, group_by="ticker", progress=False)
+          rows = []
+          for t in tickers:
+              s = d[t]["Close"].dropna()
+              rows.append(s.rename(t))
+          out = pd.concat(rows, axis=1).sort_index()
+          os.makedirs("results/macro", exist_ok=True)
+          out.to_csv("results/macro/closes.csv")
+          print(out.shape, out.index.min(), out.index.max(), out.notna().sum().to_dict())
+          PY
+      - name: Save to main
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add results/macro
+          git commit -m "Macro closes $(date -u +%F)" || echo "no changes"
+          git pull --rebase origin main
+          git push
