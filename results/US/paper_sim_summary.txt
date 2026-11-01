@@ -1,6 +1,6 @@
 Market US, start 5,000 USD, 2016-10-31 to 2026-10-30
-Final equity: 8,966.80 USD (+79.34%)
+Final equity: 7,767.74 USD (+55.35%)
 Benchmark SPY buy and hold: +316.34%
-Max drawdown: -23.24%
-Trades: 557  winners: 285  win rate: 51.2%
-Exits: {'time': 319, 'stop': 154, 'target': 58, 'stop (gap)': 26}
+Max drawdown: -24.95%
+Trades: 559  winners: 278  win rate: 49.7%
+Exits: {'time': 315, 'stop': 159, 'target': 56, 'stop (gap)': 29}
