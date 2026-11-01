@@ -1,0 +1,44 @@
+name: StockScanner - documented walk-forward window (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - name: Clone StockScanner (read-only)
+        run: git clone --depth 1 https://github.com/ChernyshovYuriy/StockScanner ss
+      - name: Install StockScanner requirements
+        run: pip install -r ss/requirements.txt
+      - name: Check the XIU benchmark loads from Yahoo
+        run: |
+          python - <<'PY'
+          import yfinance as yf
+          d = yf.download("XIU.TO", start="2022-10-01", end="2026-10-31", auto_adjust=True, progress=False)
+          assert len(d) > 900, f"XIU history too short: {len(d)} rows"
+          c = d["Close"].squeeze()
+          print(f"XIU rows {len(d)}, first {c.index[0].date()} {c.iloc[0]:.2f}, last {c.index[-1].date()} {c.iloc[-1]:.2f}")
+          print(f"XIU buy and hold 2022-10 to 2026-10: {100*(c.iloc[-1]/c.iloc[0]-1):+.1f}%")
+          PY
+      - name: Walk-forward window 2022-10 to 2026-10, documented defaults
+        working-directory: ss
+        run: python run_backtest.py --start 2022-10-01 --end 2026-10-31 --capital 5000 --quiet
+      - name: Save results to main
+        run: |
+          mkdir -p results/stockscanner-walkforward
+          cp -r ss/out/. results/stockscanner-walkforward/ 2>/dev/null || echo "no out/ folder"
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add results/stockscanner-walkforward
+          git commit -m "StockScanner walk-forward window $(date -u +%F)" || echo "no changes"
+          git pull --rebase origin main
+          git push
