@@ -1,6 +1,8 @@
 name: Candle + indicator scan (Candlestick Trading Bible rules)
 
 on:
+  push:
+    branches: [pdf-candle-scan]
   workflow_dispatch:
     inputs:
       account:
