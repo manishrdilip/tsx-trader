@@ -82,3 +82,14 @@ and an independent check of the Nov 2 open prices.
 - Cash difference of 0.01 on the CAD 5,000 account: trades.csv stores each cash_flow rounded to cents. The 18 rounded rows can differ from the unrounded state by up to 0.09. The observed 0.015 is within that bound. It is not a trade discrepancy.
 - Fee check: every buy's cash_flow equals shares x price x 1.001, within rounding (max deviation 0.005).
 - Duplicate check: NOT DONE. A second run would require approval, and none was given. Watchlist duplication has been fixed in code (commit 3dfacd1, with test), but no run since that fix has been executed to confirm it live.
+
+## Second-run duplicate check (approved 2026-11-02; run 41533791751)
+- Run: dispatched once against the live repo (not an isolated copy; the engine reads the live panel). Conclusion: success, completed 22:11 UTC.
+- Pre-run snapshot: commit 1cde640 (kept in git history).
+- Run-log: one new line, 22:10:39 UTC. Executions 0, trades 0, waiting none, errors none. The 21:50 close-mark line is preserved.
+- Trades, holdings, cash, equity.csv and state.json: byte-identical to the snapshot for both accounts.
+- Watchlist: no duplicate (as_of, ticker) keys. The 2026-10-30 block still has 20 rows.
+- Watchlist 2026-11-02: two NEW tickers were appended for the same date: BTE.TO (rank 5, weight 0.058441) and MAU.TO (rank 15, weight 0.041522). Their keys were absent from the first 2026-11-02 block, so the idempotent write added them. The block is now 22 rows, and ranks 5 and 15 sit out of sequence.
+- Interpretation: the repeat run's data gave a different top-20 selection for 2026-11-02 than the 21:50 run did. That means the Nov 2 close data was not identical between the two fetches. Marks did not change, because equity and holdings are unchanged, but the watchlist is evidence that the close data is not yet stable.
+- The duplicate-prevention test passes on live data for keys, but the watchlist for a date is no longer one consistent selection. It is a union of two fetches. Treat the 2026-11-02 watchlist as unreliable until the watchlist write is keyed on a run snapshot, not just (as_of, ticker). This is a monitoring file only; it does not affect trades, marks or equity.
+- Not verified: which of the two fetches has the correct Nov 2 closes. Both are from the same data source.
