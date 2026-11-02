@@ -87,25 +87,36 @@ def prepare(panel_path, equity_list=None):
     return P
 
 
-def classify(panel_path, out_path, workers=8):
+def classify(panel_path, out_path, workers=3):
     """Keep only tickers whose Yahoo quoteType is EQUITY (drops ETFs, leveraged/inverse products, funds)."""
     import yfinance as yf
     from concurrent.futures import ThreadPoolExecutor
     with gzip.open(panel_path, "rb") as f:
         tickers = sorted(pickle.load(f)["frames"])
 
+    errors = {}
+
     def qt(t):
-        try:
-            return t, (yf.Ticker(t).info or {}).get("quoteType", "UNKNOWN")
-        except Exception:
-            return t, "UNKNOWN"
+        last = "UNKNOWN"
+        for attempt in range(4):
+            try:
+                info = yf.Ticker(t).info or {}
+                if info.get("quoteType"):
+                    return t, info["quoteType"]
+                last = "NO_QUOTETYPE"
+            except Exception as e:  # rate limit, 404, network
+                last = type(e).__name__
+                errors[last] = errors.get(last, 0) + 1
+            time.sleep(2 * (attempt + 1))
+        return t, last
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         kinds = dict(ex.map(qt, tickers))
     equities = sorted(t for t, k in kinds.items() if k == "EQUITY")
     counts = pd.Series(kinds).value_counts().to_dict()
-    json.dump({"equities": equities, "quote_types": counts}, open(out_path, "w"), indent=2)
-    print(f"classified {len(tickers)} tickers: {counts}; equities kept {len(equities)}")
+    json.dump({"equities": equities, "quote_types": counts, "error_types": errors},
+              open(out_path, "w"), indent=2)
+    print(f"classified {len(tickers)} tickers: {counts}; errors {errors}; equities kept {len(equities)}")
 
 
 def grid():
