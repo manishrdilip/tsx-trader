@@ -50,5 +50,11 @@ jobs:
             exit 0
           fi
           git commit -m "Paper trade: daily record [skip ci]"
-          git push origin HEAD:pdf-candle-scan
+          for i in 1 2 3; do
+            if git pull --rebase -q origin pdf-candle-scan && git push -q origin HEAD:pdf-candle-scan; then
+              echo "pushed"; exit 0
+            fi
+            echo "push raced; retrying"; sleep 10
+          done
+          echo "could not push paper records"; exit 1
 # First real-data paper run: manual, on pdf-candle-scan.
