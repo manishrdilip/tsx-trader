@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" "exchange_calendars>=4.5" tabulate
       - name: Fetch universe and XIU
         run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
       - name: Freeze the equity universe once (kept in git after the first run)

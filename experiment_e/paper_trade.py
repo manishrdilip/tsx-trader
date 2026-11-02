@@ -2,22 +2,26 @@
 Forward paper trading for the FROZEN Experiment E configurations. No real orders are placed.
 
 Rules (same logic as experiment_e.simulate, run forward in time):
-  - Signal: last trading day of each month s, using only data up to the close of s.
-  - Execution: next trading day's open (s+1), whole shares, cash-limited, sells before buys.
-  - Costs: frozen cost multiplier x 0.10% per side.
+  - Sessions: TSX trading calendar (exchange_calendars XTSE), not the data's dates.
+  - Signal: last TSX session of each month s, using only data through the close of s.
+  - Execution: next TSX session e after s, at the open of e, whole shares, cash-limited, sells before buys.
+  - Timing guard: an order executes only once the open of e is published (run time >= open + 5 min
+    AND the open price exists in the data). A mark is written only once the close is published
+    (run time >= close + 30 min). If not ready, the run stops there and retries on the next run.
+    No state advances before the data exists, so a retry cannot duplicate or skip a trade.
+  - Costs: frozen cost multiplier x base cost per side.
   - Valuation: daily close with dividends (auto-adjusted prices). Positions missing from the data
     keep their last known price.
 
 Idempotent: state.json stores the last executed signal date and the last marked date.
-A run only processes days after those dates, so re-running on the same data changes nothing.
 
 Outputs (append-only CSVs, one folder per frozen config under paper/accounts/<id>/):
   equity.csv     daily mark: date, equity, cash, positions
   trades.csv     every simulated order: signal date, execution date, ticker, side, shares, price, cash flow
   picks.csv      target weights at each signal: signal date, execution date, rank, ticker, weight
-  watchlist.csv  current eligible top-N as of the latest close (monitoring only)
+  watchlist.csv  eligible top-N as of the last COMPLETED session (monitoring only)
   state.json     overwritten each run; git history keeps every version
-Plus paper/run_log.csv: one line per run.
+Plus paper/run_log.csv: one line per run, with run time, last completed session and waits.
 
 Research only - not financial advice.
 """
@@ -30,6 +34,7 @@ import os
 import sys
 import traceback
 
+import exchange_calendars as xc
 import numpy as np
 import pandas as pd
 
@@ -40,8 +45,11 @@ sys.path.insert(0, HERE)
 import experiment_e as ee  # noqa: E402  (frozen logic: prepare, select)
 
 FROZEN = os.path.join(HERE, "frozen_configs.json")
+XTSE = xc.get_calendar("XTSE")
+OPEN_DELAY = pd.Timedelta(minutes=5)     # open price is published shortly after the open
+CLOSE_DELAY = pd.Timedelta(minutes=30)   # daily bar is final some time after the close
 # Signals strictly after INITIAL_SIGNAL are executed. The first live signal is the Oct 30, 2026 close
-# (last trading day of October), executed at the Nov 2, 2026 open. INITIAL_MARK: marking starts the day after it.
+# (last TSX session of October), executed at the Nov 2, 2026 open. Marking starts after INITIAL_MARK.
 INITIAL_SIGNAL = "2026-10-29"
 INITIAL_MARK = "2026-10-30"
 
@@ -61,6 +69,45 @@ def append_csv(path, header, rows):
 def load_frozen():
     data = json.load(open(FROZEN))
     return data["version"], data["configs"]
+
+
+def utc(ts):
+    ts = pd.Timestamp(ts)
+    return ts.tz_localize("UTC") if ts.tzinfo is None else ts.tz_convert("UTC")
+
+
+def open_known(P, g, now):
+    d = P.cal[g]
+    if not XTSE.is_session(d):
+        return False
+    if now < XTSE.session_open(d) + OPEN_DELAY:
+        return False
+    return bool(np.isfinite(P.O[:, g]).any())
+
+
+def close_known(P, g, now):
+    d = P.cal[g]
+    if not XTSE.is_session(d):
+        return False
+    if now < XTSE.session_close(d) + CLOSE_DELAY:
+        return False
+    return bool(np.isfinite(P.C[:, g]).any())
+
+
+def last_completed(P, now):
+    for g in range(P.T - 1, -1, -1):
+        if close_known(P, g, now):
+            return g
+    return None
+
+
+def month_end_sessions(P):
+    """Last TSX session of each month, from the calendar, within the panel's date range."""
+    lo = max(pd.Timestamp(P.cal[0]), XTSE.first_session)
+    hi = min(pd.Timestamp(P.cal[-1]), XTSE.last_session)
+    sess = XTSE.sessions_in_range(lo, hi)
+    s = pd.Series(sess)
+    return list(s.groupby([s.dt.year, s.dt.month]).max())
 
 
 class Account:
@@ -91,7 +138,7 @@ class Account:
     def value(self, P, g):
         return self.st["cash"] + sum(sh * self.price(P, t, g) for t, sh in self.st["holdings"].items())
 
-    # ---- one monthly execution at day g (signal day s = g-1)
+    # ---- one monthly execution at session g, decided at signal session s (s is the prior month-end)
     def execute(self, P, s, g, fee, log):
         cal = P.cal
         eq_prev = self.value(P, s)
@@ -116,7 +163,7 @@ class Account:
             i = P.index_of[t]
             o = P.O[i, g]
             if np.isnan(o):
-                continue
+                continue                       # no open for this name; skipped, logged as no-trade
             want = math.floor(eq_prev * target.get(t, 0.0) / (float(o) * (1 + fee)))
             have = self.st["holdings"].get(t, 0)
             diff = want - have
@@ -154,46 +201,77 @@ class Account:
         self.st["last_marked"] = str(P.cal[g].date())
         return eq
 
-    def watchlist(self, P):
-        s = P.T - 1
-        w = ee.select(P, self.cfg, s)
+    def watchlist(self, P, g_done):
+        w = ee.select(P, self.cfg, g_done)
         idx = [i for i in np.argsort(-w, kind="stable") if w[i] > 0]
-        rows = [[str(P.cal[s].date()), rank, P.tick[i], round(float(w[i]), 6)] for rank, i in enumerate(idx, 1)]
+        rows = [[str(P.cal[g_done].date()), rank, P.tick[i], round(float(w[i]), 6)]
+                for rank, i in enumerate(idx, 1)]
         append_csv(os.path.join(self.dir, "watchlist.csv"), ["as_of", "rank", "ticker", "weight"], rows)
 
 
-def run(panel_path, equity_list, root):
+def run(panel_path, equity_list, root, now=None):
     version, configs = load_frozen()
+    now = utc(now) if now is not None else utc(dt.datetime.now(dt.timezone.utc))
     P = ee.prepare(panel_path, equity_list)
     P.index_of = {t: i for i, t in enumerate(P.tick)}
     cal, T = P.cal, P.T
-    run_log = {"run_utc": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-               "frozen_version": version, "data_last_date": str(cal[-1].date()),
-               "executions": 0, "trades": 0, "accounts": [], "errors": []}
+    done = last_completed(P, now)
+    run_log = {"run_utc": now.isoformat(timespec="seconds"), "frozen_version": version,
+               "data_last_date": str(cal[-1].date()),
+               "last_completed_session": None if done is None else str(cal[done].date()),
+               "executions": 0, "trades": 0, "waiting": [], "accounts": [], "errors": []}
+    signals = month_end_sessions(P)
     for cfg in configs:
         acct = Account(root, cfg)
         try:
             fee = float(cfg["base_cost"]) * float(cfg["cost_mult"])
-            exec_for = {}
-            for s in P.month_end:
-                if str(cal[s].date()) > acct.st["last_signal"] and s + 1 <= T - 1:
-                    exec_for[s + 1] = s
-            start = cal.searchsorted(pd.Timestamp(acct.st["last_marked"]), side="right")
-            for g in range(int(start), T):
-                if g in exec_for:
-                    acct.execute(P, exec_for[g], g, fee, run_log)
+            # Signals after last_signal whose close is published; each maps to its next-session execution.
+            pending = {}
+            for sd in signals:
+                if str(sd.date()) <= acct.st["last_signal"]:
+                    continue
+                si = cal.get_indexer([sd])[0]
+                if si < 0 or not close_known(P, si, now):
+                    break
+                ei = cal.get_indexer([XTSE.next_session(sd)])[0]
+                if ei < 0:
+                    break
+                pending[int(ei)] = int(si)
+            start = int(cal.searchsorted(pd.Timestamp(acct.st["last_marked"]), side="right"))
+            last_seen = start - 1
+            for g in range(start, T):
+                if not XTSE.is_session(cal[g]):
+                    continue
+                if g in pending:
+                    if not open_known(P, g, now):
+                        run_log["waiting"].append({"id": cfg["id"], "exec_session": str(cal[g].date()),
+                                                   "reason": "open not yet published"})
+                        break
+                    acct.execute(P, pending.pop(g), g, fee, run_log)
+                if not close_known(P, g, now):
+                    break
                 acct.mark(P, g)
-            acct.watchlist(P)
+                last_seen = g
+            stuck = [e for e in pending if e <= last_seen]
+            if stuck:
+                raise RuntimeError(f"signal pending for executed-past session {[str(cal[e].date()) for e in stuck]}")
+            if done is not None:
+                acct.watchlist(P, done)
             acct.save()
-            run_log["accounts"].append({"id": cfg["id"], "value": round(acct.value(P, T - 1), 2),
+            end = done if done is not None else last_seen
+            run_log["accounts"].append({"id": cfg["id"], "value": round(acct.value(P, end), 2),
                                         "cash": round(acct.st["cash"], 2),
-                                        "positions": len(acct.st["holdings"])})
+                                        "positions": len(acct.st["holdings"]),
+                                        "last_marked": acct.st["last_marked"],
+                                        "last_signal": acct.st["last_signal"]})
         except Exception:
             run_log["errors"].append({"id": cfg["id"], "error": traceback.format_exc(limit=3)})
     append_csv(os.path.join(root, "paper", "run_log.csv"),
-               ["run_utc", "frozen_version", "data_last_date", "executions", "trades", "accounts", "errors"],
-               [[run_log["run_utc"], run_log["frozen_version"], run_log["data_last_date"], run_log["executions"],
-                 run_log["trades"], json.dumps(run_log["accounts"]), json.dumps(run_log["errors"])]])
+               ["run_utc", "frozen_version", "data_last_date", "last_completed_session", "executions",
+                "trades", "accounts", "waiting", "errors"],
+               [[run_log["run_utc"], run_log["frozen_version"], run_log["data_last_date"],
+                 run_log["last_completed_session"], run_log["executions"], run_log["trades"],
+                 json.dumps(run_log["accounts"]), json.dumps(run_log["waiting"]), json.dumps(run_log["errors"])]])
     print(json.dumps(run_log, indent=2))
     if run_log["errors"]:
         raise SystemExit("one or more accounts failed; see paper/run_log.csv")
@@ -204,8 +282,9 @@ def main():
     ap.add_argument("--panel", required=True)
     ap.add_argument("--equities", required=True)
     ap.add_argument("--root", default=REPO)
+    ap.add_argument("--now", default=None, help="UTC timestamp override, for tests only")
     args = ap.parse_args()
-    run(args.panel, args.equities, args.root)
+    run(args.panel, args.equities, args.root, args.now)
 
 
 if __name__ == "__main__":
