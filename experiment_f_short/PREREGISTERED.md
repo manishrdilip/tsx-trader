@@ -70,5 +70,26 @@ Each family runs three predefined hold lengths: 2, 3 and 5 sessions. That is thr
 - Stale-exit handling was changed from exiting at the last stale close to waiting for a traded bar.
 - No real-data result has been produced under either version. Targets (65% win rate as a stretch goal) and gates G1-G3, G5 are unchanged.
 
+## Cost grid (final, exact)
+- Three provisional scenarios (optimistic, normal, stress) as defined above. Normal is the gate.
+- Flat round-trip sensitivity grid, applied as equal per-side cost: 0.00, 0.25, 0.50, 0.75, 1.00, 1.50, 2.00, 3.00, 4.00 percent.
+  Net expectancy at each point is reported for every configuration and period, whatever the result.
+- Break-even round-trip cost: the largest flat round-trip cost at which net expectancy stays above zero, found by bisection
+  (16 iterations on a one-way range of 0 to 5% per side). Reported per configuration and period. If expectancy is non-positive at zero
+  cost, the report says "not profitable even at zero cost". No break-even figure is used for any gate.
+
+## Data limitations (recorded before any real run)
+- Survivorship bias: the universe is today's TSX listings (experiment_e/universe.json, 1,822 equities). Companies that were delisted, acquired
+  or failed before today are absent. Results are biased upward for the historical period.
+- No point-in-time index membership. The universe is not the TSX constituent list for each past date.
+- 144 names are excluded because they could not be classified (120 rate-limited, 24 without quote type). Excluded names are not in the sample.
+- Price data: Yahoo Finance daily OHLCV, auto-adjusted for splits and dividends. Not verified against exchange records.
+- Delisting: no delisting or acquisition price data is available. Positions in names with no further bars are written down
+  (unresolved_writedown, 50% of last traded close). That is an assumption.
+- Liquidity: 50-day average dollar volume uses Yahoo volume, which is not exchange-verified.
+- Costs: all cost values are provisional estimates. No historical bid-ask or fill data is used.
+- Holdout 2022 to 2026-11-02 is contaminated by earlier experiments and is reported as such.
+- The November 2 paper-trading opening prices are unverified and are not used as evidence of strategy performance.
+
 ## Decision rule
 If no configuration passes all gates, the result is that none passed. Gates and grids are not changed after results are seen.

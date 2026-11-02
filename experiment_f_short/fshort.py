@@ -189,6 +189,10 @@ def cost_breakdown():
 BE_LO, BE_HI, BE_ITERS = 0.0, 0.05, 16   # search range for ONE-WAY uniform cost (5% per side = 10% round trip)
 
 
+# Exact sensitivity grid: flat round-trip costs (%), applied as equal per-side cost. Reported in full.
+SENS_GRID_RT = (0.0, 0.25, 0.50, 0.75, 1.00, 1.50, 2.00, 3.00, 4.00)
+
+
 def _flat_scen(c):
     return dict(commission=c, spread_mult=0.0, slippage=0.0)
 
@@ -197,6 +201,15 @@ def expectancy_at(ind, sig, fam, hold, c, period):
     tr, eq = run(ind, sig, fam, hold, _flat_scen(c))
     st = stats(tr, eq, *PERIODS[period])
     return st.get("expectancy_pct"), st.get("trades", 0)
+
+
+def sensitivity(ind, sig, fam, hold):
+    """Net expectancy (%) per trade at each flat round-trip cost in SENS_GRID_RT, by period. Reporting only."""
+    out = {}
+    for rt in SENS_GRID_RT:
+        tr, eq = run(ind, sig, fam, hold, _flat_scen(rt / 200))
+        out[str(rt)] = {k: stats(tr, eq, *PERIODS[k]).get("expectancy_pct") for k in PERIODS}
+    return out
 
 
 def breakeven(ind, sig, fam, hold, period):
@@ -292,12 +305,15 @@ def main():
                    "optimistic_holdout": stats(*per["optimistic"], *PERIODS["holdout"]),
                    "stress_holdout": stats(*per["stress"], *PERIODS["holdout"]),
                    "annual_normal": annual(eq_n),
-                   "breakeven_round_trip": {k: breakeven(ind, sig, fam, hold, k) for k in PERIODS}}
+                   "breakeven_round_trip": {k: breakeven(ind, sig, fam, hold, k) for k in PERIODS},
+                   "sensitivity": sensitivity(ind, sig, fam, hold)}
             results.append(row)
             print(row["config"], "train E", row["normal"]["train"].get("expectancy_pct"),
                   "hold E", row["normal"]["holdout"].get("expectancy_pct"), flush=True)
     json.dump(results, open(os.path.join(args.out, "results.json"), "w"), indent=2, default=str)
     json.dump(cost_breakdown(), open(os.path.join(args.out, "cost_breakdown.json"), "w"), indent=2)
+    json.dump({"grid_round_trip_pct": list(SENS_GRID_RT), "scenarios": SCENARIOS, "break_even_search_one_way": [BE_LO, BE_HI]},
+              open(os.path.join(args.out, "cost_model.json"), "w"), indent=2)
     lines = ["| Config | Period | Trades | Win % (95% CI) | Expectancy % net | PF | Max DD % | Avg hold |",
              "|---|---|---|---|---|---|---|---|"]
     for r in results:
