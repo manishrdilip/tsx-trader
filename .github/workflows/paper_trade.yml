@@ -1,0 +1,47 @@
+name: Paper trade - frozen Experiment E configs (no real orders)
+
+on:
+  schedule:
+    # 22:30 UTC Monday-Friday, after the TSX close. Scheduled runs only fire from the default branch.
+    - cron: "30 22 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paper-trade
+  cancel-in-progress: false
+
+jobs:
+  paper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pdf-candle-scan
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Fetch universe and XIU
+        run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
+      - name: Freeze the equity universe once (kept in git after the first run)
+        run: |
+          if [ ! -f experiment_e/universe.json ]; then
+            python experiment_e/experiment_e.py classify --panel panel.pkl.gz --out experiment_e/universe.json
+          fi
+      - name: Paper trade the frozen configs
+        run: python experiment_e/paper_trade.py --panel panel.pkl.gz --equities experiment_e/universe.json --root .
+      - name: Commit paper records (only after a successful run)
+        run: |
+          git config user.name "paper-trade-bot"
+          git config user.email "paper-trade-bot@users.noreply.github.com"
+          git add paper experiment_e/universe.json
+          if git diff --cached --quiet; then
+            echo "no new records"
+            exit 0
+          fi
+          git commit -m "Paper trade: daily record [skip ci]"
+          git push origin HEAD:pdf-candle-scan
