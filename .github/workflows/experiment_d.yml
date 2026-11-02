@@ -1,0 +1,82 @@
+name: Experiment D - risk-controlled momentum bench
+
+on:
+  push:
+    branches: [pdf-candle-scan]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Download universe and XIU
+        run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp-d-panel
+          path: panel.pkl.gz
+          retention-days: 2
+
+  run:
+    needs: fetch
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          name: exp-d-panel
+      - name: Run shard ${{ matrix.shard }}
+        run: |
+          python experiment_d/experiment_d.py run --panel panel.pkl.gz \
+            --configs experiment_d/configs/bench_1000.json \
+            --shard ${{ matrix.shard }} --nshards 10 --out out/shard${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp-d-shard-${{ matrix.shard }}
+          path: out/shard${{ matrix.shard }}/
+          retention-days: 7
+
+  aggregate:
+    needs: run
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "pandas>=2.0" "numpy>=1.24" tabulate
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: exp-d-shard-*
+          path: shards/
+          merge-multiple: true
+      - name: Aggregate and report
+        env:
+          GITHUB_STEP_SUMMARY: ${{ env.GITHUB_STEP_SUMMARY }}
+        run: |
+          python experiment_d/experiment_d.py aggregate --inp shards --out report
+          cp -r shards/detail report/detail
+      - uses: actions/upload-artifact@v4
+        with:
+          name: exp-d-report
+          path: report/
+          retention-days: 30
