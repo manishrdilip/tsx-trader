@@ -140,6 +140,26 @@ def case_random_no_fill_on_missing_bar():
     print(f"ok: randomized panel, 8% missing bars: every exit priced from a traded bar ({checked} checked)")
 
 
+
+def case_breakeven_cost():
+    dates, tick, O, H, L, C, ATR, ret63, S = build(n=8, tick=("A",))
+    S[0, 0] = True
+    O[1, 0] = 10.0; C[2, 0] = 10.5; H[2, 0] = 10.6; L[2, 0] = 10.4   # +5% gross move, hold 2
+    C[1:, 0] = 10.5; O[2:, 0] = 10.5; H[2:, 0] = 10.6; L[2:, 0] = 10.4
+    ind = ind_of(dates, tick, O, H, L, C, ATR, ret63)
+    sig = {FAM: pd.DataFrame(S, index=ind["dates"], columns=ind["tickers"])}
+    be = fs.breakeven(ind, sig, FAM, 2, "validation")
+    assert be["status"] == "ok", be
+    e_below, _ = fs.expectancy_at(ind, sig, FAM, 2, be["round_trip_breakeven_pct"] / 200 - 0.0005, "validation")
+    e_above, _ = fs.expectancy_at(ind, sig, FAM, 2, be["round_trip_breakeven_pct"] / 200 + 0.0005, "validation")
+    assert e_below > 0 and e_above < 0, (e_below, e_above, be)
+    # flat trade: no profit at zero cost -> reported as unprofitable, not as a number
+    C2 = np.full_like(C, 10.0); O2 = np.full_like(O, 10.0)
+    ind2 = ind_of(dates, tick, O2, O2 + 0.2, O2 - 0.2, C2, ATR, ret63)
+    sig2 = {FAM: pd.DataFrame(S, index=ind2["dates"], columns=ind2["tickers"])}
+    assert fs.breakeven(ind2, sig2, FAM, 2, "validation")["status"] == "not profitable even at zero cost"
+    print("ok: break-even round-trip cost brackets zero expectancy; unprofitable-at-zero reported")
+
 if __name__ == "__main__":
     case_gap_stop_entry_and_stale_exit()
     case_writedown_after_ten_sessions()
@@ -148,4 +168,5 @@ if __name__ == "__main__":
     case_cash_and_position_cap()
     case_cost_scenarios_order()
     case_random_no_fill_on_missing_bar()
+    case_breakeven_cost()
     print("all edge cases passed")

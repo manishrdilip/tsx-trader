@@ -169,6 +169,56 @@ def run(ind, sig, fam, hold, scen):
     return tr, eq
 
 
+def cost_breakdown():
+    """Round-trip cost (%) by component and liquidity bucket for each scenario. Provisional estimates."""
+    out = {}
+    for name, sc in SCENARIOS.items():
+        buckets = {}
+        for label, dv in (("dv>=5M", 5e6), ("1M<=dv<5M", 1e6), ("dv<1M", 1e5)):
+            half = 0.0010 if dv >= 5e6 else (0.0025 if dv >= 1e6 else 0.0050)
+            buckets[label] = {
+                "commission_per_side_pct": round(100 * sc["commission"], 3),
+                "half_spread_per_side_pct": round(100 * sc["spread_mult"] * half, 3),
+                "slippage_per_side_pct": round(100 * sc["slippage"], 3),
+                "round_trip_pct": round(200 * side_cost(sc, dv), 3),
+            }
+        out[name] = buckets
+    return out
+
+
+BE_LO, BE_HI, BE_ITERS = 0.0, 0.05, 16   # search range for ONE-WAY uniform cost (5% per side = 10% round trip)
+
+
+def _flat_scen(c):
+    return dict(commission=c, spread_mult=0.0, slippage=0.0)
+
+
+def expectancy_at(ind, sig, fam, hold, c, period):
+    tr, eq = run(ind, sig, fam, hold, _flat_scen(c))
+    st = stats(tr, eq, *PERIODS[period])
+    return st.get("expectancy_pct"), st.get("trades", 0)
+
+
+def breakeven(ind, sig, fam, hold, period):
+    """Largest uniform per-side cost at which net expectancy is still > 0 (bisection on one-way cost).
+    Reported as round-trip = 2 x per-side. Reporting metric only; it does not change any gate."""
+    e0, n = expectancy_at(ind, sig, fam, hold, 0.0, period)
+    if n == 0 or e0 is None or e0 <= 0:
+        return {"status": "not profitable even at zero cost", "trades": n}
+    eh, _ = expectancy_at(ind, sig, fam, hold, BE_HI, period)
+    if eh is not None and eh > 0:
+        return {"status": f">= {200 * BE_HI:.1f}% round trip (search limit)", "trades": n}
+    lo, hi = BE_LO, BE_HI
+    for _ in range(BE_ITERS):
+        mid = (lo + hi) / 2
+        e, _ = expectancy_at(ind, sig, fam, hold, mid, period)
+        if e is not None and e > 0:
+            lo = mid
+        else:
+            hi = mid
+    return {"status": "ok", "round_trip_breakeven_pct": round(200 * lo, 3), "trades": n}
+
+
 def wilson(k, n, z=1.96):
     if n == 0:
         return (None, None)
@@ -241,11 +291,13 @@ def main():
                    "full_normal": stats(tr_n, eq_n, "2007-01-01", "2026-12-31"),
                    "optimistic_holdout": stats(*per["optimistic"], *PERIODS["holdout"]),
                    "stress_holdout": stats(*per["stress"], *PERIODS["holdout"]),
-                   "annual_normal": annual(eq_n)}
+                   "annual_normal": annual(eq_n),
+                   "breakeven_round_trip": {k: breakeven(ind, sig, fam, hold, k) for k in PERIODS}}
             results.append(row)
             print(row["config"], "train E", row["normal"]["train"].get("expectancy_pct"),
                   "hold E", row["normal"]["holdout"].get("expectancy_pct"), flush=True)
     json.dump(results, open(os.path.join(args.out, "results.json"), "w"), indent=2, default=str)
+    json.dump(cost_breakdown(), open(os.path.join(args.out, "cost_breakdown.json"), "w"), indent=2)
     lines = ["| Config | Period | Trades | Win % (95% CI) | Expectancy % net | PF | Max DD % | Avg hold |",
              "|---|---|---|---|---|---|---|---|"]
     for r in results:
@@ -254,6 +306,14 @@ def main():
             lines.append(f"| {r['config']} | {k} | {s.get('trades')} | {s.get('win_rate_pct')} "
                          f"{s.get('win_rate_ci95')} | {s.get('expectancy_pct')} | {s.get('profit_factor')} | "
                          f"{s.get('max_dd_pct')} | {s.get('avg_hold_sessions')} |")
+    lines += ["", "Break-even round-trip cost (%, provisional cost model; largest cost at which net expectancy stays > 0):",
+              "| Config | " + " | ".join(PERIODS) + " |", "|---|" + "---|" * len(PERIODS)]
+    for r in results:
+        cells = []
+        for k in PERIODS:
+            b = r["breakeven_round_trip"][k]
+            cells.append(str(b.get("round_trip_breakeven_pct", b["status"])))
+        lines.append(f"| {r['config']} | " + " | ".join(cells) + " |")
     open(os.path.join(args.out, "report.md"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))
 
