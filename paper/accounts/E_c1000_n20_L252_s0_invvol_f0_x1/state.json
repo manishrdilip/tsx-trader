@@ -1,9 +1,26 @@
 {
   "id": "E_c1000_n20_L252_s0_invvol_f0_x1",
   "capital": 1000.0,
-  "cash": 1000.0,
-  "holdings": {},
+  "cash": 327.56823833894737,
+  "holdings": {
+    "VLE.TO": 4,
+    "RFA.TO": 2,
+    "TVE.TO": 4,
+    "BTE.TO": 8,
+    "CFW.TO": 7,
+    "GTE.TO": 3,
+    "SOIL.TO": 5,
+    "CVVY.TO": 18,
+    "QTRH.TO": 17,
+    "LCFS.TO": 2,
+    "FTG.TO": 1,
+    "ARG.TO": 4,
+    "TLO.TO": 4,
+    "SLG.V": 4,
+    "BZ.V": 6,
+    "HMMC.TO": 5
+  },
   "last_px": {},
-  "last_signal": "2026-10-29",
+  "last_signal": "2026-10-30",
   "last_marked": "2026-10-30"
 }
