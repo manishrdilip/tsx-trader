@@ -15,12 +15,22 @@ Experiment E stays frozen as the baseline. Nothing here changes after the first 
 - Time exit: at the close of the hold-th session after entry (entry session counts as session 1).
 - Position size: risk 0.5% of current equity to the stop, capped at one third of equity, whole shares, cash-limited.
 - Maximum 3 open positions. When more signals exist than free slots, take them in order of 63-day return, highest first.
-- Costs (AMENDED before any real-data run, see Amendment 1): commission 0.10% per side in every scenario, plus an
-  estimated half-spread and slippage. Spread buckets by 50-day dollar volume: >= $5M 0.10%, >= $1M 0.25%, else 0.50%
-  (half-spread, per side). These are ESTIMATES: no historical bid-ask data is available here, and they are labelled as such.
-  - Optimistic: spread x0.5, slippage 0.02% per side.
-  - Normal (gate): spread x1.0, slippage 0.05% per side.
-  - Stress: spread x1.5, slippage 0.10% per side (doubled slippage, wider spreads).
+- Costs (AMENDED before any real-data run, see Amendment 1). ALL COST VALUES ARE PROVISIONAL. They are not validated
+  execution costs. No historical bid-ask or fill data is available, so the values below are assumptions. Any result
+  is labelled "provisional cost" and cannot be presented as realistic net performance until validated.
+  Cost components, charged on each side of every trade (entry and exit):
+  1. Commission and applicable fees: 0.10% of notional (all scenarios).
+  2. Half-spread: bucketed by the stock's 50-day average dollar volume at the decision session:
+     >= $5M: 0.10%; >= $1M: 0.25%; otherwise 0.50%. Multiplied by the scenario spread factor.
+  3. Slippage: fixed percentage of notional per side (scenario-specific).
+  4. Liquidity cap: at most 1% of 50-day average dollar volume per order (a size limit, not a cost).
+  Scenarios (provisional):
+  - Optimistic: spread factor 0.5, slippage 0.02% per side.
+  - Normal (gate): spread factor 1.0, slippage 0.05% per side.
+  - Stress: spread factor 1.5, slippage 0.10% per side.
+  Cost sensitivity: after the run, expectancy is reported across a grid of per-side cost levels from zero to stress,
+  together with the break-even per-side cost (the cost at which net expectancy reaches zero). The scenarios above are
+  not chosen by their effect on pass/fail; the grid is reported in full, whatever it shows.
 - Stale or missing bars: a scheduled exit is never filled from a stale price. It waits for the next traded bar (exit_reason
   time_delayed). After 10 sessions without a bar, the position is written down to 50% of the last traded close and labelled
   unresolved_writedown. Delisted, suspended or acquired names are handled this way; the write-down is an assumption.

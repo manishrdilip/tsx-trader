@@ -55,3 +55,16 @@ Research only. No real orders. Not financial advice.
 
 Action needed before relying on these records: approve a records-only fix (dedupe watchlist, backfill equity rows from run_log)
 and an independent check of the Nov 2 open prices.
+
+## Records corrections (approved 2026-11-02; originals preserved in git history at e25f203 and f5450ff)
+- Watchlist: the 2026-10-30 top-20 list appeared twice in each account's watchlist.csv. Each duplicate block was checked to be identical, and one copy was removed. Watchlist rows now: 20 for 2026-10-30, 20 for 2026-11-02.
+- Equity history: equity.csv now has a source column.
+  - 2026-10-30 backfilled from run_log.csv (run 514c296, 13:52:39 UTC, no holdings): CAD 1,000.00 cash = equity; CAD 5,000.00 likewise.
+  - The 14:52 UTC run recorded value 1,003.55 / 5,028.03 as holdings marked at the Oct 30 close. Those holdings were bought at the Nov 2 open, so the figure is not an Oct 30 holding-period value. It is not used as the Oct 30 equity.
+  - 2026-11-02 close mark unchanged: 975.53 and 4,835.54 (run 41530641087).
+
+## Opening-price verification: NOT COMPLETED
+- Twelve Data: TSX history for VLE is available only on a paid plan (Grow or Venture). Not used.
+- Alpha Vantage: intraday data is a premium endpoint. Not used.
+- Result: the Nov 2 opening prices used in the November 2 execution remain UNVERIFIED. Do not describe them as confirmed exchange opening prices.
+- Still needed: an independent source for the exact ticker, the 2026-11-02 opening auction print or first bar, and its timestamp, or a paid data key.
