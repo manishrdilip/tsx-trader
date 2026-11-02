@@ -51,3 +51,4 @@ jobs:
           fi
           git commit -m "Paper trade: daily record [skip ci]"
           git push origin HEAD:pdf-candle-scan
+# First real-data paper run: manual, on pdf-candle-scan.
