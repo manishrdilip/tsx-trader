@@ -65,6 +65,7 @@ def indicators(frames, xiu, cal):
 def run(ind, sig, fam, hold, fee):
     O, H, L, CF, ATR = ind["O"].values, ind["H"].values, ind["L"].values, ind["CF"].values, ind["atr"].values
     Cs = ind["C"].values
+    Craw = Cs
     score = ind["ret63"].values
     S = sig[fam].values
     T, N = S.shape
@@ -74,19 +75,23 @@ def run(ind, sig, fam, hold, fee):
         keep = []
         for p in pos:
             i = p["i"]
-            px = None
+            px, why = None, None
             if np.isfinite(O[g, i]) and O[g, i] <= p["stop"]:
-                px = O[g, i]
+                px, why = O[g, i], "stop_gap"
             elif np.isfinite(L[g, i]) and L[g, i] <= p["stop"]:
-                px = p["stop"]
+                px, why = p["stop"], "stop"
             elif g >= p["exit_g"]:
-                px = CF[g, i]
+                if np.isfinite(Craw[g, i]):
+                    px, why = Craw[g, i], "time"
+                else:
+                    # no bar on the scheduled exit day: exit at last known close, flagged in the record
+                    px, why = CF[g, i], "time_stale_no_bar"
             if px is not None and np.isfinite(px):
                 proceeds = p["sh"] * px * (1 - fee)
                 cash += proceeds
                 cost = p["sh"] * p["px_in"] * (1 + fee)
                 trades.append((p["entry_date"], ind["dates"][g], p["t"], p["px_in"], px, p["sh"],
-                               proceeds - cost, (proceeds - cost) / cost, g - p["g_in"]))
+                               proceeds - cost, (proceeds - cost) / cost, g - p["g_in"], why))
             else:
                 keep.append(p)
         pos = keep
@@ -125,11 +130,11 @@ def run(ind, sig, fam, hold, fee):
                 cash += proceeds
                 cost = p["sh"] * p["px_in"] * (1 + fee)
                 trades.append((p["entry_date"], ind["dates"][g], p["t"], p["px_in"], p["stop"], p["sh"],
-                               proceeds - cost, (proceeds - cost) / cost, 1))
+                               proceeds - cost, (proceeds - cost) / cost, 1, "stop_entry_day"))
                 pos.remove(p)
         equity_curve[g] = cash + sum(p["sh"] * CF[g, p["i"]] for p in pos)
     tr = pd.DataFrame(trades, columns=["entry_date", "exit_date", "ticker", "entry", "exit", "shares",
-                                       "pnl", "ret", "hold_sessions"])
+                                       "pnl", "ret", "hold_sessions", "exit_reason"])
     eq = pd.Series(equity_curve, index=ind["dates"]).ffill().fillna(CAPITAL)
     return tr, eq
 
