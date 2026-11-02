@@ -1,0 +1,26 @@
+name: 19-year candle + indicator backtest
+
+on:
+  push:
+    branches: [pdf-candle-scan]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Run backtest
+        run: python backtest_candle.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: candle-backtest-results
+          path: results/backtest_candle/
