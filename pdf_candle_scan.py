@@ -38,7 +38,7 @@ import yfinance as yf
 ACCOUNT = float(os.environ.get("ACCOUNT") or "100")   # CAD cap per trade
 OUT_DIR = os.environ.get("OUT_DIR", "results/pdf_candle")
 UNIVERSE_FILE = "universe_tickers.json"
-SUFFIX_FILTER = (".TO",)           # TSX only (TSXV excluded)
+SUFFIX_FILTER = tuple(os.environ.get("SUFFIXES", ".TO,.V").split(","))  # TSX + TSX Venture
 BATCH = 80
 
 
@@ -179,7 +179,7 @@ def load_universe():
 
 def main():
     tickers = load_universe()
-    print(f"Universe: {len(tickers)} TSX tickers")
+    print(f"Universe: {len(tickers)} tickers ({SUFFIX_FILTER})")
     rows, errors = [], []
     for i in range(0, len(tickers), BATCH):
         chunk = tickers[i:i + BATCH]
