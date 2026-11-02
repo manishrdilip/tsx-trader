@@ -66,6 +66,26 @@ def append_csv(path, header, rows):
         w.writerows(rows)
 
 
+def append_csv_unique(path, header, rows, key_cols):
+    """Append rows whose key (values at key_cols) is not already in the file. Existing rows are never changed."""
+    seen = set()
+    if os.path.exists(path):
+        with open(path, newline="") as f:
+            r = csv.reader(f)
+            next(r, None)
+            for row in r:
+                seen.add(tuple(row[c] for c in key_cols))
+    fresh, batch = [], set()
+    for row in rows:
+        key = tuple(str(row[c]) for c in key_cols)
+        if key in seen or key in batch:
+            continue
+        batch.add(key)
+        fresh.append(row)
+    append_csv(path, header, fresh)
+    return len(fresh)
+
+
 def load_frozen():
     data = json.load(open(FROZEN))
     return data["version"], data["configs"]
@@ -206,7 +226,9 @@ class Account:
         idx = [i for i in np.argsort(-w, kind="stable") if w[i] > 0]
         rows = [[str(P.cal[g_done].date()), rank, P.tick[i], round(float(w[i]), 6)]
                 for rank, i in enumerate(idx, 1)]
-        append_csv(os.path.join(self.dir, "watchlist.csv"), ["as_of", "rank", "ticker", "weight"], rows)
+        # Idempotent: a row is written only if (as_of, ticker) is not already in the file.
+        append_csv_unique(os.path.join(self.dir, "watchlist.csv"), ["as_of", "rank", "ticker", "weight"],
+                          rows, key_cols=(0, 2))
 
 
 def run(panel_path, equity_list, root, now=None):
