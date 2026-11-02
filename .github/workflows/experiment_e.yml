@@ -1,0 +1,37 @@
+name: Experiment E - cross-sectional momentum
+
+on:
+  push:
+    branches: [pdf-candle-scan]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Fetch universe and XIU
+        run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
+      - name: Run momentum grid (192 configs)
+        run: python experiment_e/experiment_e.py run --panel panel.pkl.gz --out out
+      - name: Aggregate and report
+        run: |
+          python experiment_e/experiment_e.py aggregate --inp out --out report
+          cat report/report.md
+          echo '---- selection'; cat report/selection.csv
+          echo '---- top20'; cat report/top20_by_train_val.csv
+      - uses: actions/upload-artifact@v4
+        with:
+          name: experiment-e-report
+          path: |
+            report/
+            out/detail/
+          retention-days: 30
