@@ -64,6 +64,11 @@ Research only. Not financial advice. Nothing here changes after the first run.
 - Win rate is reported with a 95% Wilson interval for every variant. It is NOT a gate.
 - Total return, trade count, exposure, leg fill rates and break-even round-trip cost are reported.
 
+## Break-even method (recorded before the first real run)
+- Break-even round-trip cost = the flat round-trip cost at which net expectancy crosses zero, found by linear interpolation
+  between the adjacent points of the 0 to 4% grid. If expectancy is non-positive at 0%, the report says "not profitable at zero cost".
+  If it stays positive through 4%, the report says ">= 4.0%". Bisection is not used (runtime).
+
 ## Trials
 - 3 variants, each run once. All three are reported, including failures. S2 is a control, not a candidate.
 

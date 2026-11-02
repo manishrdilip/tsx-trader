@@ -180,3 +180,95 @@ def stats(tr, eq, a, b):
             "profit_factor": round(gw / gl, 3) if gl > 0 else None,
             "max_dd_pct": round(100 * dd, 2) if dd is not None else None,
             "total_pnl": round(float(t.pnl.sum()), 2)}
+
+
+def sens_expectancy(ind, S, swing, variant, rt, period):
+    tr, eq, _ = run(ind, S, swing, variant, {"commission": rt / 200, "spread_mult": 0.0, "slippage": 0.0})
+    return stats(tr, eq, *PERIODS[period]).get("expectancy_pct")
+
+
+def breakeven_from_grid(curve):
+    """curve: list of (rt_pct, expectancy_pct) ascending. Linear interpolation of the first zero crossing."""
+    pts = [(x, y) for x, y in curve if y is not None]
+    if not pts or pts[0][1] is None or pts[0][1] <= 0:
+        return "not profitable at zero cost"
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        if y0 > 0 and y1 <= 0:
+            return round(x0 + (x1 - x0) * y0 / (y0 - y1), 3)
+    return f">= {pts[-1][0]:.1f}%"
+
+
+def main():
+    import argparse
+    import gzip
+    import json
+    import pickle
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--panel", required=True)
+    ap.add_argument("--equities", required=True)
+    ap.add_argument("--out", required=True)
+    args = ap.parse_args()
+    raw = pickle.load(gzip.open(args.panel, "rb"))
+    keep = set(json.load(open(args.equities))["equities"])
+    frames = {t: f.sort_index() for t, f in raw["frames"].items() if t in keep}
+    xiu = raw["xiu"].sort_index()
+    cal = pd.DatetimeIndex(sorted(set(xiu.index).union(*[set(f.index) for f in frames.values()])))
+    cal = cal[cal >= pd.Timestamp("2006-01-01")]
+    ind, _ = fs.indicators(frames, xiu, cal)
+    ind["dates"] = cal
+    ind["tickers"] = list(ind["C"].columns)
+    S, swing = signals(ind)
+    S = S.values
+    os.makedirs(args.out, exist_ok=True)
+    results = []
+    for v in VARIANTS:
+        row = {"variant": v, "scenarios": {}, "sensitivity": {}, "breakeven_round_trip": {}}
+        for name, scen in fs.SCENARIOS.items():
+            tr, eq, nf = run(ind, S, swing, v, scen)
+            row["scenarios"][name] = {k: stats(tr, eq, *PERIODS[k]) for k in PERIODS}
+            row["scenarios"][name]["full"] = stats(tr, eq, "2007-01-01", "2026-12-31")
+            row["scenarios"][name]["no_fill_groups"] = nf
+            row["scenarios"][name]["leg_fill_rate_pct"] = round(100 * float((tr.legs_filled / tr.legs_total).mean()), 2) if len(tr) else None
+            if name == "normal":
+                tr.to_csv(os.path.join(args.out, f"trades_{v}.csv"), index=False)
+                cy = eq.groupby(eq.index.year).last()
+                prev, ann = CAPITAL, {}
+                for y, x in cy.items():
+                    ann[int(y)] = round(100 * (float(x) / prev - 1), 2)
+                    prev = float(x)
+                row["annual_normal"] = ann
+                row["_eq_normal"] = None
+        for k in PERIODS:
+            curve = []
+            for rt in fs.SENS_GRID_RT:
+                e = sens_expectancy(ind, S, swing, v, rt, k)
+                curve.append((rt, e))
+            row["sensitivity"][k] = [{"round_trip_pct": x, "expectancy_pct": y} for x, y in curve]
+            row["breakeven_round_trip"][k] = breakeven_from_grid(curve)
+        n = row["scenarios"]["normal"]
+        st = row["scenarios"]["stress"]
+        g = {"G1_normal_expectancy_gt0_all_periods": all((n[k].get("expectancy_pct") or -1) > 0 for k in PERIODS),
+             "G2_pf_ge_1.2_val_and_hold": all((n[k].get("profit_factor") or 0) >= 1.2 for k in ("validation", "holdout")),
+             "G3_holdout_maxdd_ge_-20": (n["holdout"].get("max_dd_pct") or -100) >= -20,
+             "G4_stress_holdout_expectancy_gt0": (st["holdout"].get("expectancy_pct") or -1) > 0}
+        g["PASS_ALL"] = all(g.values())
+        row["gates"] = g
+        row.pop("_eq_normal", None)
+        results.append(row)
+        print(v, "normal expectancy", {k: n[k].get("expectancy_pct") for k in PERIODS}, "PASS" if g["PASS_ALL"] else "FAIL", flush=True)
+    json.dump(results, open(os.path.join(args.out, "results.json"), "w"), indent=2, default=str)
+    lines = ["| Variant | Period | Groups | Win % (95% CI) | Expectancy % net (normal) | PF | Max DD % | Leg fill % | Break-even RT % |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    for r in results:
+        for k in PERIODS:
+            s_ = r["scenarios"]["normal"][k]
+            lines.append(f"| {r['variant']} | {k} | {s_.get('trades')} | {s_.get('win_rate_pct')} {s_.get('win_rate_ci95')} | "
+                         f"{s_.get('expectancy_pct')} | {s_.get('profit_factor')} | {s_.get('max_dd_pct')} | "
+                         f"{r['scenarios']['normal']['leg_fill_rate_pct']} | {r['breakeven_round_trip'][k]} |")
+    lines += ["", "Gates (normal costs unless stated): " + "; ".join(f"{r['variant']}: {'PASS' if r['gates']['PASS_ALL'] else 'FAIL'}" for r in results)]
+    open(os.path.join(args.out, "report.md"), "w").write("\n".join(lines) + "\n")
+    print("\n".join(lines))
+
+
+if __name__ == "__main__":
+    main()

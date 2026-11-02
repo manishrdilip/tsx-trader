@@ -1,0 +1,36 @@
+name: Experiment G - structured three-leg entry vs single entry (pre-registered)
+
+on:
+  push:
+    branches: [pdf-candle-scan]
+    paths:
+      - "experiment_g/**"
+      - ".github/workflows/experiment_g.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: pdf-candle-scan
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Fetch universe and XIU (2006 onward)
+        run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
+      - name: Run Experiment G
+        run: python experiment_g/structured_entry.py --panel panel.pkl.gz --equities experiment_e/universe.json --out out
+      - name: Print report
+        run: cat out/report.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: experiment-g-report
+          path: out/
+          retention-days: 30
