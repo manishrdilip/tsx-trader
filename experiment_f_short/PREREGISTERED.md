@@ -15,7 +15,17 @@ Experiment E stays frozen as the baseline. Nothing here changes after the first 
 - Time exit: at the close of the hold-th session after entry (entry session counts as session 1).
 - Position size: risk 0.5% of current equity to the stop, capped at one third of equity, whole shares, cash-limited.
 - Maximum 3 open positions. When more signals exist than free slots, take them in order of 63-day return, highest first.
-- Costs: 0.10% per side (normal). Doubled 0.20%. Stress 0.30%. Normal is the gate; doubled and stress are reported.
+- Costs (AMENDED before any real-data run, see Amendment 1): commission 0.10% per side in every scenario, plus an
+  estimated half-spread and slippage. Spread buckets by 50-day dollar volume: >= $5M 0.10%, >= $1M 0.25%, else 0.50%
+  (half-spread, per side). These are ESTIMATES: no historical bid-ask data is available here, and they are labelled as such.
+  - Optimistic: spread x0.5, slippage 0.02% per side.
+  - Normal (gate): spread x1.0, slippage 0.05% per side.
+  - Stress: spread x1.5, slippage 0.10% per side (doubled slippage, wider spreads).
+- Stale or missing bars: a scheduled exit is never filled from a stale price. It waits for the next traded bar (exit_reason
+  time_delayed). After 10 sessions without a bar, the position is written down to 50% of the last traded close and labelled
+  unresolved_writedown. Delisted, suspended or acquired names are handled this way; the write-down is an assumption.
+- Stops: checked on the entry session and every later session. Gaps through the stop fill at the open (stop_gap).
+- Missing signal-close or open: no entry.
 - Starting capital: CAD 5,000. No leverage.
 
 ## Families and their signals (exact)
@@ -40,9 +50,15 @@ Each family runs three predefined hold lengths: 2, 3 and 5 sessions. That is thr
 - G1 Net expectancy per trade > 0 at normal costs on training, validation AND holdout.
 - G2 Profit factor >= 1.2 on validation and holdout.
 - G3 Maximum drawdown no worse than -20% on the holdout.
-- G4 Net expectancy > 0 at doubled costs on the holdout.
+- G4 Net expectancy > 0 at STRESS costs on the holdout (amended from doubled costs; see Amendment 1).
 - G5 Win rate reported with a 95% Wilson confidence interval. Target 65% is a stretch goal, not a gate.
 - Annual returns, trade count, exposure and turnover reported for every configuration.
+
+## Amendment 1 (before any real-data F-short run)
+- Reason: the first version used a fee-only cost model (0.10% normal, 0.20% doubled, 0.30% stress). The review required
+  spread and slippage scenarios, so the cost model and gate G4 were replaced as written above.
+- Stale-exit handling was changed from exiting at the last stale close to waiting for a traded bar.
+- No real-data result has been produced under either version. Targets (65% win rate as a stretch goal) and gates G1-G3, G5 are unchanged.
 
 ## Decision rule
 If no configuration passes all gates, the result is that none passed. Gates and grids are not changed after results are seen.
