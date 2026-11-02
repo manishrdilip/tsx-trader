@@ -24,7 +24,7 @@ jobs:
       - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
       - name: Run scan
         env:
-          ACCOUNT: ${{ inputs.account }}
+          ACCOUNT: ${{ inputs.account || '100' }}
         run: python pdf_candle_scan.py
       - uses: actions/upload-artifact@v4
         with:

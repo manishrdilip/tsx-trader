@@ -35,7 +35,7 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-ACCOUNT = float(os.environ.get("ACCOUNT", "100"))   # CAD cap per trade
+ACCOUNT = float(os.environ.get("ACCOUNT") or "100")   # CAD cap per trade
 OUT_DIR = os.environ.get("OUT_DIR", "results/pdf_candle")
 UNIVERSE_FILE = "universe_tickers.json"
 SUFFIX_FILTER = (".TO",)           # TSX only (TSXV excluded)
