@@ -25,7 +25,10 @@ import yfinance as yf
 from pdf_candle_scan import add_indicators, candle_patterns
 
 START_DL = "2006-01-01"           # warm-up for 200-day SMA
-START_TEST = "2007-11-01"         # 19 years to today
+START_TEST = os.environ.get("START_TEST", "2007-11-01")   # default 19 years to today
+EXIT_MODE = os.environ.get("EXIT_MODE", "atr")       # "atr" or "pct"
+STOP_PCT = float(os.environ.get("STOP_PCT", "0.02"))
+TARGET_PCT = float(os.environ.get("TARGET_PCT", "0.05"))
 HOLD_MAX = 20
 COST_PER_SIDE = 0.001
 NOTIONAL = 100.0
@@ -70,9 +73,13 @@ def simulate(ticker, d):
             continue
         if dates[t] < pd.Timestamp(START_TEST):
             continue
-        stop = min(l[t], cl[t] - 1.5 * atr[t])
-        risk = cl[t] - stop
-        target = cl[t] + 2 * risk
+        if EXIT_MODE == "pct":
+            stop = cl[t] * (1 - STOP_PCT)
+            target = cl[t] * (1 + TARGET_PCT)
+        else:
+            stop = min(l[t], cl[t] - 1.5 * atr[t])
+            risk = cl[t] - stop
+            target = cl[t] + 2 * risk
         entry = o[t + 1]
         if entry > cl[t] * 1.01 or entry <= stop or np.isnan(entry):
             continue
