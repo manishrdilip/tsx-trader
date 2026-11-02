@@ -34,3 +34,24 @@ Research only. No real orders. Not financial advice.
 - No point-in-time index membership or delisting data.
 - XIU total return has not been cross-checked against a second source.
 - The 2024-2026 test period has been examined many times, so it is no longer a clean holdout.
+
+## Close-mark audit: 2026-11-02 (run 41530641087)
+- Run: dispatched 21:41 UTC, succeeded 21:51 UTC. Run-log entry 21:50:39 UTC: executions 0, trades 0, waiting none, errors none.
+- Marks: last_marked 2026-11-02, using the Nov 2 close (after the 30-minute close gate). No execution on this run, so no duplicates.
+- Reconciliation (cash + marked holdings = reported equity):
+  - CAD 1,000 account: cash 327.57 + holdings 647.96 = 975.53 (equity.csv 975.53). 16 positions.
+  - CAD 5,000 account: cash 730.70 + holdings 4,104.83 = 4,835.54 (equity.csv 4,835.54). 18 positions.
+- Change over the Nov 2 session against the Oct 30 marks: 1,003.55 to 975.53 (-2.79%); 5,028.03 to 4,835.54 (-3.83%).
+- Fill check on the Nov 2 open buys: cash_flow = shares x price x 1.001 for every row (0.10% per side). Sum of cash flows
+  -672.43 (1k) and -4,269.31 (5k) equals starting cash minus current cash.
+- Timestamps: signal 2026-10-30 close; execution 2026-11-02 at the open (run 41464660277 at 14:52 UTC, 5 minutes after the 14:30 UTC open);
+  close mark 2026-11-02 (21:50 UTC, after the 21:00 UTC close plus 30 minutes). Consistent with the session calendar (XTSE).
+
+### Gaps found in the records (not fixed here; the engine is frozen)
+1. equity.csv has only the Nov 2 close row. The Oct 30 and Nov 2 open-execution equity values are only in run_log.csv.
+2. watchlist.csv has 40 rows for as_of 2026-10-30: the same top-20 list was appended by two runs. It is not used for trades.
+3. Open prices come from Yahoo daily bars fetched during the session. They have not been checked against an exchange print.
+4. A matching close mark checks record consistency only. It does not check whether the simulated fills are realistic.
+
+Action needed before relying on these records: approve a records-only fix (dedupe watchlist, backfill equity rows from run_log)
+and an independent check of the Nov 2 open prices.
