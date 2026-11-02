@@ -68,3 +68,17 @@ and an independent check of the Nov 2 open prices.
 - Alpha Vantage: intraday data is a premium endpoint. Not used.
 - Result: the Nov 2 opening prices used in the November 2 execution remain UNVERIFIED. Do not describe them as confirmed exchange opening prices.
 - Still needed: an independent source for the exact ticker, the 2026-11-02 opening auction print or first bar, and its timestamp, or a paid data key.
+
+## Reconciliation of run 41530641087 (requested audit, 2026-11-02)
+- Run status: completed, conclusion success. Dispatched 21:41:28 UTC, completed 21:51:20 UTC. Run-log entry 21:50:39 UTC: executions 0, trades 0, waiting none, errors none.
+- Close timing: the run began after the 21:30 UTC close gate (session close 21:00 UTC plus 30 minutes). Marks are at the 2026-11-02 close. The close values are the engine's panel values; they are not independently verified.
+- Entries: the execution is recorded in run 41464660277 (dispatched 14:43 UTC, run-log entry 14:52:47 UTC). The session opened at 14:30 UTC. Trades are dated exec_date 2026-11-02 with signal 2026-10-30. Opening prices are UNVERIFIED (see above).
+
+| Account | Trades (buys) | Trade holdings = state holdings | Cash from trades | State cash | Holdings x last close | Value (cash + holdings) | equity.csv | Return vs capital |
+|---|---|---|---|---|---|---|---|---|
+| CAD 1,000 | 16 | yes | 327.57 | 327.57 | 647.96 | 975.53 | 975.53 | -2.45% |
+| CAD 5,000 | 18 | yes | 730.69 | 730.70 | 4,104.83 | 4,835.54 | 4,835.54 | -3.29% |
+
+- Cash difference of 0.01 on the CAD 5,000 account: trades.csv stores each cash_flow rounded to cents. The 18 rounded rows can differ from the unrounded state by up to 0.09. The observed 0.015 is within that bound. It is not a trade discrepancy.
+- Fee check: every buy's cash_flow equals shares x price x 1.001, within rounding (max deviation 0.005).
+- Duplicate check: NOT DONE. A second run would require approval, and none was given. Watchlist duplication has been fixed in code (commit 3dfacd1, with test), but no run since that fix has been executed to confirm it live.
