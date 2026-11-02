@@ -1,6 +1,12 @@
 name: Paper trade - frozen Experiment E configs (no real orders)
 
 on:
+  push:
+    branches: [pdf-candle-scan]
+    paths:
+      - ".github/workflows/paper_trade.yml"
+      - "experiment_e/paper_trade.py"
+      - "experiment_e/frozen_configs.json"
   schedule:
     # 22:30 UTC Monday-Friday, after the TSX close. Scheduled runs only fire from the default branch.
     - cron: "30 22 * * 1-5"
