@@ -1,0 +1,33 @@
+name: Experiments B and C (10-year backtests)
+
+on:
+  push:
+    branches: [pdf-candle-scan]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  experiment:
+    strategy:
+      fail-fast: false
+      matrix:
+        experiment: [B, C]
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
+      - name: Run experiment ${{ matrix.experiment }}
+        env:
+          EXPERIMENT: ${{ matrix.experiment }}
+          START_TEST: "2016-11-01"
+        run: python backtest_experiments.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: experiment-${{ matrix.experiment }}-results
+          path: results/experiment_${{ matrix.experiment }}/
