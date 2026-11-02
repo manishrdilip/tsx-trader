@@ -20,8 +20,10 @@ jobs:
       - run: pip install "yfinance>=0.2.61" "pandas>=2.0" "numpy>=1.24" tabulate
       - name: Fetch universe and XIU
         run: python experiment_d/experiment_d.py fetch --out panel.pkl.gz
+      - name: Keep equities only (drop ETFs, leveraged and inverse products)
+        run: python experiment_e/experiment_e.py classify --panel panel.pkl.gz --out equities.json
       - name: Run momentum grid (192 configs)
-        run: python experiment_e/experiment_e.py run --panel panel.pkl.gz --out out
+        run: python experiment_e/experiment_e.py run --panel panel.pkl.gz --out out --equity-list equities.json
       - name: Aggregate and report
         run: |
           python experiment_e/experiment_e.py aggregate --inp out --out report
@@ -34,4 +36,5 @@ jobs:
           path: |
             report/
             out/detail/
+            equities.json
           retention-days: 30

@@ -54,12 +54,14 @@ class Panel:
     pass
 
 
-def prepare(panel_path):
+def prepare(panel_path, equity_list=None):
     from pdf_candle_scan import add_indicators
     with gzip.open(panel_path, "rb") as f:
         raw = pickle.load(f)
     frames, xiu = raw["frames"], raw["xiu"].sort_index()
-    xiu_ret = None
+    if equity_list is not None:
+        keep = set(json.load(open(equity_list))["equities"])
+        frames = {t: f for t, f in frames.items() if t in keep}
     cal = pd.DatetimeIndex(sorted(set(xiu.index).union(*[set(f.index) for f in frames.values()])))
     T = len(cal)
     tick = sorted(frames)
@@ -83,6 +85,27 @@ def prepare(panel_path):
     P.g0 = int(cal.searchsorted(pd.Timestamp(SIM_START)))
     P.month_end = [g for g in range(T - 1) if cal[g].month != cal[g + 1].month]
     return P
+
+
+def classify(panel_path, out_path, workers=8):
+    """Keep only tickers whose Yahoo quoteType is EQUITY (drops ETFs, leveraged/inverse products, funds)."""
+    import yfinance as yf
+    from concurrent.futures import ThreadPoolExecutor
+    with gzip.open(panel_path, "rb") as f:
+        tickers = sorted(pickle.load(f)["frames"])
+
+    def qt(t):
+        try:
+            return t, (yf.Ticker(t).info or {}).get("quoteType", "UNKNOWN")
+        except Exception:
+            return t, "UNKNOWN"
+
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        kinds = dict(ex.map(qt, tickers))
+    equities = sorted(t for t, k in kinds.items() if k == "EQUITY")
+    counts = pd.Series(kinds).value_counts().to_dict()
+    json.dump({"equities": equities, "quote_types": counts}, open(out_path, "w"), indent=2)
+    print(f"classified {len(tickers)} tickers: {counts}; equities kept {len(equities)}")
 
 
 def grid():
@@ -209,8 +232,8 @@ def latest_picks(P, cfg):
     return ", ".join(f"{P.tick[i]} {w[i]:.3f}" for i in idx[np.argsort(-w[idx])])
 
 
-def run(panel, out_dir):
-    P = prepare(panel)
+def run(panel, out_dir, equity_list=None):
+    P = prepare(panel, equity_list)
     cfgs = grid()
     os.makedirs(out_dir, exist_ok=True)
     print(f"{len(cfgs)} configs; {P.N} tickers; {P.T} days; {len(P.month_end)} month ends")
@@ -284,7 +307,10 @@ def aggregate(in_dir, out_dir):
         r2 = by_key.get((r["capital"], r["top_n"], r["lookback"], r["skip"], r["weight"], r["filt"], 2.0))
         sel.append({"capital": cap, "id": r["id"], "train_val_score": round(s, 3), "top_n": r["top_n"],
                     "lookback": r["lookback"], "skip": r["skip"], "weight": r["weight"],
-                    "filter": r["filt"], "test_cagr_1x": r["test"].get("cagr_pct"),
+                    "filter": r["filt"],
+                    "full_cagr_1x": r["full"].get("cagr_pct"), "full_maxdd_1x": r["full"].get("max_dd_pct"),
+                    "full_xiu_cagr": r["full"].get("xiu_cagr_pct"), "full_xiu_maxdd": r["full"].get("xiu_max_dd_pct"),
+                    "test_cagr_1x": r["test"].get("cagr_pct"),
                     "test_maxdd_1x": r["test"].get("max_dd_pct"), "test_cagr_2x": r2["test"].get("cagr_pct") if r2 else None,
                     "test_maxdd_2x": r2["test"].get("max_dd_pct") if r2 else None,
                     "test_xiu_cagr": r["test"].get("xiu_cagr_pct"), "test_xiu_maxdd": r["test"].get("xiu_max_dd_pct"),
@@ -323,12 +349,18 @@ def main():
     r = sub.add_parser("run")
     r.add_argument("--panel", required=True)
     r.add_argument("--out", required=True)
+    r.add_argument("--equity-list", default=None)
+    cl = sub.add_parser("classify")
+    cl.add_argument("--panel", required=True)
+    cl.add_argument("--out", required=True)
     a = sub.add_parser("aggregate")
     a.add_argument("--inp", required=True)
     a.add_argument("--out", required=True)
     args = ap.parse_args()
-    if args.cmd == "run":
-        run(args.panel, args.out)
+    if args.cmd == "classify":
+        classify(args.panel, args.out)
+    elif args.cmd == "run":
+        run(args.panel, args.out, args.equity_list)
     else:
         aggregate(args.inp, args.out)
 
