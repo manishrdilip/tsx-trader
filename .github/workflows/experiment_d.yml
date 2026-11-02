@@ -75,6 +75,9 @@ jobs:
         run: |
           python experiment_d/experiment_d.py aggregate --inp shards --out report
           cp -r shards/detail report/detail
+          cat report/report.md
+          echo '---- top20'; cat report/top20_by_train_val.csv
+          echo '---- detail table'; cat report/d_configs_table.csv
       - uses: actions/upload-artifact@v4
         with:
           name: exp-d-report
