@@ -34,3 +34,4 @@ jobs:
           name: experiment-g-report
           path: out/
           retention-days: 30
+# Approved real-data run: one push-triggered run per the 2026-11-02 approval.
