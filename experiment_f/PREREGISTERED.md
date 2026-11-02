@@ -45,3 +45,19 @@ tried, including failures; every parameter change.
 
 ## Decision rule
 If no variant passes all gates, the result is: none of the tested variants passed. Gates are not loosened after results.
+
+## Implementation details (fixed before the first real-data run)
+- Simulation window: 2007-01-03 to 2026-11-02. The 2006 data is used only for lookback, so the window starts one year in.
+  The earlier Experiment E grid started in 2016, so F's baseline numbers are not directly comparable to E's.
+- Training, validation and holdout periods as above: 2007-2015, 2016-2021, 2022-2026.
+- T1: E's own regime filter (XIU close above its 200-day average on the signal day). Already one of the 192 E variants,
+  so it is counted again here as a trial.
+- T2: pick the top 20 equally weighted, then cap each position at 0.5% of equity divided by (2 x ATR%).
+  Any capacity not used stays in cash.
+- T3: cut is checked daily at the close: exposure halves when equity falls to 90% of its running peak, and returns to full
+  when equity regains the peak at the moment of the cut. Exposure changes are applied only at monthly rebalances.
+- T4: at a close 15% or more below entry, sell at the next session's open. The name can be bought again at the next monthly rebalance.
+- T5: E's rule with top 10 instead of top 20. Already one of the 192 E variants, counted again here as a trial.
+- G5 (concentration): the five largest P&L contributors in each run are removed and the run is repeated with those names excluded.
+- G4 uses full calendar years 2007-2025. The partial year 2026 is reported but not gated.
+- Trials counted: 6 (baseline plus 5 variants). T1 and T5 overlap with the earlier E grid, so the earlier count of 192 is also counted.
