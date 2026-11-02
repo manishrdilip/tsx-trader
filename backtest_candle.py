@@ -114,6 +114,32 @@ def simulate(ticker, d):
     return trades
 
 
+def portfolio(df, start, fee=COST_PER_SIDE):
+    """Real account: one position at a time, all cash in, whole shares, fees both sides."""
+    t = df.sort_values(["entry_date", "ticker"]).reset_index(drop=True)
+    cash, busy_until, taken, wins, skipped = start, "0000", 0, 0, 0
+    peak, mdd = start, 0.0
+    for _, r in t.iterrows():
+        if r.entry_date <= busy_until:
+            continue
+        sh = int(cash // r.entry)
+        if sh < 1:
+            skipped += 1
+            continue
+        cash = cash - sh * r.entry * (1 + fee) + sh * r.exit * (1 - fee)
+        busy_until = r.exit_date
+        taken += 1
+        wins += int(r.exit > r.entry)
+        peak = max(peak, cash)
+        mdd = min(mdd, (cash - peak) / peak)
+    return {"start": start, "end": round(cash, 2),
+            "return_pct": round(100 * (cash / start - 1), 1),
+            "trades_taken": taken,
+            "win_rate_pct": round(100 * wins / taken, 1) if taken else None,
+            "skipped_cannot_afford_1_share": skipped,
+            "max_drawdown_pct": round(100 * mdd, 1)}
+
+
 def load_universe():
     tickers = json.load(open("universe_tickers.json"))
     return [t for t in tickers if t.endswith(SUFFIXES)]
@@ -196,6 +222,8 @@ def main():
         f.write("\n".join(errors))
     by_year.to_csv(f"{OUT_DIR}/by_year_{stamp}.csv", index=False)
 
+    acct = [portfolio(df, 100.0), portfolio(df, 5000.0)]
+    print("ACCOUNT_SIM", json.dumps(acct))
     print(json.dumps(overall, indent=2))
     print(json.dumps(bench, indent=2))
     print(by_year.to_string(index=False))
@@ -206,6 +234,7 @@ def main():
         with open(summary, "a") as f:
             f.write(f"## 19-year candle + indicator backtest ({START_TEST} to {stamp})\n\n")
             f.write("```\n" + json.dumps(overall, indent=2) + "\n```\n\n")
+            f.write("### Account simulation (one position at a time, all cash)\n```\n" + json.dumps(acct, indent=2) + "\n```\n")
             f.write("Benchmark XIU.TO: " + json.dumps(bench) + "\n\n")
             f.write("### By year\n```\n" + by_year.to_string(index=False) + "\n```\n")
             f.write("### By exit reason\n```\n" + by_reason.to_string(index=False) + "\n```\n")
