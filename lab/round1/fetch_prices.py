@@ -11,7 +11,7 @@ MIN_MEDIAN_DOLLAR_VOL = 300_000  # CAD per day, 2016-2026 median (plan rule)
 OUT = "data"
 
 tick = [t for t in json.load(open("universe_tickers.json")) if t.endswith(".TO")]
-tick = sorted(set(tick)) + ["XIC.TO"]
+tick = sorted(set(t for t in tick if t != "XIC.TO")) + ["XIC.TO"]
 frames = {f: [] for f in FIELDS}
 failed = []
 
