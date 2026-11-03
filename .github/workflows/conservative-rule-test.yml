@@ -6,6 +6,8 @@ name: Conservative-rule test - 10-year window (manual, pre-registered)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [conservative-rule-test]
 
 jobs:
   variants:
