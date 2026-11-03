@@ -1,0 +1,38 @@
+name: Conservative-rule test - 10-year window (manual, pre-registered)
+
+# Spec: claude/conservative-rule-test-spec.md (Stock project). Pinned commits below.
+# Runs three variants on the same pinned StockScanner commit and uploads results.
+# Nothing is committed or pushed back to this repo.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  variants:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [current, conservative, conservative_gap]
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - name: Clone StockScanner at pinned commit e8a8762
+        run: |
+          git clone https://github.com/ChernyshovYuriy/StockScanner ss
+          git -C ss checkout e8a8762
+          git -C ss rev-parse HEAD
+      - name: Install StockScanner requirements
+        run: pip install -r ss/requirements.txt
+      - name: Run variant ${{ matrix.variant }}
+        working-directory: ss
+        run: python ${{ github.workspace }}/lab/conservative_rule/run_variant.py ${{ matrix.variant }} --start 2016-10-31 --end 2026-10-30 --capital 5000 --quiet
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: conservative-rule-${{ matrix.variant }}
+          path: ss/out/
+          if-no-files-found: warn
