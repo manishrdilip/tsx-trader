@@ -14,7 +14,12 @@ Usage (from inside the StockScanner checkout, at the pinned commit):
 Common args (same as the existing 10-year workflow):
     --start 2016-10-31 --end 2026-10-30 --capital 5000 --quiet
 """
+import os
 import sys
+
+# When run by path, Python searches this script's folder, not the current
+# folder, so put the current folder (the StockScanner checkout) first.
+sys.path.insert(0, os.getcwd())
 
 VARIANTS = {
     "current":          {"same_bar_rule": "current",      "gap_fills": False},
