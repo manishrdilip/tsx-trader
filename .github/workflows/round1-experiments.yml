@@ -27,8 +27,13 @@ jobs:
       - name: Download TSX prices from Yahoo and store in data/
         if: inputs.fetch != 'false'
         run: python lab/round1/fetch_prices.py
+      - name: Download earnings announcement dates from Yahoo
+        if: inputs.fetch != 'false'
+        run: python lab/round1/fetch_earnings.py
       - name: Run Round 1 experiments
         run: python lab/round1/run_round1.py
+      - name: Run spike and earnings-news tests (Round 1b)
+        run: python lab/round1/run_news.py
       - name: Commit data and results to this branch
         run: |
           git config user.name "github-actions"
