@@ -1,0 +1,34 @@
+name: ETF 20-year test (Yahoo data on runner)
+
+on:
+  push:
+    branches: [round1-experiments]
+    paths: ["lab/etf/**", ".github/workflows/etf-20y.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  etf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install "yfinance>=0.2.61" pandas numpy pyarrow tabulate
+      - name: Download ETF prices from Yahoo (from 2004)
+        run: python lab/etf/fetch_etf.py
+      - name: Analyze ETFs and rotation test
+        run: python lab/etf/analyze_etf.py
+      - name: Commit data and results to this branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data results/etf lab/etf
+          git commit -m "ETF 20-year test $(date -u +%F)" || echo "no changes"
+          git pull --rebase -q origin "${GITHUB_REF_NAME}" || true
+          git push origin HEAD:"${GITHUB_REF_NAME}"
