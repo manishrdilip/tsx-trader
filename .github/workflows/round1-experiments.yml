@@ -1,6 +1,8 @@
 name: Round 1 experiments (TSX, Yahoo data on runner)
 
 on:
+  push:
+    branches: [round1-experiments]
   workflow_dispatch:
     inputs:
       fetch:
