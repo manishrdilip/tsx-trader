@@ -1,0 +1,36 @@
+name: Round 1 experiments (TSX, Yahoo data on runner)
+
+on:
+  workflow_dispatch:
+    inputs:
+      fetch:
+        description: "Re-download prices from Yahoo (true) or reuse data/ in git (false)"
+        required: false
+        default: "true"
+
+permissions:
+  contents: write
+
+jobs:
+  round1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install "yfinance>=0.2.61" pandas numpy pyarrow tabulate
+      - name: Download TSX prices from Yahoo and store in data/
+        if: inputs.fetch != 'false'
+        run: python lab/round1/fetch_prices.py
+      - name: Run Round 1 experiments
+        run: python lab/round1/run_round1.py
+      - name: Commit data and results to this branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data results/round1 lab/round1
+          git commit -m "Round 1 experiments $(date -u +%F)" || echo "no changes"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
