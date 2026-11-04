@@ -245,27 +245,10 @@ def backtest_one(d, mkt_up, strat, p):
 
 
 def stats(trades, stop=None):
-    if not trades:
-        return None
-    t = pd.DataFrame(trades, columns=["entry", "exit", "ret", "sf"]).sort_values("exit")
-    frac = (RISK_PER_TRADE / t["sf"]).clip(upper=1.0)
-    acct = t["ret"] * frac
-    equity = (1 + acct).cumprod()
-    dd = (equity / equity.cummax() - 1).min()
-    months = max(1.0, (t["exit"].max() - t["entry"].min()).days / 30.44)
-    monthly = equity.iloc[-1] ** (1 / months) - 1
-    wins = t["ret"] > 0
-    gross_win = t.loc[wins, "ret"].sum()
-    gross_loss = -t.loc[~wins, "ret"].sum()
-    return {
-        "trades": len(t),
-        "win_rate": wins.mean(),
-        "avg_trade": t["ret"].mean(),
-        "profit_factor": gross_win / gross_loss if gross_loss > 0 else np.inf,
-        "monthly": monthly,
-        "max_dd": -dd,
-        "total": equity.iloc[-1] - 1,
-    }
+    """Fixed-slot portfolio stats (see portfolio_stats.py). The old version compounded
+    overlapping trades one after another, which acted like unlimited leverage."""
+    import portfolio_stats
+    return portfolio_stats.summary(trades, RISK_PER_TRADE)
 
 
 # ATR parameter grid: 1.5x stop, 3x target = 2:1 reward-to-risk
