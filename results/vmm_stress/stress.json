@@ -1,0 +1,192 @@
+{
+ "base": {
+  "VMM": {
+   "final": 72957,
+   "cagr": 16.1,
+   "dd": -30.3
+  },
+  "XIU+div": {
+   "final": 53128,
+   "cagr": "14.2",
+   "dd": "-35.3"
+  }
+ },
+ "T1": {
+  "vmm": 72957,
+  "random_median": 0,
+  "random_p95": 0,
+  "beats_pct": 100.0,
+  "survive": true
+ },
+ "T2": {
+  "n": 81,
+  "beat_xiu_pct": 84.0,
+  "median_final": 68422,
+  "worst": 34483,
+  "survive": true
+ },
+ "T3": {
+  "finals": {
+   "0.25": 85618,
+   "0.5": 72957,
+   "1.0": 53285,
+   "1.5": 39709
+  },
+  "xiu": 53128,
+  "survive": true
+ },
+ "T4": {
+  "rows": [
+   {
+    "start": 2009,
+    "vmm": 72957,
+    "xiu": 53128,
+    "win": true
+   },
+   {
+    "start": 2010,
+    "vmm": 60149,
+    "xiu": 39844,
+    "win": true
+   },
+   {
+    "start": 2011,
+    "vmm": 46823,
+    "xiu": 34575,
+    "win": true
+   },
+   {
+    "start": 2012,
+    "vmm": 50627,
+    "xiu": 36026,
+    "win": true
+   },
+   {
+    "start": 2013,
+    "vmm": 44514,
+    "xiu": 32896,
+    "win": true
+   },
+   {
+    "start": 2014,
+    "vmm": 31164,
+    "xiu": 28546,
+    "win": true
+   },
+   {
+    "start": 2015,
+    "vmm": 27251,
+    "xiu": 24471,
+    "win": true
+   },
+   {
+    "start": 2016,
+    "vmm": 25413,
+    "xiu": 26214,
+    "win": false
+   },
+   {
+    "start": 2017,
+    "vmm": 19917,
+    "xiu": 20845,
+    "win": false
+   },
+   {
+    "start": 2018,
+    "vmm": 17447,
+    "xiu": 18527,
+    "win": false
+   },
+   {
+    "start": 2019,
+    "vmm": 20062,
+    "xiu": 19595,
+    "win": true
+   },
+   {
+    "start": 2020,
+    "vmm": 16317,
+    "xiu": 15585,
+    "win": true
+   },
+   {
+    "start": 2021,
+    "vmm": 14930,
+    "xiu": 14331,
+    "win": true
+   }
+  ],
+  "win_pct": 76.9,
+  "survive": true
+ },
+ "T5": {
+  "months": 213,
+  "mean_excess_pct": 0.16,
+  "t": 0.71,
+  "p_t": 0.238,
+  "p_boot": 0.1775,
+  "survive": false
+ },
+ "T6": {
+  "median": 55991,
+  "p10": 46682,
+  "xiu": 53128,
+  "survive": true
+ },
+ "T7": {
+  "rows": [
+   {
+    "period": "2009-2014",
+    "vmm": {
+     "final": 13343,
+     "cagr": 17.5,
+     "dd": -18.1
+    },
+    "xiu": {
+     "final": 10749,
+     "cagr": "13.6",
+     "dd": "-19.3"
+    },
+    "win": true
+   },
+   {
+    "period": "2015-2020",
+    "vmm": {
+     "final": 8983,
+     "cagr": 10.2,
+     "dd": -29.5
+    },
+    "xiu": {
+     "final": 8488,
+     "cagr": "9.2",
+     "dd": "-35.3"
+    },
+    "win": true
+   },
+   {
+    "period": "2021-now",
+    "vmm": {
+     "final": 14930,
+     "cagr": 20.6,
+     "dd": -30.3
+    },
+    "xiu": {
+     "final": 14331,
+     "cagr": "19.8",
+     "dd": "-15.3"
+    },
+    "win": true
+   }
+  ],
+  "survive": true
+ },
+ "survived": [
+  "T1",
+  "T2",
+  "T3",
+  "T4",
+  "T6",
+  "T7"
+ ],
+ "verdict": "NOT robust"
+}

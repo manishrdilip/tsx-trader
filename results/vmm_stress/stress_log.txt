@@ -1,0 +1,10 @@
+tickers 436 days 4726 2008-01-02 2026-10-30
+BASE {'VMM': {'final': 72957, 'cagr': np.float64(16.1), 'dd': np.float64(-30.3)}, 'XIU+div': {'final': 53128, 'cagr': np.float32(14.2), 'dd': np.float32(-35.3)}}
+T1 {'vmm': 72957, 'random_median': 0, 'random_p95': 0, 'beats_pct': np.float64(100.0), 'survive': True}
+T2 {'n': 81, 'beat_xiu_pct': np.float64(84.0), 'median_final': 68422, 'worst': 34483, 'survive': True}
+T3 {'finals': {0.25: 85618, 0.5: 72957, 1.0: 53285, 1.5: 39709}, 'xiu': 53128, 'survive': True}
+T4 76.9 [(2009, True), (2010, True), (2011, True), (2012, True), (2013, True), (2014, True), (2015, True), (2016, False), (2017, False), (2018, False), (2019, True), (2020, True), (2021, True)]
+T5 {'months': 213, 'mean_excess_pct': np.float64(0.16), 't': np.float64(0.71), 'p_t': 0.238, 'p_boot': 0.1775, 'survive': False}
+T6 {'median': 55991, 'p10': 46682, 'xiu': 53128, 'survive': True}
+T7 {'rows': [{'period': '2009-2014', 'vmm': {'final': 13343, 'cagr': np.float64(17.5), 'dd': np.float64(-18.1)}, 'xiu': {'final': 10749, 'cagr': np.float32(13.6), 'dd': np.float32(-19.3)}, 'win': True}, {'period': '2015-2020', 'vmm': {'final': 8983, 'cagr': np.float64(10.2), 'dd': np.float64(-29.5)}, 'xiu': {'final': 8488, 'cagr': np.float32(9.2), 'dd': np.float32(-35.3)}, 'win': True}, {'period': '2021-now', 'vmm': {'final': 14930, 'cagr': np.float64(20.6), 'dd': np.float64(-30.3)}, 'xiu': {'final': 14331, 'cagr': np.float32(19.8), 'dd': np.float32(-15.3)}, 'win': True}], 'survive': True}
+SURVIVED ['T1', 'T2', 'T3', 'T4', 'T6', 'T7'] VERDICT NOT robust
