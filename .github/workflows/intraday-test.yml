@@ -19,9 +19,9 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r lab/requirements.txt
-      - run: cd lab/intraday && python articles_test.py | tee ../../results_log.txt && mv results ../../ 2>/dev/null; true
+      - run: cd lab/intraday && python combo_test.py | tee ../../results_log.txt && mv results ../../ 2>/dev/null; true
       - name: Commit results
         run: |
-          mkdir -p results/intraday && cp results_log.txt results/intraday/articles_log.txt
+          mkdir -p results/intraday && cp results_log.txt results/intraday/combo_log.txt
           git config user.name "github-actions"; git config user.email "actions@github.com"
-          git add results/intraday && git commit -m "Articles strategy test results" && git push || true
+          git add results/intraday && git commit -m "Combo test results" && git push || true
