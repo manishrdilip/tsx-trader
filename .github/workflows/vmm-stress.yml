@@ -1,0 +1,32 @@
+name: Lab - VMM stress battery
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [vmm-stress]
+    paths: [lab/vmm/**, .github/workflows/vmm-stress.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - run: pip install -r lab/requirements.txt
+      - name: Download price file
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download data-latest -p prices.parquet
+      - run: python -u lab/vmm/stress.py prices.parquet | tee stress_log.txt
+      - name: Commit results
+        if: always()
+        run: |
+          mkdir -p results/vmm_stress && cp stress_log.txt results/vmm_stress/ || true
+          git config user.name "github-actions"; git config user.email "actions@github.com"
+          git add results/vmm_stress && git commit -m "VMM stress results" && git push || true
