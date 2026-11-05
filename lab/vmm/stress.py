@@ -55,7 +55,7 @@ START = np.searchsorted(idx, pd.Timestamp("2009-01-01"))
 def momentum_curve(look=252, entry=0.10, exit_=0.40, slots=20, cost=0.005, rng=None, bankrupt=0.0, brng=None):
     """Daily equity curve (per $1) of the momentum part alone, v3 rules."""
     Rv = RET[look].values
-    cash, pos = 1.0, {}  # pos: col -> shares
+    cash, pos, rscore = 1.0, {}, None  # pos: col -> shares
     eq = np.full(len(idx), np.nan); pend_buy, pend_sell = [], []
     last_bk_year = None
     for d in range(START, len(idx)):
@@ -82,8 +82,10 @@ def momentum_curve(look=252, entry=0.10, exit_=0.40, slots=20, cost=0.005, rng=N
         elig = (px >= 1) & (px <= 100) & (DVv[d] >= 3e5) & (Hv[d] >= 252) & ~np.isnan(Rv[d])
         if elig.sum() < 20: continue
         r = Rv[d].copy()
-        if rng is not None:  # random control: random score replaces momentum
-            r = np.where(elig, rng.random(len(r)), np.nan)
+        if rng is not None:  # random control: random score per stock, redrawn monthly (like a slow ranking)
+            if d == START or idx[d].month != idx[d-1].month:
+                rscore = rng.random(len(r))
+            r = np.where(elig, rscore, np.nan)
         rank = np.full(len(r), np.nan)
         er = r[elig]; order = er.argsort().argsort()
         rank[elig] = 1 - order / (len(er) - 1)  # 0 = best
@@ -132,6 +134,8 @@ def stats(s):
                 dd=round((s / s.cummax() - 1).min() * 100, 1))
 
 R = {}
+import os
+ONLY = os.environ.get("ONLY")
 base_m = momentum_curve(); base = blend(base_m); X = xiu_curve()
 R["base"] = {"VMM": stats(base), "XIU+div": stats(X)}
 print("BASE", R["base"])
@@ -142,6 +146,8 @@ pct = np.mean(np.array(rnd) < base.iat[-1]) * 100
 R["T1"] = dict(vmm=round(base.iat[-1]), random_median=round(np.median(rnd)), random_p95=round(np.percentile(rnd, 95)),
                beats_pct=round(pct, 1), survive=bool(pct >= 95))
 print("T1", R["T1"])
+if ONLY == "T1":
+    print("T1 random finals", sorted(round(v) for v in rnd)); sys.exit(0)
 
 # T2 neighbours
 nb = []
