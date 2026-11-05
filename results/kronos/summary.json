@@ -1,0 +1,18 @@
+{
+ "forecasts": 1875,
+ "weeks": 54,
+ "A_direction_hit_pct": 49.6,
+ "A_up_share_pct": 52.2,
+ "A_corr_forecast_vs_actual_ret": -0.033,
+ "D_vol_corr": 0.395,
+ "B_kronos_top5_total_pct": 5.5,
+ "equal_weight_total_pct": 14.0,
+ "random5_median_pct": 10.6,
+ "random5_p95_pct": 53.4,
+ "B_beats_random_pct": 38.0,
+ "B_pass": false,
+ "C_longshort_mean_weekly_pct": -1.19,
+ "C_t": -1.57,
+ "C_total_pct": -51.8,
+ "C_pass": false
+}
