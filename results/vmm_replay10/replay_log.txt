@@ -1,39 +1,39 @@
 PERIOD 2016-11-01 to 2026-10-30
-DEPOSITED $16,900 | VMM FINAL $53,216 | XIU-ONLY FINAL $52,611
-WORST DROP (month-end) VMM -21.5% | XIU -21.5%
-TRADES 739 (stocks 619, XIU 120); per year ~74
+DEPOSITED $16,900 | VMM FINAL $47,487 | XIU-ONLY FINAL $52,611
+WORST DROP (month-end) VMM -24.0% | XIU -21.5%
+TRADES 1107 (stocks 998, XIU 109); per year ~111
 
 YEAR-END (value at first trading day of last month of year)
       total  xiu_only  deposits  momentum_share  holdings
 date                                                     
 2016   4887      5195      5100              50        10
-2017   7242      7191      6300               7         5
-2018   8586      8557      7500               6         2
-2019  11281     11358      8700               5         3
-2020  13500     13583      9900               6         1
-2021  18430     18624     11100               5         5
-2022  20866     21082     12300               2         1
-2023  23167     23501     13500               2         2
-2024  32146     32530     14700               2         4
-2025  42926     42302     15900               1         1
-2026  51917     51153     16900               2         4
+2017   6958      7191      6300              28         9
+2018   7299      8557      7500              75         6
+2019   9473     11358      8700              43        13
+2020  10355     13583      9900              48        10
+2021  14785     18624     11100              56        20
+2022  15405     21082     12300             100        20
+2023  16225     23501     13500             100        20
+2024  27456     32530     14700              38        20
+2025  37467     42302     15900              28         9
+2026  48215     51153     16900              28        19
 
-FINAL HOLDINGS: ARG.TO x32, BDT.TO x5, AMD.TO x11, QTRH.TO x1, TOT.TO x1 | XIU x975 | cash $13
+FINAL HOLDINGS: ARG.TO x1, CEU.TO x1, AMD.TO x67, BTE.TO x99, BDT.TO x10, MSA.TO x95, TOT.TO x1, QTRH.TO x183, ARE.TO x10, EFX.TO x1, MTL.TO x18, PHX.TO x1, RUS.TO x7, DRX.TO x42, CAS.TO x35, GUD.TO x51, KEL.TO x51, IPCO.TO x14, TKO.TO x53, MX.TO x6 | XIU x660 | cash $2,492
 
 LAST 15 TRADES
-      date side  ticker  shares  price   value            reason
-2026-09-01 SELL  CGG.TO       9  44.19  397.71 monthly rebalance
-2026-09-01 SELL  HBM.TO       9  37.51  337.59 monthly rebalance
-2026-09-01 SELL  MSA.TO      45   7.85  353.37 monthly rebalance
-2026-09-01 SELL  DPM.TO       5  58.89  294.43 monthly rebalance
-2026-09-01 SELL  EXE.TO       5  29.68  148.40 monthly rebalance
-2026-09-01 SELL ABRA.TO      22  14.69  323.18 monthly rebalance
-2026-09-01 SELL  AMD.TO      14  11.89  166.42 monthly rebalance
-2026-09-01  BUY  XIU.TO      51  53.13 2709.63 monthly rebalance
-2026-09-02  BUY  AMD.TO      11  11.81  129.86   momentum signal
-2026-09-29  BUY QTRH.TO       1   2.97    2.97   momentum signal
-2026-10-01 SELL  MAU.TO      11  18.24  200.64 monthly rebalance
-2026-10-01  BUY  XIU.TO       7  52.29  366.03 monthly rebalance
-2026-10-02  BUY  MAU.TO       3  17.92   53.76   momentum signal
-2026-10-23 SELL  MAU.TO       3  15.08   45.24         rule exit
-2026-10-23  BUY  TOT.TO       1  38.29   38.29   momentum signal
+      date side  ticker  shares  price   value          reason
+2026-10-05  BUY  VNP.TO      20  33.24  664.80 momentum signal
+2026-10-09 SELL  VNP.TO      20  30.26  605.20       rule exit
+2026-10-09  BUY  DRX.TO      42  15.50  651.00 momentum signal
+2026-10-16 SELL  HBM.TO       2  33.39   66.78       rule exit
+2026-10-16  BUY  CAS.TO      35  18.01  630.35 momentum signal
+2026-10-23 SELL  MAU.TO     291  15.08 4388.28       rule exit
+2026-10-23 SELL  TKO.TO       1  10.43   10.43       rule exit
+2026-10-23 SELL  ERO.TO       1  42.03   42.03       rule exit
+2026-10-23  BUY  GUD.TO      51  11.61  592.11 momentum signal
+2026-10-23  BUY  KEL.TO      51  11.71  597.21 momentum signal
+2026-10-23  BUY IPCO.TO      14  40.29  564.06 momentum signal
+2026-10-27 SELL  CGG.TO      17  33.47  568.99       rule exit
+2026-10-27  BUY  TKO.TO      53  11.31  599.43 momentum signal
+2026-10-29 SELL  DPM.TO       3  50.42  151.26       rule exit
+2026-10-29  BUY   MX.TO       6  87.77  526.62 momentum signal
