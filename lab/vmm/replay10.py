@@ -49,6 +49,10 @@ for d in range(start, len(idx)):
         if sh >= 1:
             pos[j] = sh; sleeve_cash -= sh * px[j] * (1 + COST); log(d, "BUY", tick[j], sh, px[j], "momentum signal")
     pend_buy, pend_sell = [], []
+    # 1b) daily returns BEFORE any money moves today (flow-free) for the vol ratio
+    sv0 = sleeve_val(px)
+    if prev_sleeve: hist_s.append(sv0 / prev_sleeve - 1)
+    if prev_x: hist_x.append(xp / prev_x - 1)
     # 2) month start: deposit, dividends, rebalance
     if d == start or idx[d].month != idx[d - 1].month:
         if d != start: cash += 100; deposits += 100
@@ -78,11 +82,7 @@ for d in range(start, len(idx)):
         sleeve_cash += cash; cash = 0.0
         monthly.append(dict(date=idx[d].date(), total=round(total), deposits=round(deposits), momentum_share=round(w * 100),
                             holdings=len(pos), xiu_shares=xsh))
-    # 3) track daily returns of each part for the vol ratio
-    sv = sleeve_val(px)
-    if prev_sleeve: hist_s.append(sv / prev_sleeve - 1)
-    if prev_x: hist_x.append(xp / prev_x - 1)
-    prev_sleeve, prev_x = sv, xp
+    prev_sleeve, prev_x = sleeve_val(px), xp  # value AFTER today's money moves
     # 4) signals for tomorrow
     elig = (px >= 1) & (px <= 100) & (Dv[d] >= 3e5) & ~np.isnan(Rv[d])
     if elig.sum() < 20: continue
