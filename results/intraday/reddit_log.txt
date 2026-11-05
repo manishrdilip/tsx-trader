@@ -1,0 +1,79 @@
+done SPY 5m 4680
+done QQQ 5m 4680
+done IWM 5m 4680
+done AAPL 5m 4680
+done MSFT 5m 4680
+done NVDA 5m 4680
+done TSLA 5m 4680
+done AMD 5m 4680
+done AMZN 5m 4680
+done META 5m 4680
+done GOOGL 5m 4680
+done NFLX 5m 4680
+done JPM 5m 4680
+done XOM 5m 4680
+done BA 5m 4680
+done COIN 5m 4680
+done PLTR 5m 4680
+done SMCI 5m 4680
+done MU 5m 4680
+done AVGO 5m 4680
+done XIU.TO 5m 4680
+done RY.TO 5m 4680
+done TD.TO 5m 4680
+done SHOP.TO 5m 4680
+done ENB.TO 5m 4680
+done CNQ.TO 5m 4680
+done SU.TO 5m 4680
+done AEM.TO 5m 4677
+done BN.TO 5m 4680
+done CP.TO 5m 4680
+done BMO.TO 5m 4680
+done ABX.TO 5m 4680
+done CCO.TO 5m 4680
+done TRI.TO 5m 4680
+done WCN.TO 5m 4664
+done SPY 60m 5076
+done QQQ 60m 5077
+done IWM 60m 5076
+done AAPL 60m 5077
+done MSFT 60m 5077
+done NVDA 60m 5077
+done TSLA 60m 5077
+done AMD 60m 5077
+done AMZN 60m 5077
+done META 60m 5077
+done GOOGL 60m 5077
+done NFLX 60m 5077
+done JPM 60m 5076
+done XOM 60m 5076
+done BA 60m 5076
+done COIN 60m 5077
+done PLTR 60m 5077
+done SMCI 60m 5077
+done MU 60m 5077
+done AVGO 60m 5077
+done XIU.TO 60m 5091
+done RY.TO 60m 5089
+done TD.TO 60m 5089
+done SHOP.TO 60m 5089
+done ENB.TO 60m 5089
+done CNQ.TO 60m 5089
+done SU.TO 60m 5089
+done AEM.TO 60m 5089
+done BN.TO 60m 5089
+done CP.TO 60m 5089
+done BMO.TO 60m 5089
+done ABX.TO 60m 5089
+done CCO.TO 60m 5089
+done TRI.TO 60m 5089
+done WCN.TO 60m 5089
+            setup  trades  mean_0.03  t_0.03  mean_0.1   t_0.1  win%  US_mean  TSX_mean
+   ORB5 (5m, 60d)    2065    -0.0957   -3.60   -0.2357   -8.88  41.2  -0.1038   -0.0850
+  ORB15 (5m, 60d)    1989    -0.1348   -5.10   -0.2748  -10.39  40.9  -0.1382   -0.1303
+ORB5_RT (5m, 60d)    1594    -0.0740   -2.64   -0.2140   -7.64  40.8  -0.0771   -0.0696
+   VWAP (5m, 60d)    2100    -0.0857   -6.02   -0.2257  -15.86  33.3  -0.0953   -0.0728
+EMA9_20 (5m, 60d)    2027    -0.0726   -4.36   -0.2126  -12.78  29.6  -0.0932   -0.0451
+ RANDOM (5m, 60d)   10500    -0.0709  -13.36   -0.2109  -39.72  38.7  -0.0798   -0.0591
+   ORB60 (1h, 2y)   17029    -0.0529   -6.72   -0.1929  -24.50  44.6  -0.0671   -0.0339
+RANDOM60 (1h, 2y)  127575    -0.0682  -46.45   -0.2082 -141.86  39.2  -0.0775   -0.0557
