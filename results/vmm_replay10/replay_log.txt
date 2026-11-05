@@ -1,0 +1,39 @@
+PERIOD 2016-11-01 to 2026-10-30
+DEPOSITED $16,900 | VMM FINAL $53,216 | XIU-ONLY FINAL $52,611
+WORST DROP (month-end) VMM -21.5% | XIU -21.5%
+TRADES 739 (stocks 619, XIU 120); per year ~74
+
+YEAR-END (value at first trading day of last month of year)
+      total  xiu_only  deposits  momentum_share  holdings
+date                                                     
+2016   4887      5195      5100              50        10
+2017   7242      7191      6300               7         5
+2018   8586      8557      7500               6         2
+2019  11281     11358      8700               5         3
+2020  13500     13583      9900               6         1
+2021  18430     18624     11100               5         5
+2022  20866     21082     12300               2         1
+2023  23167     23501     13500               2         2
+2024  32146     32530     14700               2         4
+2025  42926     42302     15900               1         1
+2026  51917     51153     16900               2         4
+
+FINAL HOLDINGS: ARG.TO x32, BDT.TO x5, AMD.TO x11, QTRH.TO x1, TOT.TO x1 | XIU x975 | cash $13
+
+LAST 15 TRADES
+      date side  ticker  shares  price   value            reason
+2026-09-01 SELL  CGG.TO       9  44.19  397.71 monthly rebalance
+2026-09-01 SELL  HBM.TO       9  37.51  337.59 monthly rebalance
+2026-09-01 SELL  MSA.TO      45   7.85  353.37 monthly rebalance
+2026-09-01 SELL  DPM.TO       5  58.89  294.43 monthly rebalance
+2026-09-01 SELL  EXE.TO       5  29.68  148.40 monthly rebalance
+2026-09-01 SELL ABRA.TO      22  14.69  323.18 monthly rebalance
+2026-09-01 SELL  AMD.TO      14  11.89  166.42 monthly rebalance
+2026-09-01  BUY  XIU.TO      51  53.13 2709.63 monthly rebalance
+2026-09-02  BUY  AMD.TO      11  11.81  129.86   momentum signal
+2026-09-29  BUY QTRH.TO       1   2.97    2.97   momentum signal
+2026-10-01 SELL  MAU.TO      11  18.24  200.64 monthly rebalance
+2026-10-01  BUY  XIU.TO       7  52.29  366.03 monthly rebalance
+2026-10-02  BUY  MAU.TO       3  17.92   53.76   momentum signal
+2026-10-23 SELL  MAU.TO       3  15.08   45.24         rule exit
+2026-10-23  BUY  TOT.TO       1  38.29   38.29   momentum signal
