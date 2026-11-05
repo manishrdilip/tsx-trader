@@ -23,10 +23,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release download data-latest -p prices.parquet
-      - run: python -u lab/vmm/replay10.py prices.parquet | tee replay_log.txt
+      - run: python -u lab/vmm/alloc.py prices.parquet | tee replay_log.txt
       - name: Commit results
         if: always()
         run: |
-          mkdir -p results/vmm_stress && mkdir -p results/vmm_replay10 && cp replay_log.txt results/vmm_replay10/ || true
+          mkdir -p results/vmm_stress && mkdir -p results/vmm_alloc && cp replay_log.txt results/vmm_alloc/ || true
           git config user.name "github-actions"; git config user.email "actions@github.com"
-          git add results && git commit -m "VMM 10-year replay results" && git push || true
+          git add results && git commit -m "VMM allocation sweep" && git push || true
