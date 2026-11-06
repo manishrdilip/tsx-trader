@@ -118,12 +118,16 @@ def main(snap_path, out_path):
     mom_held = {t: u for t, u in held.items() if t != XIU}
     value = {t: u * float(close.get(t, np.nan)) for t, u in held.items()}
     held_val = sum(v for v in value.values() if v == v)
-    cash_avail = float(snap["cash_cad"])
+    # open orders from an earlier run today: never place a second order for the same stock
+    open_syms = {from_broker(o.get("symbol")) for o in snap.get("open_orders", []) if o.get("symbol")}
+    cash_avail = float(snap.get("buying_power_cad") or snap["cash_cad"]) if open_syms else float(snap["cash_cad"])
     if BUDGET > 0:
         cash_avail = max(0.0, min(cash_avail, BUDGET - held_val))
     equity = held_val + cash_avail
 
     orders, notes, sells = [], [], set()
+    if open_syms:
+        notes.append(f"Open orders already waiting: {sorted(open_syms)} (no duplicates placed)")
     # 1) sell rules for momentum holdings
     for t, u in mom_held.items():
         c, s, rr = close.get(t), sma.get(t), r12.get(t)
@@ -132,6 +136,8 @@ def main(snap_path, out_path):
         why = []
         if np.isfinite(s) and c < s: why.append(f"close {c:.2f} < 200d {s:.2f}")
         if np.isfinite(rr) and rr < top40: why.append(f"12m {rr*100:.0f}% < top-40% cut {top40*100:.0f}%")
+        if why and t in open_syms:
+            notes.append(f"{t}: sell signal but an order is already open"); continue
         if why:
             sells.add(t)
             orders.append({"action": "SELL", "ticker": t, "broker_symbol": to_broker(t), "units": u,
@@ -187,7 +193,7 @@ def main(snap_path, out_path):
         free = MAX_SLOTS - len(keep)  # keep buying the next-ranked stocks until free cash is used (max 20 stocks)
         for t in ranked.index:
             if free <= 0: break
-            if t in keep or t in sells or t in EXCLUDE: continue
+            if t in keep or t in sells or t in EXCLUDE or t in open_syms: continue
             if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
                 notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
