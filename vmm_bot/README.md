@@ -12,6 +12,12 @@ Variables:
 | `DRY_RUN` | `true` (default) | `false` to allow orders |
 | `TRADING_ENABLED` | `false` (default) | kill switch; must be `true` to trade |
 | `MAX_ORDER_CAD` | `800` | largest single buy allowed |
+| `VMM_BUDGET_CAD` | e.g. `3000` | most money the bot may manage in a shared account (0 = whole account) |
+| `VMM_PROTECTED` | `VEQT.TO,AIQ.TO,SPCX.TO,SPCX` | never bought or sold |
+| `VMM_EXCLUDE` | `LCFS.TO,TWM.TO` | never bought (e.g. takeover targets) |
+
+The bot keeps a ledger of shares it bought itself (`results/vmm_bot/state.json`) and only ever sells those.
+Shares you hold manually in the same account are ignored and never doubled.
 
 Orders are sent only when `DRY_RUN=false` AND `TRADING_ENABLED=true`. Set `TRADING_ENABLED=false` to stop instantly.
 

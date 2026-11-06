@@ -27,6 +27,9 @@ FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|T
                   r"Income Trust|Private|Mint|Trust Units|Corton|Arbitrage|Long Short|Market Neutral", re.I)
 SLOT_DOLLARS, MIN_MOM, MAX_SLOTS, MIN_SLOTS = 400.0, 2000.0, 20, 5
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
+BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
+EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
+PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
 
 
 def to_broker(t):
@@ -77,11 +80,18 @@ def prices(tickers):
 def main(snap_path, out_path):
     snap = json.load(open(snap_path))
     state = json.load(open(STATE)) if os.path.exists(STATE) else {}
-    held = {}
+    actual = {}
     for p in snap["positions"]:
         if p.get("symbol") and (p.get("units") or 0) > 0:
-            held[from_broker(p["symbol"])] = int(math.floor(p["units"]))
-
+            actual[from_broker(p["symbol"])] = int(math.floor(p["units"]))
+    # Ledger: the bot only manages shares IT bought. Everything else in the account is ignored.
+    ledger = {t: int(u) for t, u in state.get("ledger", {}).items()}
+    for t, pend in state.get("pending", {}).items():  # credit fills from last run's buys
+        filled = max(0, actual.get(t, 0) - int(pend["pre_units"]))
+        ledger[t] = ledger.get(t, 0) + min(filled, int(pend["units"]))
+    ledger = {t: min(u, actual.get(t, 0)) for t, u in ledger.items()}  # sells/fills reconcile
+    ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED}
+    held = ledger
     tick = sorted(set(universe()) | set(held) | {XIU})
     C, V = prices(tick)
     last = C.index[-1]
@@ -99,7 +109,11 @@ def main(snap_path, out_path):
 
     mom_held = {t: u for t, u in held.items() if t != XIU}
     value = {t: u * float(close.get(t, np.nan)) for t, u in held.items()}
-    equity = float(snap["cash_cad"]) + sum(v for v in value.values() if v == v)
+    held_val = sum(v for v in value.values() if v == v)
+    cash_avail = float(snap["cash_cad"])
+    if BUDGET > 0:
+        cash_avail = max(0.0, min(cash_avail, BUDGET - held_val))
+    equity = held_val + cash_avail
 
     orders, notes, sells = [], [], set()
     # 1) sell rules for momentum holdings
@@ -151,12 +165,14 @@ def main(snap_path, out_path):
     else:
         slots = int(min(MAX_SLOTS, max(MIN_SLOTS, mom_budget // SLOT_DOLLARS)))
         per = mom_budget / slots
-        cash = float(snap["cash_cad"])
+        cash = cash_avail
         cash -= sum(o["units"] * o["limit"] for o in orders if o["action"] == "BUY")
         free = slots - len(keep)
         for t in ranked.index:
             if free <= 0: break
-            if t in keep or t in sells: continue
+            if t in keep or t in sells or t in EXCLUDE: continue
+            if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
+                notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
             u = int(min(per, cash) // lim)
             if u < 1: notes.append(f"{t}: not enough cash for a slot"); break
@@ -170,7 +186,14 @@ def main(snap_path, out_path):
     plan = {"signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
             "xiu_ok": xiu_ok, "mom_share": round(share, 3), "top40_cut_pct": round(float(top40) * 100, 1),
             "orders": orders, "holdings": watch, "notes": notes,
-            "new_state": {"last_rebalance_month": month, "mom_share": share} if rebalance else state}
+            "budget_cad": BUDGET, "bot_ledger": ledger,
+            "new_state": {"last_rebalance_month": month if rebalance else state.get("last_rebalance_month"),
+                          "mom_share": share, "ledger": ledger,
+                          "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
+                                      for o in orders if o["action"] == "BUY"}}}
+    bad = [o for o in orders if o["ticker"] in PROTECTED or o["broker_symbol"].upper() in PROTECTED]
+    if bad:
+        raise SystemExit(f"refusing: protected ticker in orders {bad}")
     json.dump(plan, open(out_path, "w"), indent=2)
     print(json.dumps({k: plan[k] for k in ("signal_date", "equity_cad", "xiu_ok", "mom_share")}))
     for o in orders: print(o["action"], o["units"], o["ticker"], "@", o["limit"], "-", o["reason"])
