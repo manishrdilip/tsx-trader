@@ -27,6 +27,8 @@ FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|T
                   r"Income Trust|Private|Mint|Trust Units|Corton|Arbitrage|Long Short|Market Neutral", re.I)
 SLOT_DOLLARS, MIN_MOM, MAX_SLOTS, MIN_SLOTS = 400.0, 2000.0, 20, 5
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
+ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO").split(",") if t.strip()}  # manual holdings handed to the bot
+MAX_ORDER = float(os.environ.get("MAX_ORDER_CAD", "800"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
 PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
@@ -90,7 +92,11 @@ def main(snap_path, out_path):
         filled = max(0, actual.get(t, 0) - int(pend["pre_units"]))
         ledger[t] = ledger.get(t, 0) + min(filled, int(pend["units"]))
     ledger = {t: min(u, actual.get(t, 0)) for t, u in ledger.items()}  # sells/fills reconcile
+    for t in ADOPT:  # hand these manual holdings to the bot (sell rules apply)
+        if actual.get(t, 0) > 0:
+            ledger[t] = actual[t]
     ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED}
+    print("account holdings:", actual, "| bot manages:", ledger)
     held = ledger
     tick = sorted(set(universe()) | set(held) | {XIU})
     C, V = prices(tick)
@@ -150,8 +156,11 @@ def main(snap_path, out_path):
         px = float(close[XIU])
         if abs(diff) >= 100:
             u = int(abs(diff) // px)
+            act = "BUY" if diff > 0 else "SELL"
+            if act == "BUY":
+                lim0 = round(px * BUY_LIMIT_UP, 2)
+                u = min(u, int(cash_avail // lim0), int(MAX_ORDER // lim0))  # cash and per-order cap
             if u > 0:
-                act = "BUY" if diff > 0 else "SELL"
                 orders.append({"action": act, "ticker": XIU, "broker_symbol": to_broker(XIU), "units": u,
                                "limit": round(px * (BUY_LIMIT_UP if act == "BUY" else SELL_LIMIT_DN), 2),
                                "reason": f"monthly split: XIU target ${xiu_target:,.0f}"})
@@ -174,7 +183,7 @@ def main(snap_path, out_path):
             if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
                 notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
-            u = int(min(per, cash) // lim)
+            u = int(min(per, cash, MAX_ORDER) // lim)
             if u < 1: notes.append(f"{t}: not enough cash for a slot"); break
             orders.append({"action": "BUY", "ticker": t, "broker_symbol": to_broker(t), "units": u, "limit": lim,
                            "reason": f"rank {list(ranked.index).index(t)+1}, 12m {r12[t]*100:.0f}%, sell line {sma[t]:.2f}"})
