@@ -1,9 +1,15 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 0.6905481062963802,
+  "mom_share": 1.0,
   "ledger": {
     "MSA.TO": 5,
-    "LCFS.TO": 21
+    "LCFS.TO": 21,
+    "TWM.TO": 6
   },
-  "pending": {}
+  "pending": {
+    "LGD.TO": {
+      "units": 7,
+      "pre_units": 0
+    }
+  }
 }
