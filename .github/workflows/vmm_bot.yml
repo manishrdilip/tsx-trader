@@ -1,0 +1,61 @@
+name: VMM bot (Wealthsimple via SnapTrade)
+
+# Weekdays ~9:40 ET (14:40 UTC in winter; 10:40 ET in summer). Signals use the previous close.
+on:
+  schedule:
+    - cron: "40 14 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vmm-bot
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
+      SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
+      VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID }}
+      # Safety switches (repo Settings -> Secrets and variables -> Actions -> Variables).
+      # Orders are sent ONLY when DRY_RUN=false AND TRADING_ENABLED=true.
+      DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
+      TRADING_ENABLED: ${{ vars.TRADING_ENABLED || 'false' }}
+      MAX_ORDER_CAD: ${{ vars.MAX_ORDER_CAD || '800' }}
+      BROKER_SYMBOL_SUFFIX: ${{ vars.BROKER_SYMBOL_SUFFIX || '.TO' }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "20"
+      - run: pip install -r requirements.txt
+      - run: npm install --no-audit --no-fund
+        working-directory: vmm_bot
+      - name: Snapshot account
+        run: node vmm_bot/broker.mjs snapshot /tmp/snap.json
+      - name: Plan orders
+        run: python vmm_bot/plan.py /tmp/snap.json /tmp/plan.json
+      - name: Check symbols with broker
+        run: node vmm_bot/broker.mjs check /tmp/plan.json
+      - name: Execute (dry run unless enabled)
+        run: node vmm_bot/broker.mjs execute /tmp/plan.json /tmp/exec.json
+      - name: Report
+        if: always()
+        run: python vmm_bot/report.py /tmp/plan.json /tmp/exec.json
+      - name: Commit report
+        if: always()
+        run: |
+          git config user.name "vmm-bot"
+          git config user.email "vmm-bot@users.noreply.github.com"
+          git add results/vmm_bot || true
+          git diff --cached --quiet || git commit -m "VMM bot $(date -u +%F)"
+          git pull --rebase --autostash && git push
