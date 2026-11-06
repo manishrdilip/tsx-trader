@@ -25,7 +25,8 @@ XIU = "XIU.TO"
 SUFFIX = os.environ.get("BROKER_SYMBOL_SUFFIX", ".TO")  # how the broker names TSX tickers
 FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|Target 20|Split|"
                   r"Income Trust|Private|Mint|Trust Units|Corton|Arbitrage|Long Short|Market Neutral", re.I)
-SLOT_DOLLARS, MIN_MOM, MAX_SLOTS, MIN_SLOTS = 400.0, 2000.0, 20, 5
+SLOT_DOLLARS, MAX_SLOTS, MIN_SLOTS = 400.0, 20, 5
+MIN_MOM = float(os.environ.get("VMM_MIN_BUDGET", "0") or 0)  # 0 = always invest free cash (tested plan used 2000)
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
 ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO,TWM.TO").split(",") if t.strip()}  # manual holdings handed to the bot
 INDEX_LEG = os.environ.get("VMM_INDEX_LEG", "false").lower() == "true"  # false: you manage XIU/VEQT yourself
@@ -183,15 +184,16 @@ def main(snap_path, out_path):
         per = mom_budget / slots
         cash = cash_avail
         cash -= sum(o["units"] * o["limit"] for o in orders if o["action"] == "BUY")
-        free = slots - len(keep)
+        free = MAX_SLOTS - len(keep)  # keep buying the next-ranked stocks until free cash is used (max 20 stocks)
         for t in ranked.index:
             if free <= 0: break
             if t in keep or t in sells or t in EXCLUDE: continue
             if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
                 notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
-            u = int(min(per, cash, MAX_ORDER) // lim)
-            if u < 1: notes.append(f"{t}: not enough cash for a slot"); break
+            if lim > cash or lim > MAX_ORDER:  # can't afford one share: try the next-ranked stock
+                continue
+            u = max(1, int(min(per, cash, MAX_ORDER) // lim))
             orders.append({"action": "BUY", "ticker": t, "broker_symbol": to_broker(t), "units": u, "limit": lim,
                            "reason": f"rank {list(ranked.index).index(t)+1}, 12m {r12[t]*100:.0f}%, sell line {sma[t]:.2f}"})
             cash -= u * lim; free -= 1
