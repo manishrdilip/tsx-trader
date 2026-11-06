@@ -27,6 +27,7 @@ jobs:
       TRADING_ENABLED: ${{ vars.TRADING_ENABLED || 'false' }}
       MAX_ORDER_CAD: ${{ vars.MAX_ORDER_CAD || '800' }}
       VMM_INDEX_LEG: ${{ vars.VMM_INDEX_LEG || 'false' }}
+      VMM_MIN_BUDGET: ${{ vars.VMM_MIN_BUDGET || '0' }}
       VMM_ADOPT: ${{ vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
       VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}
