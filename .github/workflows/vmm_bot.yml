@@ -20,7 +20,7 @@ jobs:
     env:
       SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
       SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
-      VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID }}
+      VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID }}
       # Safety switches (repo Settings -> Secrets and variables -> Actions -> Variables).
       # Orders are sent ONLY when DRY_RUN=false AND TRADING_ENABLED=true.
       DRY_RUN: ${{ vars.DRY_RUN || 'true' }}

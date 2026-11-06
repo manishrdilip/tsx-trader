@@ -11,6 +11,9 @@ OUT = os.path.join(ROOT, "results", "vmm_bot")
 
 
 def main(plan_path, exec_path):
+    if not os.path.exists(plan_path):
+        msg = "*VMM bot*: stopped before planning (see the Snapshot/Plan step log). No orders placed."
+        send_telegram(msg); print(msg); return
     plan = json.load(open(plan_path))
     ex = json.load(open(exec_path)) if os.path.exists(exec_path) else {"live": False, "results": []}
     os.makedirs(OUT, exist_ok=True)
