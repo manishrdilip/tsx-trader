@@ -28,10 +28,11 @@ FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|T
 SLOT_DOLLARS, MIN_MOM, MAX_SLOTS, MIN_SLOTS = 400.0, 2000.0, 20, 5
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
 ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO,TWM.TO").split(",") if t.strip()}  # manual holdings handed to the bot
+INDEX_LEG = os.environ.get("VMM_INDEX_LEG", "false").lower() == "true"  # false: you manage XIU/VEQT yourself
 MAX_ORDER = float(os.environ.get("MAX_ORDER_CAD", "800"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
-PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
+PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
 
 
 def to_broker(t):
@@ -145,13 +146,16 @@ def main(snap_path, out_path):
         xr = C[XIU].pct_change().iloc[-60:]
         if len(picks) and rets.std() > 0:
             share = float(min(1.0, xr.std() / rets.std()))
-        notes.append(f"Monthly split {month}: momentum share {share*100:.0f}%")
+        if INDEX_LEG:
+            notes.append(f"Monthly split {month}: momentum share {share*100:.0f}%")
+    if not INDEX_LEG:  # momentum only: all of the bot's money (its holdings + free cash) goes to momentum
+        share = 1.0
     mom_budget = share * equity
     xiu_target = (1 - share) * equity
 
     # 3) XIU leg: full rebalance (buy or sell) at month start; on other days only top up
     #    with spare cash when XIU is $100+ under target (e.g. after a mid-month deposit)
-    if rebalance or (xiu_target - value.get(XIU, 0.0) >= 100 and cash_avail >= 100):
+    if INDEX_LEG and (rebalance or (xiu_target - value.get(XIU, 0.0) >= 100 and cash_avail >= 100)):
         xiu_val = value.get(XIU, 0.0)
         diff = xiu_target - xiu_val
         px = float(close[XIU])
