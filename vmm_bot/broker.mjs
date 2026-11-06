@@ -10,7 +10,7 @@ const { SNAPTRADE_CLIENT_ID, SNAPTRADE_CONSUMER_KEY, VMM_ACCOUNT_ID } = process.
 const DRY_RUN = (process.env.DRY_RUN ?? "true").toLowerCase() !== "false";
 const ENABLED = (process.env.TRADING_ENABLED ?? "false").toLowerCase() === "true";
 const MAX_ORDER = Number(process.env.MAX_ORDER_CAD ?? "800");
-const MAX_ORDERS = Number(process.env.MAX_ORDERS_PER_RUN ?? "12");
+const MAX_ORDERS = Number(process.env.MAX_ORDERS_PER_RUN ?? "25");
 
 function die(msg) { console.error("FATAL: " + msg); process.exit(1); }
 if (!SNAPTRADE_CLIENT_ID || !SNAPTRADE_CONSUMER_KEY) die("SnapTrade secrets missing");
@@ -42,19 +42,22 @@ async function snapshot(out) {
   console.log(`snapshot: ${positions.length} positions, cash CAD ${snap.cash_cad}`);
 }
 
-function guard(orders) {
+function guard(orders, plan = {}) {
+  // per-order cap scales with the account (plan.order_cap), but never above 25% of its money
+  const cap = Math.max(MAX_ORDER, Math.min(Number(plan.order_cap) || 0, 0.25 * (Number(plan.equity_cad) || 0)));
   if (orders.length > MAX_ORDERS) die(`too many orders (${orders.length} > ${MAX_ORDERS})`);
   for (const o of orders) {
     if (!["BUY", "SELL"].includes(o.action)) die(`bad action ${o.action}`);
     if (!(o.units > 0) || !Number.isInteger(o.units)) die(`bad units for ${o.symbol}`);
     if (!(o.limit > 0)) die(`no limit price for ${o.symbol}`);
-    if (o.action === "BUY" && o.units * o.limit > MAX_ORDER) die(`${o.symbol} order $${(o.units * o.limit).toFixed(2)} exceeds MAX_ORDER_CAD ${MAX_ORDER}`);
+    if (o.action === "BUY" && o.units * o.limit > cap + 0.01) die(`${o.symbol} order $${(o.units * o.limit).toFixed(2)} exceeds order cap ${cap.toFixed(2)}`);
   }
 }
 
 async function check(file) {
-  const { orders } = JSON.parse(fs.readFileSync(file, "utf8"));
-  guard(orders);
+  const plan = JSON.parse(fs.readFileSync(file, "utf8"));
+  const { orders } = plan;
+  guard(orders, plan);
   if (!orders.length) { console.log("no orders to check"); return; }
   const syms = [...new Set(orders.map((o) => o.broker_symbol))].join(",");
   const q = await st.trading.getUserAccountQuotes({ accountId: acct, symbols: syms, useTicker: true });
@@ -63,8 +66,9 @@ async function check(file) {
 }
 
 async function execute(file, out) {
-  const { orders } = JSON.parse(fs.readFileSync(file, "utf8"));
-  guard(orders);
+  const plan = JSON.parse(fs.readFileSync(file, "utf8"));
+  const { orders } = plan;
+  guard(orders, plan);
   const results = [];
   const live = !DRY_RUN && ENABLED;
   console.log(live ? "LIVE MODE: placing orders" : `DRY RUN (DRY_RUN=${DRY_RUN}, TRADING_ENABLED=${ENABLED}): no orders sent`);

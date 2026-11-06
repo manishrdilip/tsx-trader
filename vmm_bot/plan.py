@@ -30,7 +30,9 @@ MIN_MOM = float(os.environ.get("VMM_MIN_BUDGET", "0") or 0)  # 0 = always invest
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
 ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO,TWM.TO").split(",") if t.strip()}  # manual holdings handed to the bot
 INDEX_LEG = os.environ.get("VMM_INDEX_LEG", "false").lower() == "true"  # false: you manage XIU/VEQT yourself
-MAX_ORDER = float(os.environ.get("MAX_ORDER_CAD", "800"))
+MAX_ORDER = float(os.environ.get("MAX_ORDER_CAD", "800"))  # floor of the per-order cap
+MAX_ORDER_PCT = float(os.environ.get("MAX_ORDER_PCT", "0.10"))  # cap grows to this share of the bot's money
+MAX_ORDERS = int(os.environ.get("MAX_ORDERS_PER_RUN", "25"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
 PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
@@ -124,6 +126,7 @@ def main(snap_path, out_path):
     if BUDGET > 0:
         cash_avail = max(0.0, min(cash_avail, BUDGET - held_val))
     equity = held_val + cash_avail
+    order_cap = max(MAX_ORDER, MAX_ORDER_PCT * equity)
 
     orders, notes, sells = [], [], set()
     if open_syms:
@@ -173,7 +176,7 @@ def main(snap_path, out_path):
                 u = 0
             if act == "BUY":
                 lim0 = round(px * BUY_LIMIT_UP, 2)
-                u = min(u, int(cash_avail // lim0), int(MAX_ORDER // lim0))  # cash and per-order cap
+                u = min(u, int(cash_avail // lim0), int(order_cap // lim0))  # cash and per-order cap
             if u > 0:
                 orders.append({"action": act, "ticker": XIU, "broker_symbol": to_broker(XIU), "units": u,
                                "limit": round(px * (BUY_LIMIT_UP if act == "BUY" else SELL_LIMIT_DN), 2),
@@ -197,9 +200,10 @@ def main(snap_path, out_path):
             if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
                 notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
-            if lim > cash or lim > MAX_ORDER:  # can't afford one share: try the next-ranked stock
+            if len(orders) >= MAX_ORDERS - 1: notes.append("order limit per run reached"); break
+            if lim > cash or lim > order_cap:  # can't afford one share: try the next-ranked stock
                 continue
-            u = max(1, int(min(per, cash, MAX_ORDER) // lim))
+            u = max(1, int(min(per, cash, order_cap) // lim))
             orders.append({"action": "BUY", "ticker": t, "broker_symbol": to_broker(t), "units": u, "limit": lim,
                            "reason": f"rank {list(ranked.index).index(t)+1}, 12m {r12[t]*100:.0f}%, sell line {sma[t]:.2f}"})
             cash -= u * lim; free -= 1
@@ -210,7 +214,7 @@ def main(snap_path, out_path):
     plan = {"signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
             "xiu_ok": xiu_ok, "mom_share": round(share, 3), "top40_cut_pct": round(float(top40) * 100, 1),
             "orders": orders, "holdings": watch, "notes": notes,
-            "budget_cad": BUDGET, "bot_ledger": ledger,
+            "budget_cad": BUDGET, "order_cap": round(order_cap, 2), "bot_ledger": ledger,
             "new_state": {"last_rebalance_month": month if rebalance else state.get("last_rebalance_month"),
                           "mom_share": share, "ledger": ledger,
                           "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
