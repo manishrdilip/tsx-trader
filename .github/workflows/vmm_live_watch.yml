@@ -1,0 +1,57 @@
+name: VMM live monitor (phone alerts, no trading)
+
+on:
+  schedule:
+    - cron: "*/10 13-21 * * 1-5"   # every 10 min; the script skips outside 9:30-16:05 Toronto
+  workflow_dispatch:
+    inputs:
+      test:
+        description: "Send a test notification"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: vmm-live-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
+      SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
+      VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID }}
+      DROP_ALERT_PCT: ${{ vars.DROP_ALERT_PCT || '8' }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "20"
+      - run: pip install -q yfinance pandas
+      - name: Test notification
+        if: ${{ inputs.test }}
+        run: python vmm_bot/live_watch.py "" --test
+      - name: Read holdings
+        if: ${{ !inputs.test }}
+        run: |
+          npm install --no-audit --no-fund --prefix vmm_bot >/dev/null
+          node vmm_bot/broker.mjs snapshot /tmp/snap.json
+      - name: Check prices
+        if: ${{ !inputs.test }}
+        run: python vmm_bot/live_watch.py /tmp/snap.json
+      - name: Save alert status
+        if: ${{ !inputs.test }}
+        run: |
+          git config user.name "vmm-watch"
+          git config user.email "vmm-watch@users.noreply.github.com"
+          git add results/vmm_bot/alerts.json 2>/dev/null || exit 0
+          git diff --cached --quiet && exit 0
+          git commit -m "VMM live monitor $(date -u +%F' '%H:%M)"
+          git pull --rebase --autostash origin main && git push
