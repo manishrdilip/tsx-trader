@@ -16,6 +16,7 @@ TZ = ZoneInfo("America/Toronto")
 TOPIC = os.environ.get("NTFY_TOPIC", "tsx-dilip-fe7bc02c")
 DROP = float(os.environ.get("DROP_ALERT_PCT", "8"))
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
 SEEN = os.path.join(ROOT, "results", "vmm_bot", "alerts.json")
 
 
@@ -42,22 +43,24 @@ def main(snap_path, test=False):
     if now.weekday() > 4 or not (9 * 60 + 30 <= now.hour * 60 + now.minute <= 16 * 60 + 5):
         print("market closed"); return
     snap = json.load(open(snap_path))
-    tickers = sorted({to_yahoo(p["symbol"]) for p in snap["positions"] if p.get("symbol") and (p.get("units") or 0) > 0})
+    tickers = sorted({to_yahoo(p["symbol"]) for p in snap["positions"] if p.get("symbol") and (p.get("units") or 0) > 0}
+                     - PROTECTED)  # only stocks the bot manages
     if not tickers:
         print("no holdings"); return
     today = now.date().isoformat()
     seen = json.load(open(SEEN)) if os.path.exists(SEEN) else {}
     seen = {k: v for k, v in seen.items() if v == today}
-    daily = yf.download(tickers, period="1y", interval="1d", auto_adjust=False, progress=False, group_by="ticker")
-    intra = yf.download(tickers, period="1d", interval="1m", auto_adjust=False, progress=False, group_by="ticker")
-    for t in tickers:
+    for t in tickers:  # one ticker at a time: avoids yfinance cache locks; one bad ticker never stops the rest
         try:
-            d = daily[t]["Close"].dropna()
+            daily = yf.download(t, period="1y", interval="1d", auto_adjust=False, progress=False, threads=False, multi_level_index=False)
+            intra = yf.download(t, period="1d", interval="1m", auto_adjust=False, progress=False, threads=False, multi_level_index=False)
+            d = daily["Close"].dropna()
             d = d[d.index.date < now.date()]
-            last = float(intra[t]["Close"].dropna().iloc[-1])
+            last = float(intra["Close"].dropna().iloc[-1])
+            prev = float(d.iloc[-1])
         except Exception as e:
             print(t, "no data:", e); continue
-        prev, sma = float(d.iloc[-1]), float(d.iloc[-200:].mean()) if len(d) >= 200 else None
+        sma = float(d.iloc[-200:].mean()) if len(d) >= 200 else None
         chg = (last / prev - 1) * 100
         print(f"{t}: {last:.2f} ({chg:+.1f}%), sell line {sma:.2f}" if sma else f"{t}: {last:.2f} ({chg:+.1f}%)")
         if chg <= -DROP and seen.get(t + ":drop") != today:
