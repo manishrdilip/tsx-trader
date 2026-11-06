@@ -27,7 +27,7 @@ FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|T
                   r"Income Trust|Private|Mint|Trust Units|Corton|Arbitrage|Long Short|Market Neutral", re.I)
 SLOT_DOLLARS, MIN_MOM, MAX_SLOTS, MIN_SLOTS = 400.0, 2000.0, 20, 5
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
-ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO").split(",") if t.strip()}  # manual holdings handed to the bot
+ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO,TWM.TO").split(",") if t.strip()}  # manual holdings handed to the bot
 MAX_ORDER = float(os.environ.get("MAX_ORDER_CAD", "800"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
@@ -149,14 +149,17 @@ def main(snap_path, out_path):
     mom_budget = share * equity
     xiu_target = (1 - share) * equity
 
-    # 3) XIU leg (rebalance month only, ignore drifts < $100)
-    if rebalance:
+    # 3) XIU leg: full rebalance (buy or sell) at month start; on other days only top up
+    #    with spare cash when XIU is $100+ under target (e.g. after a mid-month deposit)
+    if rebalance or (xiu_target - value.get(XIU, 0.0) >= 100 and cash_avail >= 100):
         xiu_val = value.get(XIU, 0.0)
         diff = xiu_target - xiu_val
         px = float(close[XIU])
         if abs(diff) >= 100:
             u = int(abs(diff) // px)
             act = "BUY" if diff > 0 else "SELL"
+            if act == "SELL" and not rebalance:
+                u = 0
             if act == "BUY":
                 lim0 = round(px * BUY_LIMIT_UP, 2)
                 u = min(u, int(cash_avail // lim0), int(MAX_ORDER // lim0))  # cash and per-order cap
