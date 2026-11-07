@@ -45,6 +45,7 @@ jobs:
         run: |
           for m in TSX US NSE; do MARKET=$m python lab/paper_sim.py; done
       - run: python lab/refresh_card.py
+      - run: python lab/atr36_portfolio.py
       - name: Save results to main
         run: |
           git config user.name "github-actions"
