@@ -447,6 +447,10 @@
 "company": "Albatros Acquisition Corporation Inc.",
 "name": "Albatros Acquisition Corporation Inc."
 },
+"ALC-DB-B.TO": {
+"company": "Algoma Central Corporation",
+"name": "Algoma Cnt Crp 6.2DB"
+},
 "ALC.TO": {
 "company": "Algoma Central Corporation",
 "name": "Algoma Central Corp"
@@ -1131,6 +1135,10 @@
 "company": "Evolve Global Materials & Mining Enhanced Yield Index ETF",
 "name": "Evolve GlbMatMin Heg"
 },
+"BASQ-P.V": {
+"company": "Bastion Square Partners II Inc.",
+"name": "Bastion Square Partners II Inc."
+},
 "BAT.V": {
 "company": "Batero Gold Corp.",
 "name": "Batero Gold Corp"
@@ -1646,14 +1654,6 @@
 "BN-PF-J.TO": {
 "company": "Brookfield Corporation",
 "name": "Brookfld Corp. Pr 48"
-},
-"BN-PF-K.TO": {
-"company": "Brookfield Corporation",
-"name": "Brookfld Corp Pr 51"
-},
-"BN-PF-L.TO": {
-"company": "Brookfield Corporation",
-"name": "Brookfld Corp Pr 52"
 },
 "BN-PF-M.TO": {
 "company": "Brookfield Corporation",
@@ -3427,6 +3427,10 @@
 "company": "PIMCO Canadian Core Bond Fund",
 "name": "Pimco CdCr BndFndETF"
 },
+"CORP.TO": {
+"company": "Mulvihill Corporate Bond Fund",
+"name": "Mulvihill Corp Bd Fd"
+},
 "CORS.TO": {
 "company": "Corus Entertainment Holdings Inc.",
 "name": "Corus Entrtnm Hl Inc"
@@ -4375,6 +4379,18 @@
 "company": "Dios Exploration Inc.",
 "name": "Dios Exploration Inc"
 },
+"DPAY-U.TO": {
+"company": "Dynamic Premium Yield PLUS Fund",
+"name": "DynamicPrYd PF Unh U"
+},
+"DPAY-V.TO": {
+"company": "Dynamic Premium Yield PLUS Fund",
+"name": "Dynamic PrYd PF Hg U"
+},
+"DPAY.TO": {
+"company": "Dynamic Premium Yield PLUS Fund",
+"name": "Dynamic Pr Yld PlusF"
+},
 "DPF.V": {
 "company": "Dr. Phone Fix Canada Corporation",
 "name": "Dr. Phone Fix Canada Corporation"
@@ -4401,15 +4417,15 @@
 },
 "DRFC.TO": {
 "company": "Desjardins RI Multifactor Canadian Equity ETF",
-"name": "DesjardnsRI CA MF0Em"
+"name": "DesjardnsRI MfCA Eq"
 },
 "DRFD.TO": {
 "company": "Desjardins RI Multifactor International Equity ETF",
-"name": "DesjardinsRI DevUSCA"
+"name": "DesjardinsRI Mf Itnl"
 },
 "DRFE.TO": {
 "company": "Desjardins RI Multifactor Emerging Markets Equity ETF",
-"name": "DesjardnRI EmergMkMF"
+"name": "DesjrdnRI Mf EmgMkEq"
 },
 "DRFG.TO": {
 "company": "Desjardins RI Global Multifactor - Fossil Fuel Reserves Free ETF",
@@ -4417,7 +4433,7 @@
 },
 "DRFU.TO": {
 "company": "Desjardins RI Multifactor American Equity ETF",
-"name": "DesjardnRI US MFN0Em"
+"name": "DesjardnRI Mf AmEq E"
 },
 "DRM.TO": {
 "company": "DREAM Unlimited Corp.",
@@ -4425,19 +4441,19 @@
 },
 "DRMC.TO": {
 "company": "Desjardins RI Canadian Equity ETF",
-"name": "DesjardinsRI CdaNZEm"
+"name": "DesjardinsRI Cd Eq E"
 },
 "DRMD.TO": {
 "company": "Desjardins RI International Equity ETF",
-"name": "DesjardnRIDvUS-CA NZ"
+"name": "DesjardnsRI Itnl Eq "
 },
 "DRME.TO": {
 "company": "Desjardins RI Emerging Markets Equity ETF",
-"name": "DesjardnRI EmgMktNZ"
+"name": "DesjardnRI EmgMkt Eq"
 },
 "DRMU.TO": {
 "company": "Desjardins RI American Equity ETF",
-"name": "DesjardnsRI US NZ Em"
+"name": "DesjardnsRI AM Eq E"
 },
 "DRT-DB-A.TO": {
 "company": "DIRTT Environmental Solutions Ltd.",
@@ -6327,9 +6343,9 @@
 "company": "Forward Water Technologies Corp.",
 "name": "Forward Water Technologies Corp."
 },
-"FWZ.V": {
+"FWZ.TO": {
 "company": "Fireweed Metals Corp.",
-"name": "Fireweed Metals Corp."
+"name": "Fireweed Metals Corp"
 },
 "FXM.TO": {
 "company": "CI Morningstar Canada Value Index ETF",
@@ -8791,10 +8807,6 @@
 "company": "Laurentian Bank of Canada",
 "name": "Laurentian Bk Pr 13"
 },
-"LB.TO": {
-"company": "Laurentian Bank of Canada",
-"name": "Laurentian Bk of Can"
-},
 "LBIT-U.TO": {
 "company": "Evolve Levered Bitcoin ETF",
 "name": "Ev Lev Bitc ETF USD"
@@ -8954,6 +8966,10 @@
 "LITT.V": {
 "company": "Futuregen Industries Corp.",
 "name": "Futuregen Industries Corp."
+},
+"LKY.V": {
+"company": "Lucky Minerals Inc.",
+"name": "Lucky Minerals Inc."
 },
 "LLHE-U.TO": {
 "company": "Harvest Eli Lilly Enhanced High Income Shares ETF",
@@ -9282,6 +9298,10 @@
 "MAX.V": {
 "company": "MAX Resource Corp.",
 "name": "MAX Resource Corp."
+},
+"MAXQ.TO": {
+"company": "Maritime Launch Services Inc.",
+"name": "Maritime Lnch Srv In"
 },
 "MAYB-F.TO": {
 "company": "First Trust Vest U.S. Equity Buffer ETF - May",
@@ -10090,6 +10110,10 @@
 "MTA.V": {
 "company": "Metalla Royalty & Streaming Ltd.",
 "name": "Metalla Royalty & Streaming Ltd."
+},
+"MTAU.V": {
+"company": "Monteoro Minerals Ltd.",
+"name": "Monteoro Minerals Ltd."
 },
 "MTBA.TO": {
 "company": "Mackenzie Target 2027 North American IG Corporate Bond ETF",
@@ -11351,6 +11375,10 @@
 "company": "Purpose Active Conservative Fund",
 "name": "Purpose ActvConserv"
 },
+"PAEF.TO": {
+"company": "Purpose Active Equity Fund",
+"name": "Purpose Active Eq Fd"
+},
 "PAGF.TO": {
 "company": "Purpose Active Growth Fund",
 "name": "Purpose Actv Growth"
@@ -11894,6 +11922,10 @@
 "PNPN.V": {
 "company": "Power Metallic Mines Inc.",
 "name": "Power Metallic Mines Inc."
+},
+"PNTR.V": {
+"company": "Pantera Silver Corp.",
+"name": "Pantera Silver Corp."
 },
 "POND.V": {
 "company": "Pond Technologies Holdings Inc.",
@@ -12610,10 +12642,6 @@
 "QTLT.TO": {
 "company": "Mackenzie US Government Long Bond Index ETF",
 "name": "Mackenzie USGvtLgBnd"
-},
-"QTRH-DB.TO": {
-"company": "Quarterhill Inc.",
-"name": "Quarterhill Inc Deb"
 },
 "QTRH.TO": {
 "company": "Quarterhill Inc.",
@@ -15539,10 +15567,6 @@
 "company": "CI Tech Giants Covered Call ETF",
 "name": "CI TechGntCovrCallHG"
 },
-"TXG.TO": {
-"company": "Torex Gold Resources Inc.",
-"name": "Torex Gold Res J"
-},
 "TXN.TO": {
 "company": "Texas Instruments CDR (CAD Hedged)",
 "name": "TexasInst CDR Hgd"
@@ -15550,6 +15574,10 @@
 "TXP.TO": {
 "company": "Touchstone Exploration Inc.",
 "name": "Touchstone Expl Inc."
+},
+"TXR.TO": {
+"company": "Torex Resources Inc.",
+"name": "Torex Resources Inc."
 },
 "U-U.TO": {
 "company": "Sprott Physical Uranium Trust",

@@ -1,6 +1,6 @@
 Market TSX, start 5,000 CAD, 2016-10-31 to 2026-10-30
-Final equity: 8,883.43 CAD (+77.67%)
+Final equity: 11,592.27 CAD (+131.85%)
 Benchmark XIU.TO buy and hold: +227.69%
-Max drawdown: -34.73%
-Trades: 554  winners: 285  win rate: 51.4%
-Exits: {'time': 299, 'stop': 144, 'target': 66, 'stop (gap)': 45}
+Max drawdown: -30.51%
+Trades: 551  winners: 293  win rate: 53.2%
+Exits: {'time': 301, 'stop': 136, 'target': 68, 'stop (gap)': 46}
