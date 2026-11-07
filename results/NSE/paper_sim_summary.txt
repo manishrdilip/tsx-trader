@@ -1,6 +1,6 @@
 Market NSE, start 420,000 INR, 2016-11-01 to 2026-10-30
-Final equity: 566,409.38 INR (+34.86%)
+Final equity: 476,948.81 INR (+13.56%)
 Benchmark NIFTYBEES.NS buy and hold: +198.12%
-Max drawdown: -48.68%
-Trades: 515  winners: 237  win rate: 46.0%
-Exits: {'time': 256, 'stop': 157, 'target': 86, 'stop (gap)': 16}
+Max drawdown: -48.65%
+Trades: 512  winners: 234  win rate: 45.7%
+Exits: {'time': 253, 'stop': 160, 'target': 81, 'stop (gap)': 18}
