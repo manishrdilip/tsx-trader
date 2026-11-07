@@ -1,4 +1,4 @@
-"""Download daily history (2008-today) for TSX/TSXV, US (NASDAQ/NYSE/AMEX) and
+"""Download daily history (1998-today) for TSX/TSXV, US (NASDAQ/NYSE/AMEX) and
 NSE (India) stocks that are liquid enough to trade. Saves lab/data/prices.parquet
 and lab/data/failed.csv (every ticker that was dropped, with the reason).
 """
@@ -6,7 +6,7 @@ import csv, io, json, os, time, urllib.request
 import pandas as pd
 import yfinance as yf
 
-START = "2008-01-01"
+START = "1998-01-01"
 BATCH = 50
 RETRIES = 4
 MIN_DAYS = 250
@@ -16,7 +16,7 @@ RULES = {
     "US":   {"min_price": 2.0,  "min_dvol": 1_000_000},
     "NSE":  {"min_price": 20.0, "min_dvol": 50_000_000},
 }
-BENCHMARKS = ["XIU.TO", "XIC.TO", "SPY", "NIFTYBEES.NS"]
+BENCHMARKS = ["XIU.TO", "XIC.TO", "SPY", "NIFTYBEES.NS", "^NSEI"]
 
 
 def fetch_text(url):
@@ -134,14 +134,12 @@ def main():
             continue
         for t in chunk:
             if not process_ticker(t, raw, frames, failed, kept):
-                # If it failed with no data, queue for single retry
                 if failed and failed[-1][0] == t and failed[-1][1] == "no data returned by Yahoo":
                     retry_single.append(t)
-                    failed.pop()  # remove so we can re-add after retry
+                    failed.pop()
         print(f"{min(k+BATCH, len(all_tickers))}/{len(all_tickers)} kept={kept}", flush=True)
         time.sleep(2)
 
-    # Retry tickers that returned no data in batch, one at a time
     if retry_single:
         print(f"Retrying {len(retry_single)} tickers one-by-one...", flush=True)
         for t in retry_single:
@@ -170,6 +168,7 @@ def main():
     for m in ("TSX", "US", "NSE"):
         print(f"  {m}: kept {kept[m]} of {len(universe[m])}", flush=True)
     print(f"  total rows {len(df)}, tickers {df['ticker'].nunique()}, dropped {len(failed)} (see lab/data/failed.csv)", flush=True)
+    print(f"  date range {df['Date'].min()} to {df['Date'].max()}", flush=True)
 
 
 if __name__ == "__main__":

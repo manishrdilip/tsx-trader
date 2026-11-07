@@ -1,5 +1,5 @@
-"""India (NSE) ATR 3/6 leader-dip + VMM-style combo over full available history.
-Market filter = NIFTYBEES.NS. RS among liquid NSE names.
+"""India (NSE) ATR 3/6 leader-dip + VMM-style combo from earliest available (aim 1998).
+Market filter prefers NIFTYBEES.NS, falls back to ^NSEI if present and longer.
 """
 import os
 import sys
@@ -13,10 +13,17 @@ import indicators, sim, portfolio  # noqa: E402
 SLOTS_ATR = 2
 SLOTS_VMM = 10
 START_CAP = 2000.0
-BENCH = "NIFTYBEES.NS"
+START = "1998-01-01"
 
 
-def vmm_curve(I):
+def choose_bench(tickers):
+    for b in ("NIFTYBEES.NS", "^NSEI"):
+        if b in tickers:
+            return b
+    return None
+
+
+def vmm_curve(I, bench):
     C = I["C"]
     dates = C.index
     r12 = C.pct_change(252)
@@ -37,8 +44,8 @@ def vmm_curve(I):
             continue
         rr = r12.loc[me]
         ok = above.loc[me] & liquid.loc[me] & rr.notna()
-        if BENCH in rr.index:
-            ok = ok & (rr.index != BENCH)
+        if bench in rr.index:
+            ok = ok & (rr.index != bench)
         ranked = rr[ok].nlargest(max(1, int(0.1 * ok.sum())))
         picks = list(ranked.index[:SLOTS_VMM])
         if not picks:
@@ -64,20 +71,23 @@ def main(path="lab/data/prices.parquet"):
     raw = pd.read_parquet(path)
     raw["Date"] = pd.to_datetime(raw["Date"]).dt.tz_localize(None)
     raw["ticker"] = raw["ticker"].astype(str)
-    raw = raw[raw.ticker.str.endswith(".NS") | (raw.ticker == BENCH)]
-    if BENCH not in raw.ticker.unique():
-        print("NIFTYBEES.NS missing; aborting")
+    raw = raw[raw.ticker.str.endswith(".NS") | raw.ticker.isin(["NIFTYBEES.NS", "^NSEI"])]
+    bench = choose_bench(raw.ticker.unique())
+    if bench is None:
+        print("No NSE benchmark found; aborting")
         return
+    print(f"Using market filter: {bench}", flush=True)
     tmp = "/tmp/nse_prices.parquet"
     raw.to_parquet(tmp, index=False)
 
     P = indicators.load_panel(tmp)
-    I = indicators.build(P, market=BENCH)
+    I = indicators.build(P, market=bench)
     for k, v in list(I.items()):
         if isinstance(v, (pd.DataFrame, pd.Series)):
-            I[k] = v.loc["2009-01-01":]
+            I[k] = v.loc[START:]
 
     C = I["C"]
+    print(f"Panel date range: {C.index.min().date()} to {C.index.max().date()}", flush=True)
     stage2 = ((C > I["sma50"]) & (I["sma50"] > I["sma150"]) & (I["sma150"] > I["sma200"])
               & (I["sma200"] > I["sma200"].shift(21))
               & (C >= 1.3 * I["lo252"]) & (C >= 0.75 * I["hi252"]))
@@ -85,8 +95,8 @@ def main(path="lab/data/prices.parquet"):
     mktc = pd.DataFrame(np.repeat(mkt.values[:, None], C.shape[1], 1),
                         index=C.index, columns=C.columns)
     lead = (stage2 & (I["rs_rank"] > 0.8) & (I["rsi2"] < 10) & I["liquid"] & mktc).fillna(False)
-    if BENCH in lead.columns:
-        lead[BENCH] = False
+    if bench in lead.columns:
+        lead[bench] = False
 
     dates = C.index.values
     ti, ei, xi, r = sim.simulate(I, lead, mode=0, stop_atr=3, tgt_atr=6, hold=30)
@@ -94,9 +104,8 @@ def main(path="lab/data/prices.parquet"):
     p = portfolio.run(dates, ti, ei + 1, xi, r, rank=rank, slots=SLOTS_ATR)
     atr_curve = p["curve"]
 
-    vmm = vmm_curve(I)
+    vmm = vmm_curve(I, bench)
 
-    # align monthly
     atr_m = atr_curve.resample("ME").last().ffill()
     vmm_m = vmm.resample("ME").last().ffill()
     common = atr_m.index.intersection(vmm_m.index)
@@ -118,9 +127,9 @@ def main(path="lab/data/prices.parquet"):
     out = out.merge(yearly(vmm_n, "vmm"), on="year", how="outer")
     out = out.merge(yearly(combo, "combo"), on="year", how="outer")
     os.makedirs("lab/results", exist_ok=True)
-    out.to_csv("lab/results/india_vmm_atr.csv", index=False)
+    out.to_csv("lab/results/india_vmm_atr_long.csv", index=False)
 
-    print("NSE ATR 3/6 + VMM (full history)")
+    print("NSE ATR 3/6 + VMM (earliest available, target from 1998)")
     print(f"ATR trades={len(r)}  win={(r>0).mean():.3f}  CAGR={p['cagr']:.3f}  max_dd={p['max_dd']:.3f}")
     print(f"ATR final: {atr_n.iloc[-1]:.2f}x  |  VMM final: {vmm_n.iloc[-1]:.2f}x  |  Combo final: {combo.iloc[-1]:.2f}x")
     print(out.to_string(index=False))
