@@ -48,6 +48,7 @@ jobs:
       - run: python lab/atr36_portfolio.py
       - run: python lab/india_atr36.py
       - run: python lab/combine_vmm_atr.py
+      - run: python lab/combo_2025_news.py
       - name: Save results to main
         run: |
           git config user.name "github-actions"
