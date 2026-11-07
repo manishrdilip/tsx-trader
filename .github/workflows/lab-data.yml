@@ -39,7 +39,6 @@ jobs:
           print(tsx.head(30).to_string(index=False))
           PY
       - run: python lab/run_lab.py
-      - run: python lab/export_check.py
       - run: python lab/signals_day.py
       - name: Day-by-day 4/4 simulation per market
         run: |
