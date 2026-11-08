@@ -1,0 +1,84 @@
+account holdings (all): 0 | bot ledger: {}
+
+session 2026-11-06 | eligible 1096 | ranked 78 | market NIFTYBEES.NS ON | equity Rs 2,000 | cash Rs 2,000
+  note: slots 10, slot value Rs 200, cap 15% = Rs 300
+  note: CUPID.NS: Rs 342.30 too expensive for slot Rs 200 (or cash), skipped
+  note: STLTECH.NS: Rs 727.10 too expensive for slot Rs 200 (or cash), skipped
+  note: BLISSGVS.NS: Rs 620.40 too expensive for slot Rs 200 (or cash), skipped
+  note: SWANDEF.NS: Rs 2784.90 too expensive for slot Rs 200 (or cash), skipped
+  note: TBZ.NS: Rs 598.65 too expensive for slot Rs 200 (or cash), skipped
+  note: KABRAEXTRU.NS: Rs 754.80 too expensive for slot Rs 200 (or cash), skipped
+  note: CPPLUS.NS: Rs 4172.75 too expensive for slot Rs 200 (or cash), skipped
+  note: SANSERA.NS: Rs 4365.95 too expensive for slot Rs 200 (or cash), skipped
+  note: HFCL.NS: Rs 212.80 too expensive for slot Rs 200 (or cash), skipped
+  note: KMEW.NS: Rs 659.35 too expensive for slot Rs 200 (or cash), skipped
+  note: AEROFLEX.NS: Rs 487.55 too expensive for slot Rs 200 (or cash), skipped
+  note: SKYGOLD.NS: Rs 961.50 too expensive for slot Rs 200 (or cash), skipped
+  note: SHILPAMED.NS: Rs 951.80 too expensive for slot Rs 200 (or cash), skipped
+  note: ATHERENERG.NS: Rs 1839.95 too expensive for slot Rs 200 (or cash), skipped
+  note: WHEELS.NS: Rs 2337.75 too expensive for slot Rs 200 (or cash), skipped
+  note: DIACABS.NS: Rs 374.40 too expensive for slot Rs 200 (or cash), skipped
+  note: LAURUSLABS.NS: Rs 2363.40 too expensive for slot Rs 200 (or cash), skipped
+  note: KRISHANA.NS: Rs 246.25 too expensive for slot Rs 200 (or cash), skipped
+  note: WELCORP.NS: Rs 2226.95 too expensive for slot Rs 200 (or cash), skipped
+  note: RPTECH.NS: Rs 745.95 too expensive for slot Rs 200 (or cash), skipped
+  note: ACUTAAS.NS: Rs 3824.50 too expensive for slot Rs 200 (or cash), skipped
+  note: ROSSTECH.NS: Rs 1397.25 too expensive for slot Rs 200 (or cash), skipped
+  note: AETHER.NS: Rs 1577.45 too expensive for slot Rs 200 (or cash), skipped
+  note: BIRLACABLE.NS: Rs 352.45 too expensive for slot Rs 200 (or cash), skipped
+  note: MMFL.NS: Rs 635.70 too expensive for slot Rs 200 (or cash), skipped
+  note: PGIL.NS: Rs 1352.20 too expensive for slot Rs 200 (or cash), skipped
+  note: MCX.NS: Rs 3563.30 too expensive for slot Rs 200 (or cash), skipped
+  note: SAILIFE.NS: Rs 1803.00 too expensive for slot Rs 200 (or cash), skipped
+  note: AVADHSUGAR.NS: Rs 832.60 too expensive for slot Rs 200 (or cash), skipped
+  note: MANINDS.NS: Rs 805.70 too expensive for slot Rs 200 (or cash), skipped
+  note: GANDHAR.NS: Rs 254.00 too expensive for slot Rs 200 (or cash), skipped
+  note: SONACOMS.NS: Rs 909.00 too expensive for slot Rs 200 (or cash), skipped
+  note: RAYMOND.NS: Rs 1092.85 too expensive for slot Rs 200 (or cash), skipped
+  note: WELSPUNLIV.NS: Rs 243.75 too expensive for slot Rs 200 (or cash), skipped
+  note: VINDHYATEL.NS: Rs 2496.55 too expensive for slot Rs 200 (or cash), skipped
+  note: KTKBANK.NS: Rs 322.10 too expensive for slot Rs 200 (or cash), skipped
+  note: GNA.NS: Rs 570.60 too expensive for slot Rs 200 (or cash), skipped
+  note: SYRMA.NS: Rs 1473.90 too expensive for slot Rs 200 (or cash), skipped
+  note: PRECWIRE.NS: Rs 405.50 too expensive for slot Rs 200 (or cash), skipped
+  note: SGFIN.NS: Rs 703.95 too expensive for slot Rs 200 (or cash), skipped
+  note: PARAS.NS: Rs 1255.75 too expensive for slot Rs 200 (or cash), skipped
+  note: SMLMAH.NS: Rs 5312.10 too expensive for slot Rs 200 (or cash), skipped
+  note: CHENNPETRO.NS: Rs 1456.25 too expensive for slot Rs 200 (or cash), skipped
+  note: NEOGEN.NS: Rs 2574.10 too expensive for slot Rs 200 (or cash), skipped
+  note: SMSPHARMA.NS: Rs 503.55 too expensive for slot Rs 200 (or cash), skipped
+  note: ICIL.NS: Rs 494.75 too expensive for slot Rs 200 (or cash), skipped
+  note: ENTERO.NS: Rs 1919.45 too expensive for slot Rs 200 (or cash), skipped
+  note: SOTL.NS: Rs 683.75 too expensive for slot Rs 200 (or cash), skipped
+  note: UNIMECH.NS: Rs 1756.70 too expensive for slot Rs 200 (or cash), skipped
+  note: CYIENTDLM.NS: Rs 780.05 too expensive for slot Rs 200 (or cash), skipped
+  note: HAPPYFORGE.NS: Rs 1711.45 too expensive for slot Rs 200 (or cash), skipped
+  note: APOLLOPIPE.NS: Rs 503.70 too expensive for slot Rs 200 (or cash), skipped
+  note: MARKSANS.NS: Rs 306.75 too expensive for slot Rs 200 (or cash), skipped
+  note: EMCURE.NS: Rs 2234.95 too expensive for slot Rs 200 (or cash), skipped
+  note: ROLEXRINGS.NS: Rs 203.20 too expensive for slot Rs 200 (or cash), skipped
+  note: PANAMAPET.NS: Rs 442.65 too expensive for slot Rs 200 (or cash), skipped
+  note: NRBBEARING.NS: Rs 435.45 too expensive for slot Rs 200 (or cash), skipped
+  note: BHEL.NS: Rs 423.00 too expensive for slot Rs 200 (or cash), skipped
+  note: KOPRAN.NS: Rs 264.35 too expensive for slot Rs 200 (or cash), skipped
+  note: SHRIPISTON.NS: Rs 4316.25 too expensive for slot Rs 200 (or cash), skipped
+  note: ANTELOPUS.NS: Rs 897.50 too expensive for slot Rs 200 (or cash), skipped
+  note: KROSS.NS: Rs 293.95 too expensive for slot Rs 200 (or cash), skipped
+  note: THELEELA.NS: Rs 699.25 too expensive for slot Rs 200 (or cash), skipped
+  note: MARINE.NS: Rs 395.25 too expensive for slot Rs 200 (or cash), skipped
+  note: AVALON.NS: Rs 1912.55 too expensive for slot Rs 200 (or cash), skipped
+  note: RML.NS: Rs 1269.00 too expensive for slot Rs 200 (or cash), skipped
+  note: CEMPRO.NS: Rs 1336.55 too expensive for slot Rs 200 (or cash), skipped
+  note: E2E.NS: Rs 491.95 too expensive for slot Rs 200 (or cash), skipped
+  note: BSE.NS: Rs 3838.00 too expensive for slot Rs 200 (or cash), skipped
+  note: ARVIND.NS: Rs 499.70 too expensive for slot Rs 200 (or cash), skipped
+  BUY  SBC            qty     2  limit Rs     69.40  value Rs     138.80  12m 189% (top 10%), close above 200d
+  BUY  BODALCHEM      qty     1  limit Rs    155.30  value Rs     155.30  12m 152% (top 10%), close above 200d
+  BUY  MBAPL          qty     1  limit Rs    196.30  value Rs     196.30  12m 138% (top 10%), close above 200d
+  BUY  TFCILTD        qty     1  limit Rs    162.15  value Rs     162.15  12m 138% (top 10%), close above 200d
+  BUY  IOLCP          qty     1  limit Rs    185.15  value Rs     185.15  12m 99% (top 10%), close above 200d
+  BUY  PAISALO        qty     2  limit Rs     76.25  value Rs     152.50  12m 97% (top 10%), close above 200d
+  BUY  MOREPENLAB     qty     2  limit Rs     93.20  value Rs     186.40  12m 91% (top 10%), close above 200d
+  BUY  BLSE           qty     1  limit Rs    151.35  value Rs     151.35  12m 68% (top 10%), close above 200d
+
+DRY RUN: nothing placed. Plan saved to results/last_plan.json
