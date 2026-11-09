@@ -131,6 +131,23 @@ def place_limit_sell(kite: KiteConnect, symbol: str, qty: int, ltp: float, tick:
 
 # ── Position monitor ──────────────────────────────────────────────────────────
 
+def vmm_owned_symbols():
+    """Symbols the India VMM bot owns or is buying (results/india_vmm/state.json).
+    The VMM bot exits by its own rules, so no GTT stop/target is put on these."""
+    import json, os
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "india_vmm", "state.json")
+    try:
+        with open(path) as f:
+            st = json.load(f)
+        syms = set(st.get("ledger", {})) | set(st.get("pending", {}))
+        return {s[:-3] if s.endswith(".NS") else s for s in syms}
+    except FileNotFoundError:
+        return set()
+    except Exception as e:
+        log.error("could not read VMM state: %s", e)
+        return None  # unknown: place no new GTTs this run
+
+
 def run_monitor():
     """
     Check all holdings. Close legacy losers; make sure every other holding
@@ -163,6 +180,7 @@ def run_monitor():
         notify_once("order-list", f"⚠️ Auto-trader: failed to fetch orders — {e}")
         selling = None      # unknown: don't risk a second sell order this run
 
+    vmm_owned = vmm_owned_symbols()
     actions_taken = []
     summary_lines = ["📊 *Position Scan — India*", ""]
 
@@ -208,7 +226,10 @@ def run_monitor():
                 notify_once(f"sell-fail:{symbol}", err)
             continue
 
-        # Every other holding must have an exchange-side stop/target (GTT OCO)
+        # Every other holding must have an exchange-side stop/target (GTT OCO),
+        # except the India VMM bot's stocks (it sells by its own 200-day / ranking rules)
+        if vmm_owned is None or symbol in vmm_owned:
+            continue
         if protected is None or symbol in protected:
             continue
         try:

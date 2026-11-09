@@ -41,7 +41,7 @@ MIN_SLOTS = 10
 VOL_WINDOW = 126  # sessions of daily log returns for the risk-adjusted rank
 RANK_MODE = os.environ.get("INDIA_VMM_RANK", "riskadj")  # "riskadj" or "r12"
 MAX_SLOTS = 20
-MIN_SLOT_INR = _env_float("INDIA_VMM_MIN_SLOT_INR", 400)  # below this per slot, use fewer slots (floor MIN_SLOTS)
+MIN_SLOT_INR = _env_float("INDIA_VMM_MIN_SLOT_INR", 10000)  # slots = equity // this, clamped 10-20: 10 below Rs 2L, 20 from Rs 2L (as backtested)
 MAX_ORDER_PCT = _env_float("INDIA_VMM_MAX_ORDER_PCT", 0.15)
 MAX_ORDERS_PER_RUN = int(_env_float("INDIA_VMM_MAX_ORDERS", 25))
 BUY_UP = 1.01
@@ -209,7 +209,7 @@ def plan(sig, ledger, equity, cash, open_syms=frozenset(), protected=frozenset(P
             notes.append(f"{sym}: Rs {limit:.2f} too expensive for slot Rs {slot_value:.0f} (or cash), skipped")
             continue
         orders.append(_order("BUY", sym, qty, limit,
-                             f"12m {float(r12[sym]) * 100:.0f}% (top 10%), close above 200d"))
+                             f"rank {sig['ranked'].index(sym) + 1}, 12m {float(r12[sym]) * 100:.0f}% (top 10%), close above 200d"))
         cash_left -= qty * limit
         open_slots -= 1
 

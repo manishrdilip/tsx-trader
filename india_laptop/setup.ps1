@@ -83,6 +83,8 @@ function Add-TraderTask($name, $job, $at, $limit, $everyMin, $forTime) {
 Add-TraderTask "1 Zerodha token refresh" "refresh" "08:15" (New-TimeSpan -Minutes 15) $null $null
 Add-TraderTask "2 India order monitor"   "orders"  "09:10" (New-TimeSpan -Hours 6 -Minutes 30) $null $null
 Add-TraderTask "3 India auto-trader"     "monitor" "09:15" (New-TimeSpan -Minutes 4) 5 (New-TimeSpan -Hours 6 -Minutes 20)
+Add-TraderTask "4 India VMM bot AM"      "vmm"     "09:40" (New-TimeSpan -Minutes 20) 30 (New-TimeSpan -Minutes 31)
+Add-TraderTask "5 India VMM bot PM"      "vmm"     "14:45" (New-TimeSpan -Minutes 20) 15 (New-TimeSpan -Minutes 16)
 
 Step "7/7 Test: token refresh + read-only Zerodha check (no orders)"
 & $runner -Job refresh
