@@ -67,7 +67,7 @@ jobs:
           fi
           echo "RUN_SLOT=$slot" >> $GITHUB_ENV
           done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "$done" = "yes" ]; then
+          if [ "$done" = "yes" ]; then   # applies to every run, manual or scheduled: rules first
             echo "$slot run already done today ($today); skipping."; echo "skip=true" >> $GITHUB_OUTPUT
           else echo "skip=false" >> $GITHUB_OUTPUT; fi
       - uses: actions/setup-python@v5.3.0
