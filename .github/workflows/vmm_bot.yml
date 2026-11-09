@@ -49,6 +49,8 @@ jobs:
       VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
       VMM_FUND_MAX_CAD: ${{ vars.VMM_FUND_MAX_CAD || '3500' }}
       VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
+      VMM_TRAIL_PCT: ${{ vars.VMM_TRAIL_PCT || '28' }}
+      VMM_REBUY_DROP_PCT: ${{ vars.VMM_REBUY_DROP_PCT || '10' }}
       VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
       BROKER_SYMBOL_SUFFIX: ${{ vars.BROKER_SYMBOL_SUFFIX || '.TO' }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

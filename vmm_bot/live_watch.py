@@ -15,6 +15,7 @@ import pandas as pd, yfinance as yf
 TZ = ZoneInfo("America/Toronto")
 TOPIC = os.environ.get("NTFY_TOPIC", "tsx-dilip-fe7bc02c")
 DROP = float(os.environ.get("DROP_ALERT_PCT", "8"))
+TRAIL = float(os.environ.get("VMM_TRAIL_PCT", "28") or 28)
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
 SEEN = os.path.join(ROOT, "results", "vmm_bot", "alerts.json")
@@ -67,6 +68,10 @@ def main(snap_path, test=False):
     today = now.date().isoformat()
     seen = json.load(open(SEEN)) if os.path.exists(SEEN) else {}
     seen = {k: v for k, v in seen.items() if v == today}
+    try:
+        peaks = json.load(open(os.path.join(ROOT, "results", "vmm_bot", "state.json"))).get("peaks", {})
+    except Exception:
+        peaks = {}
     for t in tickers:  # one ticker at a time: avoids yfinance cache locks; one bad ticker never stops the rest
         try:
             daily = yf.download(t, period="1y", interval="1d", auto_adjust=False, progress=False, threads=False, multi_level_index=False)
@@ -85,8 +90,13 @@ def main(snap_path, test=False):
                  + (f" ({sma:.2f})." if sma else "."))
             seen[t + ":drop"] = today
         if sma and last < sma and seen.get(t + ":line") != today:
-            push(f"{t} below sell line", f"Now {last:.2f}, sell line {sma:.2f}. If it CLOSES below, the bot sells at tomorrow's open.", "urgent", "rotating_light")
+            push(f"{t} below sell line", f"Now {last:.2f}, sell line {sma:.2f}. If it CLOSES below, the bot sells at the next run.", "urgent", "rotating_light")
             seen[t + ":line"] = today
+        peak = peaks.get(t)
+        if peak and last <= peak * (1 - TRAIL / 100) and seen.get(t + ":trail") != today:
+            push(f"{t} hit the 28% line", f"Now {last:.2f}, high {peak:.2f}, 28% line {peak*(1-TRAIL/100):.2f}. "
+                 "If it closes there, the bot sells at the next run.", "urgent", "rotating_light")
+            seen[t + ":trail"] = today
     os.makedirs(os.path.dirname(SEEN), exist_ok=True)
     json.dump(seen, open(SEEN, "w"), indent=1)
 

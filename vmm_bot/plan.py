@@ -47,6 +47,11 @@ GUARD_XIU_DROP = float(os.environ.get("VMM_GUARD_XIU_DROP_PCT", "2.0"))   # XIU 
 GUARD_VIX = float(os.environ.get("VMM_GUARD_VIX", "30"))                   # VIX at/above this -> guard
 GUARD_VIX_JUMP = float(os.environ.get("VMM_GUARD_VIX_JUMP_PCT", "20"))     # VIX up this much today -> guard
 RUN_SLOT = os.environ.get("RUN_SLOT", "AM")
+# 28% trailing rule (tested 9 Nov 2026, claude/vmm-exit-rules-grid-2026-11-09.md):
+# sell when the close is TRAIL_PCT below the highest close since the bot started tracking the stock;
+# after such a sale, buy it back only once it is REBUY_DROP_PCT below the sale price (normal buy rules still apply).
+TRAIL_PCT = float(os.environ.get("VMM_TRAIL_PCT", "28") or 0)
+REBUY_DROP = float(os.environ.get("VMM_REBUY_DROP_PCT", "10") or 0)
 
 
 def market_guard():
@@ -174,18 +179,32 @@ def main(snap_path, out_path):
         notes.append("GUARD MODE: " + "; ".join(guard) + " -> no new buys, no VEQT selling (sell rules still active)")
     if open_syms:
         notes.append(f"Open orders already waiting: {sorted(open_syms)} (no duplicates placed)")
+    # highest close since tracking began (recent closes included so missed run days still count)
+    old_peaks = state.get("peaks", {})
+    peaks = {}
+    for t in mom_held:
+        recent = C[t].iloc[-5:].dropna() if t in C else pd.Series(dtype=float)
+        cands_ = [float(x) for x in recent] if t in old_peaks else ([float(close[t])] if t in close and np.isfinite(close[t]) else [])
+        if t in old_peaks: cands_.append(float(old_peaks[t]))
+        if cands_: peaks[t] = round(max(cands_), 4)
+    blocks = {t: v for t, v in state.get("rebuy_blocks", {}).items()}
     # 1) sell rules for momentum holdings
     for t, u in mom_held.items():
         c, s, rr = close.get(t), sma.get(t), r12.get(t)
         if c is None or not np.isfinite(c):
             notes.append(f"{t}: no price data, left alone"); continue
         why = []
+        trail_hit = False
+        if TRAIL_PCT > 0 and t in peaks and c <= peaks[t] * (1 - TRAIL_PCT / 100):
+            why.append(f"close {c:.2f} is {TRAIL_PCT:.0f}%+ below its high {peaks[t]:.2f}"); trail_hit = True
         if np.isfinite(s) and c < s: why.append(f"close {c:.2f} < 200d {s:.2f}")
         if np.isfinite(rr) and rr < top40: why.append(f"12m {rr*100:.0f}% < top-40% cut {top40*100:.0f}%")
         if why and t in open_syms:
             notes.append(f"{t}: sell signal but an order is already open"); continue
         if why:
             sells.add(t)
+            if trail_hit and REBUY_DROP > 0:
+                blocks[t] = round(float(c), 4)  # re-buy only once it's REBUY_DROP% below this
             orders.append({"action": "SELL", "ticker": t, "broker_symbol": to_broker(t), "units": u,
                            "limit": round(c * SELL_LIMIT_DN, 2), "reason": "; ".join(why)})
 
@@ -242,6 +261,10 @@ def main(snap_path, out_path):
         for t in ranked.index:
             if free <= 0: break
             if t in keep or t in sells or t in EXCLUDE or t in open_syms: continue
+            if t in blocks:
+                if float(close[t]) > blocks[t] * (1 - REBUY_DROP / 100):
+                    continue  # sold by the 28% rule; wait for a further dip before buying back
+                del blocks[t]
             if actual.get(t, 0) > 0:  # already held manually in this account: don't double up
                 notes.append(f"{t}: skipped, already held outside the bot"); continue
             px = float(close[t]); lim = round(px * BUY_LIMIT_UP, 2)
@@ -280,6 +303,9 @@ def main(snap_path, out_path):
     watch = [{"ticker": t, "close": round(float(close[t]), 2), "sell_line": round(float(sma[t]), 2),
               "pct_above": round((float(close[t]) / float(sma[t]) - 1) * 100, 1), "r12_pct": round(float(r12[t]) * 100)}
              for t in mom_held if t in close and np.isfinite(close[t])]
+    for w in watch:
+        if w["ticker"] in peaks:
+            w["high"] = round(peaks[w["ticker"]], 2); w["trail_line"] = round(peaks[w["ticker"]] * (1 - TRAIL_PCT / 100), 2)
     fund_sold = sum(o["units"] * o["limit"] for o in orders if o["ticker"] == FUND_TICKER)
     idle = max(0.0, cash_avail - sum(o["units"] * o["limit"] for o in orders if o["action"] == "BUY"))
     plan = {"guard": guard, "idle_cash": round(idle, 2), "run_slot": RUN_SLOT, "signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
@@ -293,6 +319,8 @@ def main(snap_path, out_path):
                                         "slots": sorted(set((state.get("run_slots", {}).get("slots", [])
                                                              if state.get("run_slots", {}).get("date") == dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() else []) + [RUN_SLOT]))},
                           "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
+                          "peaks": {t: v for t, v in peaks.items() if t not in sells},
+                          "rebuy_blocks": blocks,
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
                           "pending": {**carry, **{o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
                                       for o in orders if o["action"] == "BUY"}}}}
