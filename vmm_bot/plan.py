@@ -126,9 +126,13 @@ def main(snap_path, out_path):
             actual[from_broker(p["symbol"])] = int(math.floor(p["units"]))
     # Ledger: the bot only manages shares IT bought. Everything else in the account is ignored.
     ledger = {t: int(u) for t, u in state.get("ledger", {}).items()}
+    open_now = {from_broker(o.get("symbol")) for o in snap.get("open_orders", []) if o.get("symbol")}
+    carry = {}  # buy orders still open (e.g. morning order seen by the afternoon run): keep tracking them
     for t, pend in state.get("pending", {}).items():  # credit fills from last run's buys
-        filled = max(0, actual.get(t, 0) - int(pend["pre_units"]))
-        ledger[t] = ledger.get(t, 0) + min(filled, int(pend["units"]))
+        filled = min(max(0, actual.get(t, 0) - int(pend["pre_units"])), int(pend["units"]))
+        ledger[t] = ledger.get(t, 0) + filled
+        if t in open_now and int(pend["units"]) - filled > 0:
+            carry[t] = {"units": int(pend["units"]) - filled, "pre_units": actual.get(t, 0)}
     ledger = {t: min(u, actual.get(t, 0)) for t, u in ledger.items()}  # sells/fills reconcile
     for t in ADOPT:  # hand these manual holdings to the bot (sell rules apply)
         if actual.get(t, 0) > 0:
@@ -290,8 +294,8 @@ def main(snap_path, out_path):
                                                              if state.get("run_slots", {}).get("date") == dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() else []) + [RUN_SLOT]))},
                           "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
-                          "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
-                                      for o in orders if o["action"] == "BUY"}}}
+                          "pending": {**carry, **{o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
+                                      for o in orders if o["action"] == "BUY"}}}}
     bad = [o for o in orders if o["ticker"] in PROTECTED or o["broker_symbol"].upper() in PROTECTED]
     if bad:
         raise SystemExit(f"refusing: protected ticker in orders {bad}")

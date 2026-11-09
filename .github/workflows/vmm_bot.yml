@@ -5,7 +5,8 @@ on:
   schedule:
     # GitHub's timer often drops or delays runs, so several backup slots; the
     # once-a-day guard below makes sure only the first one that fires trades.
-    - cron: "40 14 * * 1-5"
+    - cron: "40 13 * * 1-5"   # 9:40 ET in summer (EDT); skipped in winter (8:40, before open)
+    - cron: "40 14 * * 1-5"   # 9:40 ET in winter (EST)
     - cron: "5 15 * * 1-5"
     - cron: "35 15 * * 1-5"
     - cron: "10 16 * * 1-5"
@@ -13,7 +14,8 @@ on:
     - cron: "40 17 * * 1-5"
     - cron: "40 18 * * 1-5"
     # afternoon redeploy run: puts the cash from morning sales back to work the same day
-    - cron: "45 19 * * 1-5"
+    - cron: "55 18 * * 1-5"   # 2:55 pm ET summer PM run
+    - cron: "45 19 * * 1-5"   # 2:45 pm ET winter PM run
     - cron: "15 20 * * 1-5"
   workflow_dispatch:
 
@@ -57,8 +59,12 @@ jobs:
         id: guard
         run: |
           today=$(TZ=America/Toronto date +%F)
-          hour=$(TZ=America/Toronto date +%H)
-          if [ "$hour" -ge 14 ]; then slot=PM; else slot=AM; fi
+          hm=$(TZ=America/Toronto date +%H%M); hm=$((10#$hm))
+          dow=$(TZ=America/Toronto date +%u)
+          if [ "$hm" -ge 1430 ]; then slot=PM; else slot=AM; fi
+          if [ "$dow" -ge 6 ] || [ "$hm" -lt 930 ] || [ "$hm" -ge 1545 ]; then
+            echo "Outside 9:30-3:45 Toronto market window ($hm); no trading."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
+          fi
           echo "RUN_SLOT=$slot" >> $GITHUB_ENV
           done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
           if [ "${{ github.event_name }}" = "schedule" ] && [ "$done" = "yes" ]; then
