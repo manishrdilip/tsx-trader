@@ -1,23 +1,25 @@
 """20-year XAUUSD 1h test. Data: Dukascopy monthly hourly BID candles (fetched directly)."""
 import os, lzma, struct, urllib.request, time, pandas as pd, numpy as np
 os.makedirs('results', exist_ok=True); CACHE='results/xau_1h.csv'
+def one(ym):
+    y,m=ym; t0=pd.Timestamp(y,m+1,1,tz='UTC'); out=[]
+    url=f'https://datafeed.dukascopy.com/datafeed/XAUUSD/{y}/{m:02d}/BID_candles_hour_1.bi5'
+    raw=b''
+    for a in range(3):
+        try:
+            raw=urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'Mozilla/5.0'}),timeout=20).read(); break
+        except Exception as e: err=e; time.sleep(2)
+    if not raw: print('miss',y,m+1,err,flush=True); return out
+    b=lzma.decompress(raw)
+    for i in range(0,len(b),24):
+        s_,o,c,l,h,v=struct.unpack('>IIIIIf',b[i:i+24])
+        if v>0: out.append((t0+pd.Timedelta(seconds=s_),o/1000,h/1000,l/1000,c/1000))
+    print('ok',y,m+1,len(out),flush=True); return out
 def fetch():
-    rows=[]
-    for y in range(2004, pd.Timestamp.utcnow().year+1):
-        for m in range(12):
-            t0=pd.Timestamp(y,m+1,1,tz='UTC')
-            if t0>pd.Timestamp.utcnow(): break
-            url=f'https://datafeed.dukascopy.com/datafeed/XAUUSD/{y}/{m:02d}/BID_candles_hour_1.bi5'
-            for a in range(4):
-                try: raw=urllib.request.urlopen(url,timeout=60).read(); break
-                except Exception as e: time.sleep(3); raw=b''
-            if not raw: print('miss',y,m+1); continue
-            b=lzma.decompress(raw)
-            for i in range(0,len(b),24):
-                s,o,c,l,h,v=struct.unpack('>IIIIIf',b[i:i+24])
-                if v>0: rows.append((t0+pd.Timedelta(seconds=s),o/1000,h/1000,l/1000,c/1000))
-        print('year',y,len(rows))
-    d=pd.DataFrame(rows,columns=['t','Open','High','Low','Close']).set_index('t'); d.to_csv(CACHE); return d
+    from concurrent.futures import ThreadPoolExecutor
+    now=pd.Timestamp.utcnow(); ym=[(y,m) for y in range(2004,now.year+1) for m in range(12) if pd.Timestamp(y,m+1,1,tz='UTC')<now]
+    with ThreadPoolExecutor(12) as ex: rows=[x for part in ex.map(one,ym) for x in part]
+    d=pd.DataFrame(rows,columns=['t','Open','High','Low','Close']).set_index('t').sort_index(); d.to_csv(CACHE); return d
 d=pd.read_csv(CACHE,index_col=0,parse_dates=True) if os.path.exists(CACHE) else fetch()
 d.index=pd.to_datetime(d.index,utc=True).tz_convert('America/New_York')
 c=d.Close; r=c.pct_change().fillna(0); BPY=len(r)/((d.index[-1]-d.index[0]).days/365.25)
