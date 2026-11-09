@@ -94,3 +94,9 @@ jobs:
           git add results/vmm_bot || true
           git diff --cached --quiet || git commit -m "VMM bot $(date -u +%F)"
           git pull --rebase --autostash && git push
+      - name: Phone alert if the run failed
+        if: failure()
+        run: |
+          curl -s -H "Title: VMM bot FAILED" -H "Priority: urgent" -H "Tags: warning" \
+            -d "Run failed $(TZ=America/Toronto date '+%a %b %d %H:%M'). Claude reviews it at 2 pm; or tap Run workflow. ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "https://ntfy.sh/${NTFY_TOPIC:-tsx-dilip-fe7bc02c}"
