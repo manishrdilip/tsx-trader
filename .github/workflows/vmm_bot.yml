@@ -33,7 +33,10 @@ jobs:
       VMM_ADOPT: ${{ vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
       VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}
-      VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
+      VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
+      VMM_FUND_MAX_CAD: ${{ vars.VMM_FUND_MAX_CAD || '3500' }}
+      VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
+      VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
       BROKER_SYMBOL_SUFFIX: ${{ vars.BROKER_SYMBOL_SUFFIX || '.TO' }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

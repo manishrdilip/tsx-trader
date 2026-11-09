@@ -16,7 +16,7 @@ TZ = ZoneInfo("America/Toronto")
 TOPIC = os.environ.get("NTFY_TOPIC", "tsx-dilip-fe7bc02c")
 DROP = float(os.environ.get("DROP_ALERT_PCT", "8"))
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
+PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
 SEEN = os.path.join(ROOT, "results", "vmm_bot", "alerts.json")
 
 

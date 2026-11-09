@@ -35,7 +35,12 @@ MAX_ORDER_PCT = float(os.environ.get("MAX_ORDER_PCT", "0.10"))  # cap grows to t
 MAX_ORDERS = int(os.environ.get("MAX_ORDERS_PER_RUN", "25"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
-PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
+PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
+# Funding source: when good picks can't be bought for lack of cash, the bot sells this ETF to raise it.
+# Never bought by the bot; total sold is capped by VMM_FUND_MAX_CAD (tracked in state). 0 = off.
+FUND_TICKER = os.environ.get("VMM_FUND_TICKER", "VEQT.TO").strip().upper()
+FUND_MAX = float(os.environ.get("VMM_FUND_MAX_CAD", "3500") or 0)
+FUND_KEEP = float(os.environ.get("VMM_FUND_KEEP_CAD", "0") or 0)  # never sell below this VEQT value
 
 
 def to_broker(t):
@@ -99,10 +104,10 @@ def main(snap_path, out_path):
     for t in ADOPT:  # hand these manual holdings to the bot (sell rules apply)
         if actual.get(t, 0) > 0:
             ledger[t] = actual[t]
-    ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED}
+    ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED and t != FUND_TICKER}
     print("account holdings:", actual, "| bot manages:", ledger)
     held = ledger
-    tick = sorted(set(universe()) | set(held) | {XIU})
+    tick = sorted(set(universe()) | set(held) | {XIU} | ({FUND_TICKER} if FUND_TICKER else set()))
     C, V = prices(tick)
     last = C.index[-1]
     close = C.iloc[-1]
@@ -113,6 +118,8 @@ def main(snap_path, out_path):
     hist = C.notna().sum()
     elig = close.between(1, 100) & (dv >= 300_000) & (hist >= 253)
     elig[XIU] = False
+    if FUND_TICKER in elig.index:
+        elig[FUND_TICKER] = False
     r = r12[elig].dropna()
     top10, top40 = r.quantile(0.9), r.quantile(0.6)
     ranked = r[(r >= top10) & (close[r.index] > sma[r.index])].sort_values(ascending=False)
@@ -208,15 +215,40 @@ def main(snap_path, out_path):
                            "reason": f"rank {list(ranked.index).index(t)+1}, 12m {r12[t]*100:.0f}%, sell line {sma[t]:.2f}"})
             cash -= u * lim; free -= 1
 
+        # 5) not enough cash for the remaining picks: sell VEQT to raise it (buys happen next run)
+        funded = float(state.get("funded_cad", 0.0))
+        want = [t for t in ranked.index if t not in keep and t not in sells and t not in EXCLUDE
+                and t not in open_syms and actual.get(t, 0) == 0
+                and t not in {o["ticker"] for o in orders}][:max(0, free)]
+        fpx = float(close.get(FUND_TICKER, np.nan)) if FUND_TICKER else float("nan")
+        f_units = actual.get(FUND_TICKER, 0)
+        if FUND_TICKER and FUND_MAX > 0 and want and f_units > 0 and np.isfinite(fpx) \
+                and FUND_TICKER not in open_syms and not open_syms:
+            need = min(len(want), 5) * SLOT_DOLLARS - max(cash, 0)
+            room = min(FUND_MAX - funded, f_units * fpx - FUND_KEEP, order_cap)
+            raise_amt = min(need, room)
+            u = int(math.ceil(raise_amt / (fpx * SELL_LIMIT_DN))) if raise_amt > 0 else 0
+            u = min(u, f_units, int(max(0, f_units * fpx - FUND_KEEP) // fpx))
+            if u > 0:
+                orders.append({"action": "SELL", "ticker": FUND_TICKER, "broker_symbol": to_broker(FUND_TICKER),
+                               "units": u, "limit": round(fpx * SELL_LIMIT_DN, 2),
+                               "reason": f"raise cash for {len(want)} unaffordable pick(s) ({', '.join(want[:5])}); "
+                                         f"VEQT used so far ${funded:,.0f} of ${FUND_MAX:,.0f}"})
+                notes.append(f"Selling {u} {FUND_TICKER} to fund buys; picks get bought on the next run")
+            elif FUND_MAX - funded <= 0:
+                notes.append(f"VEQT funding cap ${FUND_MAX:,.0f} used up")
+
     watch = [{"ticker": t, "close": round(float(close[t]), 2), "sell_line": round(float(sma[t]), 2),
               "pct_above": round((float(close[t]) / float(sma[t]) - 1) * 100, 1), "r12_pct": round(float(r12[t]) * 100)}
              for t in mom_held if t in close and np.isfinite(close[t])]
+    fund_sold = sum(o["units"] * o["limit"] for o in orders if o["ticker"] == FUND_TICKER)
     plan = {"signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
             "xiu_ok": xiu_ok, "mom_share": round(share, 3), "top40_cut_pct": round(float(top40) * 100, 1),
             "orders": orders, "holdings": watch, "notes": notes,
             "budget_cad": BUDGET, "order_cap": round(order_cap, 2), "bot_ledger": ledger,
             "new_state": {"last_rebalance_month": month if rebalance else state.get("last_rebalance_month"),
                           "mom_share": share, "ledger": ledger,
+                          "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
                           "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
                                       for o in orders if o["action"] == "BUY"}}}
     bad = [o for o in orders if o["ticker"] in PROTECTED or o["broker_symbol"].upper() in PROTECTED]
