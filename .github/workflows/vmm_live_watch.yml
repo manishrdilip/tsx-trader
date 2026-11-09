@@ -1,8 +1,15 @@
 name: VMM live monitor (phone alerts, no trading)
 
+# One long job per trading day: checks the market and holdings every 5 minutes from the open to the
+# close, and acts as a watchdog that starts the VMM bot if its 9:40 (AM) or 2:45 (PM) run is missing.
+# Several start times only so a late/dropped GitHub timer can't stop it; extra starts queue and exit.
 on:
   schedule:
-    - cron: "*/10 13-21 * * 1-5"   # every 10 min; the script skips outside 9:30-16:05 Toronto
+    - cron: "25 13 * * 1-5"   # 9:25 ET summer
+    - cron: "25 14 * * 1-5"   # 9:25 ET winter
+    - cron: "10 16 * * 1-5"
+    - cron: "10 18 * * 1-5"
+    - cron: "10 19 * * 1-5"
   workflow_dispatch:
     inputs:
       test:
@@ -12,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # lets the watchdog start a missed VMM bot run
 
 concurrency:
   group: vmm-live-watch
@@ -20,12 +28,14 @@ concurrency:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 355
     env:
       SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
       SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
       VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID }}
-      DROP_ALERT_PCT: ${{ vars.DROP_ALERT_PCT || '8' }}
+      VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
+      GH_TOKEN: ${{ github.token }}
+      NTFY: https://ntfy.sh/tsx-dilip-fe7bc02c
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: actions/setup-python@v5.3.0
@@ -38,20 +48,38 @@ jobs:
       - name: Test notification
         if: ${{ inputs.test }}
         run: python vmm_bot/live_watch.py "" --test
-      - name: Read holdings
+      - name: Monitor + watchdog loop (every 5 min until close)
         if: ${{ !inputs.test }}
         run: |
           npm install --no-audit --no-fund --prefix vmm_bot >/dev/null
-          node vmm_bot/broker.mjs snapshot /tmp/snap.json
-      - name: Check prices
-        if: ${{ !inputs.test }}
-        run: python vmm_bot/live_watch.py /tmp/snap.json
-      - name: Save alert status
-        if: ${{ !inputs.test }}
-        run: |
-          git config user.name "vmm-watch"
-          git config user.email "vmm-watch@users.noreply.github.com"
-          git add results/vmm_bot/alerts.json 2>/dev/null || exit 0
-          git diff --cached --quiet && exit 0
-          git commit -m "VMM live monitor $(date -u +%F' '%H:%M)"
-          git pull --rebase --autostash origin main && git push
+          git config user.name "vmm-watch"; git config user.email "vmm-watch@users.noreply.github.com"
+          stop=$(( $(date +%s) + 345*60 ))
+          declare -A tries
+          while :; do
+            dow=$(TZ=America/Toronto date +%u); hm=$((10#$(TZ=America/Toronto date +%H%M))); today=$(TZ=America/Toronto date +%F)
+            if [ "$dow" -ge 6 ] || [ "$hm" -ge 1605 ] || [ "$(date +%s)" -ge "$stop" ]; then echo "done for today ($hm)"; break; fi
+            if [ "$hm" -ge 930 ]; then
+              node vmm_bot/broker.mjs snapshot /tmp/snap.json && python vmm_bot/live_watch.py /tmp/snap.json || echo "check failed, retrying next loop"
+              git add results/vmm_bot/alerts.json 2>/dev/null
+              git diff --cached --quiet || { git commit -qm "VMM live monitor $(date -u +%F' '%H:%M)"; git pull -q --rebase --autostash origin main && git push -q || true; }
+            fi
+            # watchdog: start a missing bot run (bot's own guard prevents double trading)
+            git pull -q --rebase --autostash origin main || true
+            for slot in AM PM; do
+              if [ $slot = AM ]; then from=945; to=1425; else from=1450; to=1540; fi
+              [ "$hm" -lt "$from" ] || [ "$hm" -ge "$to" ] && continue
+              done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
+              [ "$done" = yes ] && continue
+              running=$(gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s in_progress -L 1 --json databaseId -q 'length'; gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s queued -L 1 --json databaseId -q 'length')
+              case "$running" in *1*) echo "bot run already in progress"; continue;; esac
+              n=${tries[$slot]:-0}; last=${tries[${slot}_t]:-0}
+              if [ $(( $(date +%s) - last )) -lt 1200 ]; then continue; fi   # at most every 20 min
+              if [ "$n" -ge 3 ]; then
+                [ "$n" -eq 3 ] && curl -s -H "Title: VMM bot $slot run still missing" -H "Priority: urgent" -H "Tags: warning" -d "Watchdog started it 3 times and it still hasn't completed. Claude will review; check Actions." "$NTFY"
+                tries[$slot]=4; continue
+              fi
+              echo "watchdog: $slot run missing at $hm, starting VMM bot"
+              gh workflow run vmm_bot.yml -R "$GITHUB_REPOSITORY" --ref main && tries[$slot]=$((n+1)) && tries[${slot}_t]=$(date +%s)
+            done
+            sleep 300
+          done
