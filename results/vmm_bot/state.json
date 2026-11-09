@@ -4,12 +4,10 @@
   "ledger": {
     "MSA.TO": 5,
     "LCFS.TO": 21,
-    "TWM.TO": 6
+    "TWM.TO": 6,
+    "LGD.TO": 7
   },
-  "pending": {
-    "LGD.TO": {
-      "units": 7,
-      "pre_units": 0
-    }
-  }
+  "last_run_date": "2026-11-09",
+  "funded_cad": 819.28,
+  "pending": {}
 }
