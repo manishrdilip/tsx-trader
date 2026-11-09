@@ -48,6 +48,10 @@ CRON=$(cat <<CRONEOF
 15-55/5 9 * * 1-5 flock -n /tmp/india_monitor.lock $R monitor
 */5 10-14 * * 1-5 flock -n /tmp/india_monitor.lock $R monitor
 0-35/5 15 * * 1-5 flock -n /tmp/india_monitor.lock $R monitor
+40 9 * * 1-5 flock -n /tmp/india_vmm.lock $R vmm
+10 10 * * 1-5 flock -n /tmp/india_vmm.lock $R vmm
+45 14 * * 1-5 flock -n /tmp/india_vmm.lock $R vmm
+0 15 * * 1-5 flock -n /tmp/india_vmm.lock $R vmm
 CRONEOF
 )
 ( sudo -u "$RUN_USER" crontab -l 2>/dev/null | grep -v 'tsx-trader India jobs' | grep -v "$R" || true; echo "$CRON" ) | sudo -u "$RUN_USER" crontab -

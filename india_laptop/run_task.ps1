@@ -2,7 +2,8 @@
 #   refresh  8:15 AM  - update code (git pull), then get today's Zerodha token
 #   monitor  every 5 min 9:15-3:35 - auto_trader.py monitor (GTT exits, legacy sells)
 #   orders   9:10 AM, runs all session - india_monitor.py (Claude check on your Kite orders)
-param([Parameter(Mandatory = $true)][ValidateSet("refresh", "monitor", "orders")][string]$Job)
+#   vmm      9:40 AM + 2:45 PM (backups 10:10, 3:00) - India VMM bot; orders only if TRADING_ENABLED=true in .env
+param([Parameter(Mandatory = $true)][ValidateSet("refresh", "monitor", "orders", "vmm")][string]$Job)
 
 $ErrorActionPreference = "Continue"   # git/python write progress to stderr; that is not a failure
 $Repo = Split-Path -Parent $PSScriptRoot
@@ -22,6 +23,7 @@ switch ($Job) {
     }
     "monitor" { & $Py auto_trader.py monitor *>> $Log }
     "orders"  { & $Py india_monitor.py *>> $Log }
+    "vmm"     { & $Py india_vmm\run.py --live *>> $Log }
 }
 
 # keep two weeks of logs

@@ -12,9 +12,9 @@ Status: **dry run only.** It places no orders until you pass `--live` and set `T
 | Liquidity | 20-day median of close x volume >= Rs 50 lakh |
 | History | >= 253 completed sessions |
 | Market filter | NIFTYBEES.NS (fallback ^NSEI) close above its 200-day average. If not, **no new buys**. Sells still run. |
-| Buy | 12-month return in the top 10% of the universe AND close above 200-day average. Strongest first. |
+| Buy | 12-month return in the top 10% of the universe AND close above 200-day average. Ranked by 12m return / 126-day volatility (risk-adjusted), best first. `INDIA_VMM_RANK=r12` = old plain ranking. |
 | Sell | close below 200-day average, OR 12-month return below the top-40% cut. |
-| Slots | `clamp(equity // Rs 400, 10, 20)`, equal size. The lab test used 10 slots. |
+| Slots | `clamp(equity // Rs 10,000, 10, 20)`: 10 slots below Rs 2 lakh, 20 from Rs 2 lakh (as backtested). |
 | Per-order cap | 15% of equity (`INDIA_VMM_MAX_ORDER_PCT`). |
 | Orders per run | 25 max |
 | Order type | LIMIT, CNC (delivery), DAY |
@@ -29,7 +29,7 @@ Status: **dry run only.** It places no orders until you pass `--live` and set `T
 - `rules.py`: pure rules (signals, plan). No network, no broker. Unit-tested.
 - `data.py`: price loaders. Offline: a parquet file. Live: yfinance `.NS` bars (free).
 - `broker.py`: the only file that talks to Kite.
-- `run.py`: the runner. Reconciles the ledger, plans, prints, saves `results/last_plan.json`, and places orders only when live.
+- `run.py`: the runner. Reconciles the ledger, plans, places orders only when live, and writes `results/india_vmm/` (state.json with ledger, pending and run_slots; report.md; log.jsonl; last_plan.json). Sends the plan to Telegram.
 - `tests/test_rules.py`: 14 tests. Run `python -m unittest discover -s india_vmm/tests -v`.
 
 ## Setup
@@ -67,3 +67,15 @@ TRADING_ENABLED=true python india_vmm/run.py --live
 - Sell proceeds are not counted as buy cash (CNC sells settle T+1).
 - The universe is wide (about 1,100 names pass the filters), and many top-momentum names are small and volatile. This is the same concern the lab backtests were checking.
 - Momentum rules here are the tested rules from the lab. They are not a guarantee of future returns.
+
+## Schedule (same pattern as the TSX bot)
+
+Runs on the India laptop / server (Zerodha needs the registered static IP), Mon-Fri IST:
+- **AM run 9:40** (backup 10:10): sells first, then buys with settled cash.
+- **PM run 2:45** (backup 3:00): puts cash from settled sells back to work.
+- Each slot runs once a day (`run_slots` in state.json); a backup run that finds the slot done exits.
+- Signals use the previous completed session's close.
+- Orders are placed only when `.env` has `TRADING_ENABLED=true`. Otherwise every run is a dry run and the plan goes to Telegram.
+- `auto_trader.py monitor` skips the VMM bot's stocks (no GTT stop/target on them), so the two do not fight.
+
+After pulling this change, run the setup once more (laptop: `setup.ps1`; server: `sudo bash india_server/setup.sh`) to add the two new scheduled jobs.
