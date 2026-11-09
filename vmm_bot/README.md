@@ -23,3 +23,10 @@ Orders are sent only when `DRY_RUN=false` AND `TRADING_ENABLED=true`. Set `TRADI
 
 ## Output
 `results/vmm_bot/report.md` (latest), `log.jsonl` (every run), `state.json` (monthly split, saved after live runs only).
+
+## 28% trailing rule (added 9 Nov 2026)
+On top of the 200-day and top-40% sell rules, the bot sells a stock when its close is 28% below the highest
+close since it started tracking it (`VMM_TRAIL_PCT`). After such a sale it buys the stock back only once the
+price is 10% below the sale price and the normal buy rules hold (`VMM_REBUY_DROP_PCT`). Highs are kept in
+`results/vmm_bot/state.json` (`peaks`, `rebuy_blocks`). Evidence: Stock project doc
+`claude/vmm-exit-rules-grid-2026-11-09.md`. Set `VMM_TRAIL_PCT=0` to switch it off.

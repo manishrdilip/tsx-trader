@@ -40,8 +40,8 @@ def main(plan_path, exec_path):
     else:
         L.append("No orders today.")
     if plan["holdings"]:
-        L += ["", "| Holding | Close | Sell line (200d) | % above | 12m % |", "|---|---|---|---|---|"]
-        L += [f"| {h['ticker']} | {h['close']} | {h['sell_line']} | {h['pct_above']} | {h['r12_pct']} |" for h in plan["holdings"]]
+        L += ["", "| Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |", "|---|---|---|---|---|---|---|"]
+        L += [f"| {h['ticker']} | {h['close']} | {h['sell_line']} | {h['pct_above']} | {h['r12_pct']} | {h.get('high','')} | {h.get('trail_line','')} |" for h in plan["holdings"]]
     L += [""] + [f"- {n}" for n in plan["notes"]]
     md = "\n".join(L)
     open(os.path.join(OUT, "report.md"), "w").write(md + "\n")
