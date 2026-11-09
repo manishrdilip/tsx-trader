@@ -43,6 +43,35 @@ FUND_MAX = float(os.environ.get("VMM_FUND_MAX_CAD", "3500") or 0)
 FUND_KEEP = float(os.environ.get("VMM_FUND_KEEP_CAD", "0") or 0)  # never sell below this VEQT value
 
 
+GUARD_XIU_DROP = float(os.environ.get("VMM_GUARD_XIU_DROP_PCT", "2.0"))   # XIU down this much today -> guard
+GUARD_VIX = float(os.environ.get("VMM_GUARD_VIX", "30"))                   # VIX at/above this -> guard
+GUARD_VIX_JUMP = float(os.environ.get("VMM_GUARD_VIX_JUMP_PCT", "20"))     # VIX up this much today -> guard
+RUN_SLOT = os.environ.get("RUN_SLOT", "AM")
+
+
+def market_guard():
+    """Shock check on 15-minute bars: XIU intraday drop and the VIX fear index.
+    Guard mode = no new buys and no VEQT selling; the normal sell rules still run."""
+    why = []
+    try:
+        x = yf.download(XIU, period="5d", interval="15m", auto_adjust=False, progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        xd = yf.download(XIU, period="10d", interval="1d", auto_adjust=False, progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        today = dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date()
+        prev = float(xd[xd.index.date < today].iloc[-1]); last = float(x.iloc[-1])
+        chg = (last / prev - 1) * 100
+        if chg <= -GUARD_XIU_DROP: why.append(f"XIU {chg:+.1f}% today")
+    except Exception as e:
+        print("guard: XIU check failed", e)
+    try:
+        v = yf.download("^VIX", period="10d", interval="1d", auto_adjust=False, progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        vl, vp = float(v.iloc[-1]), float(v.iloc[-2])
+        if vl >= GUARD_VIX: why.append(f"VIX {vl:.1f} (fear high)")
+        if (vl / vp - 1) * 100 >= GUARD_VIX_JUMP: why.append(f"VIX jumped {(vl/vp-1)*100:.0f}%")
+    except Exception as e:
+        print("guard: VIX check failed", e)
+    return why
+
+
 def to_broker(t):
     return t[:-3] + SUFFIX if t.endswith(".TO") else t
 
@@ -97,9 +126,13 @@ def main(snap_path, out_path):
             actual[from_broker(p["symbol"])] = int(math.floor(p["units"]))
     # Ledger: the bot only manages shares IT bought. Everything else in the account is ignored.
     ledger = {t: int(u) for t, u in state.get("ledger", {}).items()}
+    open_now = {from_broker(o.get("symbol")) for o in snap.get("open_orders", []) if o.get("symbol")}
+    carry = {}  # buy orders still open (e.g. morning order seen by the afternoon run): keep tracking them
     for t, pend in state.get("pending", {}).items():  # credit fills from last run's buys
-        filled = max(0, actual.get(t, 0) - int(pend["pre_units"]))
-        ledger[t] = ledger.get(t, 0) + min(filled, int(pend["units"]))
+        filled = min(max(0, actual.get(t, 0) - int(pend["pre_units"])), int(pend["units"]))
+        ledger[t] = ledger.get(t, 0) + filled
+        if t in open_now and int(pend["units"]) - filled > 0:
+            carry[t] = {"units": int(pend["units"]) - filled, "pre_units": actual.get(t, 0)}
     ledger = {t: min(u, actual.get(t, 0)) for t, u in ledger.items()}  # sells/fills reconcile
     for t in ADOPT:  # hand these manual holdings to the bot (sell rules apply)
         if actual.get(t, 0) > 0:
@@ -136,6 +169,9 @@ def main(snap_path, out_path):
     order_cap = max(MAX_ORDER, MAX_ORDER_PCT * equity)
 
     orders, notes, sells = [], [], set()
+    guard = market_guard()
+    if guard:
+        notes.append("GUARD MODE: " + "; ".join(guard) + " -> no new buys, no VEQT selling (sell rules still active)")
     if open_syms:
         notes.append(f"Open orders already waiting: {sorted(open_syms)} (no duplicates placed)")
     # 1) sell rules for momentum holdings
@@ -191,7 +227,9 @@ def main(snap_path, out_path):
 
     # 4) momentum buys
     keep = [t for t in mom_held if t not in sells]
-    if not xiu_ok:
+    if guard:
+        pass
+    elif not xiu_ok:
         notes.append("XIU below its 200-day: no new momentum buys")
     elif mom_budget < MIN_MOM:
         notes.append(f"Momentum budget ${mom_budget:,.0f} < ${MIN_MOM:,.0f}: no new momentum buys (small-account rule)")
@@ -223,7 +261,8 @@ def main(snap_path, out_path):
         fpx = float(close.get(FUND_TICKER, np.nan)) if FUND_TICKER else float("nan")
         f_units = actual.get(FUND_TICKER, 0)
         if FUND_TICKER and FUND_MAX > 0 and want and f_units > 0 and np.isfinite(fpx) \
-                and FUND_TICKER not in open_syms and not open_syms:
+                and FUND_TICKER not in open_syms and not open_syms \
+                and state.get("fund_date") != dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat():
             need = min(len(want), 5) * SLOT_DOLLARS - max(cash, 0)
             room = min(FUND_MAX - funded, f_units * fpx - FUND_KEEP, order_cap)
             raise_amt = min(need, room)
@@ -242,16 +281,21 @@ def main(snap_path, out_path):
               "pct_above": round((float(close[t]) / float(sma[t]) - 1) * 100, 1), "r12_pct": round(float(r12[t]) * 100)}
              for t in mom_held if t in close and np.isfinite(close[t])]
     fund_sold = sum(o["units"] * o["limit"] for o in orders if o["ticker"] == FUND_TICKER)
-    plan = {"signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
+    idle = max(0.0, cash_avail - sum(o["units"] * o["limit"] for o in orders if o["action"] == "BUY"))
+    plan = {"guard": guard, "idle_cash": round(idle, 2), "run_slot": RUN_SLOT, "signal_date": str(last.date()), "equity_cad": round(equity, 2), "cash_cad": snap["cash_cad"],
             "xiu_ok": xiu_ok, "mom_share": round(share, 3), "top40_cut_pct": round(float(top40) * 100, 1),
             "orders": orders, "holdings": watch, "notes": notes,
             "budget_cad": BUDGET, "order_cap": round(order_cap, 2), "bot_ledger": ledger,
             "new_state": {"last_rebalance_month": month if rebalance else state.get("last_rebalance_month"),
                           "mom_share": share, "ledger": ledger,
                           "last_run_date": dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat(),
+                          "run_slots": {"date": dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat(),
+                                        "slots": sorted(set((state.get("run_slots", {}).get("slots", [])
+                                                             if state.get("run_slots", {}).get("date") == dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() else []) + [RUN_SLOT]))},
+                          "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
-                          "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
-                                      for o in orders if o["action"] == "BUY"}}}
+                          "pending": {**carry, **{o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
+                                      for o in orders if o["action"] == "BUY"}}}}
     bad = [o for o in orders if o["ticker"] in PROTECTED or o["broker_symbol"].upper() in PROTECTED]
     if bad:
         raise SystemExit(f"refusing: protected ticker in orders {bad}")
