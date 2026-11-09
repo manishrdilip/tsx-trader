@@ -125,7 +125,12 @@ def reconcile(state, actual, open_syms):
         ledger[t] = ledger.get(t, 0) + min(filled, int(p["units"]))
         if t in open_syms:
             still_pending[t] = p
-    for t in [s.strip().upper() + ".NS" for s in os.environ.get("INDIA_VMM_ADOPT", "").split(",") if s.strip()]:
+    adopt_raw = os.environ.get("INDIA_VMM_ADOPT", "").strip()
+    if adopt_raw.upper() == "ALL":  # the bot manages every holding in the account (except protected)
+        adopt = [t for t, q in actual.items() if q > 0]
+    else:
+        adopt = [s.strip().upper() + ".NS" for s in adopt_raw.split(",") if s.strip()]
+    for t in adopt:
         if actual.get(t, 0) > 0:
             ledger[t] = actual[t]
     ledger = {t: min(q, actual.get(t, 0)) for t, q in ledger.items()}
