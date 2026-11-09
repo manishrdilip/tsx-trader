@@ -1,6 +1,6 @@
 """Live monitor for the VMM TFSA during market hours. Plain rules, no AI, never trades.
 
-Every run (every 10 min, 9:30-16:00 Toronto) it reads the account's holdings from the SnapTrade
+Every check (every 5 min, 9:30-16:05 Toronto, one long job per day) it reads the account's holdings from the SnapTrade
 snapshot and pushes a phone alert (ntfy app, topic NTFY_TOPIC) when a holding:
   - is down DROP_ALERT_PCT% or more today vs yesterday's close, or
   - trades below its 200-day average (the VMM sell line; the bot acts only on the close).
