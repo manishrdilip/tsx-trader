@@ -26,5 +26,12 @@
       "units": 1,
       "pre_units": 0
     }
-  }
+  },
+  "run_slots": {
+    "date": "2026-11-09",
+    "slots": [
+      "AM"
+    ]
+  },
+  "fund_date": "2026-11-09"
 }
