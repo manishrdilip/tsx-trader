@@ -8,6 +8,23 @@
     "LGD.TO": 7
   },
   "last_run_date": "2026-11-09",
-  "funded_cad": 819.28,
-  "pending": {}
+  "funded_cad": 1638.56,
+  "pending": {
+    "TLO.TO": {
+      "units": 39,
+      "pre_units": 0
+    },
+    "ARG.TO": {
+      "units": 36,
+      "pre_units": 0
+    },
+    "SOIL.TO": {
+      "units": 38,
+      "pre_units": 0
+    },
+    "QTRH.TO": {
+      "units": 1,
+      "pre_units": 0
+    }
+  }
 }
