@@ -76,6 +76,8 @@ Runs on the India laptop / server (Zerodha needs the registered static IP), Mon-
 - Each slot runs once a day (`run_slots` in state.json); a backup run that finds the slot done exits.
 - Signals use the previous completed session's close.
 - Orders are placed only when `.env` has `TRADING_ENABLED=true`. Otherwise every run is a dry run and the plan goes to Telegram.
+- `vmm_watch.py`: 5-min alerts (near/below 200d, order fills/rejects) + watchdog (starts a missing AM run at 9:55 or PM run at 15:05); `--pre` sends a pre-market report at 9:05.
+- `publish.py`: copies state/report/log/alerts to `results/india_vmm_live/` on GitHub (needs `GH_TOKEN` in .env) for the evening review.
 - `auto_trader.py monitor` skips the VMM bot's stocks (no GTT stop/target on them), so the two do not fight.
 
 After pulling this change, run the setup once more (laptop: `setup.ps1`; server: `sudo bash india_server/setup.sh`) to add the two new scheduled jobs.
