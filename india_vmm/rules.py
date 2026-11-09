@@ -6,7 +6,9 @@ Rules (matches the tested India setup in lab/india_vmm_atr.py: 10 slots, equal w
   Market filter: NIFTYBEES.NS (or ^NSEI) close above its 200-day average.
             If it is not, the bot places no new buys. Sells still run.
   Buy:  12-month return in the top 10% of the universe AND close above the 200-day average.
-        Strongest 12-month return first, into free slots.
+        Ranked by risk-adjusted momentum (12m return / 126-day daily volatility), best first, into free slots.
+        (Backtest 2010-2026, survivor data: 28.6% vs 26.4% CAGR, max DD -46.5% vs -52%;
+        smaller DD in 20/20 random-universe runs and better in every start year 2012-2025.)
   Sell: close below the 200-day average, OR 12-month return below the universe's top-40% cut.
   Sizing: slots = clamp(equity // MIN_SLOT_INR, MIN_SLOTS, MAX_SLOTS); equal size per slot.
           Every order is capped at MAX_ORDER_PCT (15%) of equity.
@@ -36,6 +38,8 @@ MIN_HISTORY = 253  # sessions
 TOP_FRAC = 0.10
 KEEP_FRAC = 0.40
 MIN_SLOTS = 10
+VOL_WINDOW = 126  # sessions of daily log returns for the risk-adjusted rank
+RANK_MODE = os.environ.get("INDIA_VMM_RANK", "riskadj")  # "riskadj" or "r12"
 MAX_SLOTS = 20
 MIN_SLOT_INR = _env_float("INDIA_VMM_MIN_SLOT_INR", 400)  # below this per slot, use fewer slots (floor MIN_SLOTS)
 MAX_ORDER_PCT = _env_float("INDIA_VMM_MAX_ORDER_PCT", 0.15)
@@ -83,6 +87,7 @@ def signals(closes, volumes):
         r12 = pd.Series(np.nan, index=closes.columns)
     dv20 = (closes * volumes).rolling(20, min_periods=20).median().iloc[-1]
     hist = closes.notna().sum()
+    vol = np.log(closes).diff().rolling(VOL_WINDOW, min_periods=VOL_WINDOW).std().iloc[-1]
     cand = pd.Series([is_candidate(s) for s in closes.columns], index=closes.columns, dtype=bool)
     elig = (cand & close.between(MIN_PRICE, MAX_PRICE) & (dv20 >= MIN_MEDIAN_TRADED)
             & (hist >= MIN_HISTORY) & r12.notna())
@@ -100,7 +105,11 @@ def signals(closes, volumes):
         top_cut = float(r_el.quantile(1 - TOP_FRAC))
         keep_cut = float(r_el.quantile(1 - KEEP_FRAC))
         ok = r_el[(r_el >= top_cut) & (close[r_el.index] > sma200[r_el.index])]
-        ranked = ok.sort_values(ascending=False).index.tolist()
+        if RANK_MODE == "riskadj":
+            score = (ok / vol[ok.index].clip(lower=1e-9)).dropna()
+        else:
+            score = ok
+        ranked = score.sort_values(ascending=False).index.tolist()
     else:
         top_cut = keep_cut = np.nan
         ranked = []
@@ -110,6 +119,7 @@ def signals(closes, volumes):
         "close": close,
         "sma200": sma200,
         "r12": r12,
+        "vol": vol,
         "eligible": elig,
         "n_eligible": int(elig.sum()),
         "ranked": ranked,
