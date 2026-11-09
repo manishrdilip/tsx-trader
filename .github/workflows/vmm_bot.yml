@@ -3,7 +3,15 @@ name: VMM bot (Wealthsimple via SnapTrade)
 # Weekdays ~9:40 ET (14:40 UTC in winter; 10:40 ET in summer). Signals use the previous close.
 on:
   schedule:
+    # GitHub's timer often drops or delays runs, so several backup slots; the
+    # once-a-day guard below makes sure only the first one that fires trades.
     - cron: "40 14 * * 1-5"
+    - cron: "5 15 * * 1-5"
+    - cron: "35 15 * * 1-5"
+    - cron: "10 16 * * 1-5"
+    - cron: "50 16 * * 1-5"
+    - cron: "40 17 * * 1-5"
+    - cron: "40 18 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -33,34 +41,53 @@ jobs:
       VMM_ADOPT: ${{ vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
       VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}
-      VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'VEQT.TO,XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
+      VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
+      VMM_FUND_MAX_CAD: ${{ vars.VMM_FUND_MAX_CAD || '3500' }}
+      VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
+      VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
       BROKER_SYMBOL_SUFFIX: ${{ vars.BROKER_SYMBOL_SUFFIX || '.TO' }}
       TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
       TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
     steps:
       - uses: actions/checkout@v4.2.2
+      - name: Once-a-day guard
+        id: guard
+        run: |
+          today=$(TZ=America/Toronto date +%F)
+          last=$(python3 -c "import json;print(json.load(open('results/vmm_bot/state.json')).get('last_run_date',''))" 2>/dev/null || true)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$last" = "$today" ]; then
+            echo "Already traded today ($today); skipping."; echo "skip=true" >> $GITHUB_OUTPUT
+          else echo "skip=false" >> $GITHUB_OUTPUT; fi
       - uses: actions/setup-python@v5.3.0
+        if: steps.guard.outputs.skip != 'true'
         with:
           python-version: "3.11"
       - uses: actions/setup-node@v4.1.0
+        if: steps.guard.outputs.skip != 'true'
         with:
           node-version: "20"
       - run: pip install -r requirements.txt
+        if: steps.guard.outputs.skip != 'true'
       - run: npm install --no-audit --no-fund
+        if: steps.guard.outputs.skip != 'true'
         working-directory: vmm_bot
       - name: Snapshot account
+        if: steps.guard.outputs.skip != 'true'
         run: node vmm_bot/broker.mjs snapshot /tmp/snap.json
       - name: Plan orders
+        if: steps.guard.outputs.skip != 'true'
         run: python vmm_bot/plan.py /tmp/snap.json /tmp/plan.json
       - name: Check symbols with broker
+        if: steps.guard.outputs.skip != 'true'
         run: node vmm_bot/broker.mjs check /tmp/plan.json
       - name: Execute (dry run unless enabled)
+        if: steps.guard.outputs.skip != 'true'
         run: node vmm_bot/broker.mjs execute /tmp/plan.json /tmp/exec.json
       - name: Report
-        if: always()
+        if: always() && steps.guard.outputs.skip != 'true'
         run: python vmm_bot/report.py /tmp/plan.json /tmp/exec.json
       - name: Commit report
-        if: always()
+        if: always() && steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "vmm-bot"
           git config user.email "vmm-bot@users.noreply.github.com"
