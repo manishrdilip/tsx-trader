@@ -5,9 +5,18 @@
     "MSA.TO": 5,
     "LCFS.TO": 21,
     "TWM.TO": 6,
-    "LGD.TO": 7
+    "LGD.TO": 7,
+    "SOIL.TO": 38
   },
   "last_run_date": "2026-11-09",
+  "run_slots": {
+    "date": "2026-11-09",
+    "slots": [
+      "AM",
+      "PM"
+    ]
+  },
+  "fund_date": "2026-11-09",
   "funded_cad": 1638.56,
   "pending": {
     "TLO.TO": {
@@ -18,20 +27,25 @@
       "units": 36,
       "pre_units": 0
     },
-    "SOIL.TO": {
-      "units": 38,
-      "pre_units": 0
-    },
     "QTRH.TO": {
       "units": 1,
       "pre_units": 0
+    },
+    "FTG.TO": {
+      "units": 10,
+      "pre_units": 0
+    },
+    "NUAG.TO": {
+      "units": 43,
+      "pre_units": 0
+    },
+    "AYA.TO": {
+      "units": 5,
+      "pre_units": 0
+    },
+    "CVVY.TO": {
+      "units": 2,
+      "pre_units": 0
     }
-  },
-  "run_slots": {
-    "date": "2026-11-09",
-    "slots": [
-      "AM"
-    ]
-  },
-  "fund_date": "2026-11-09"
+  }
 }

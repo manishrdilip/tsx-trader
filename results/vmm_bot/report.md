@@ -1,14 +1,13 @@
 # VMM bot — 2026-11-09 (LIVE)
-Signals from close of 2026-11-06. Account equity $1,451.21, cash $860.23.
+Signals from close of 2026-11-06. Account equity $1,732.70, cash $860.14.
 XIU above 200-day: yes. Momentum share 100%.
 
 | Status | Action | Shares | Stock | Limit | Why |
 |---|---|---|---|---|---|
-| PENDING | SELL | 14 | VEQT.TO | 58.52 | raise cash for 12 unaffordable pick(s) (FTG.TO, NUAG.TO, AYA.TO, MAU.TO, DRX.TO); VEQT used so far $819 of $3,500 |
-| PENDING | BUY | 39 | TLO.TO | 7.33 | rank 1, 12m 1588%, sell line 7.13 |
-| PENDING | BUY | 36 | ARG.TO | 7.98 | rank 4, 12m 194%, sell line 6.54 |
-| PENDING | BUY | 38 | SOIL.TO | 7.48 | rank 6, 12m 186%, sell line 5.93 |
-| PENDING | BUY | 1 | QTRH.TO | 2.72 | rank 9, 12m 154%, sell line 1.98 |
+| PENDING | BUY | 10 | FTG.TO | 32.89 | rank 7, 12m 186%, sell line 22.31 |
+| PENDING | BUY | 43 | NUAG.TO | 8.04 | rank 8, 12m 172%, sell line 7.07 |
+| PENDING | BUY | 5 | AYA.TO | 36.14 | rank 10, 12m 153%, sell line 29.16 |
+| PENDING | BUY | 2 | CVVY.TO | 1.97 | rank 20, 12m 114%, sell line 1.65 |
 
 | Holding | Close | Sell line (200d) | % above | 12m % |
 |---|---|---|---|---|
@@ -16,5 +15,6 @@ XIU above 200-day: yes. Momentum share 100%.
 | LCFS.TO | 19.0 | 13.14 | 44.6 | 352 |
 | TWM.TO | 21.5 | 16.09 | 33.6 | 258 |
 | LGD.TO | 2.09 | 1.58 | 32.6 | 190 |
+| SOIL.TO | 7.41 | 5.93 | 24.9 | 186 |
 
-- Selling 14 VEQT.TO to fund buys; picks get bought on the next run
+- Open orders already waiting: ['ARG.TO', 'QTRH.TO', 'TLO.TO'] (no duplicates placed)
