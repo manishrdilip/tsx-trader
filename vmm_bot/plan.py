@@ -248,6 +248,7 @@ def main(snap_path, out_path):
             "budget_cad": BUDGET, "order_cap": round(order_cap, 2), "bot_ledger": ledger,
             "new_state": {"last_rebalance_month": month if rebalance else state.get("last_rebalance_month"),
                           "mom_share": share, "ledger": ledger,
+                          "last_run_date": dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat(),
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
                           "pending": {o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
                                       for o in orders if o["action"] == "BUY"}}}
