@@ -2,8 +2,6 @@ name: Lab - refresh history and backtest (monthly)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "17 10 1 * *"     # 1st of every month
 
 permissions:
   contents: write

@@ -2,8 +2,6 @@
 name: India Daily Scan
 
 on:
-  schedule:
-    - cron: "30 10 * * 1-5"   # weekdays 10:30 UTC
   workflow_dispatch:
 
 jobs:

@@ -1,26 +1,7 @@
 name: TSX daily scan
 
 on:
-  schedule:
-    - cron: "30 21 * * 1-5"
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "tsx_scan_v2_6_fixed.py"
-      - "tsx_scan_v2_5.py"
-      - "tsx_scan_v2.py"
-      - "tsx_scan.py"
-      - "cache_manager.py"
-      - "universe.py"
-      - "universe_v2.py"
-      - "consensus.py"
-      - "candles.py"
-      - "leaders.py"
-      - "livelog.py"
-      - "stock_filter.py"
-      - "risk_levels.py"
-      - ".github/workflows/scan.yml"
 
 permissions:
   contents: write

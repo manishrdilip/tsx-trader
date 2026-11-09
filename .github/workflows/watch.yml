@@ -1,8 +1,6 @@
 name: Position watcher (phone alerts)
 
 on:
-  schedule:
-    - cron: "*/10 13-21 * * 1-5"     # every 10 min, covers 9:30-4:00 Toronto in EDT and EST
   push:                              # editing .github/alert-test sends a test notification
     branches: [main]
     paths: [".github/alert-test"]
