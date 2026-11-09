@@ -141,3 +141,26 @@ class TestRules(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RiskAdjRankTest(unittest.TestCase):
+    def test_smoother_stock_ranks_first(self):
+        n = 300
+        idx = pd.bdate_range(end="2026-11-06", periods=n)
+        rng = np.random.default_rng(1)
+        cols, vols = {}, {}
+        for i in range(30):
+            cols[f"F{i}.NS"] = 100 * np.exp(np.cumsum(rng.normal(0.0002, 0.01, n)))
+            vols[f"F{i}.NS"] = np.full(n, 200_000.0)
+        # higher return but very noisy vs slightly lower return, smooth
+        cols["NOISY.NS"] = 100 * np.exp(np.linspace(0, 1.2, n) + rng.normal(0, 0.05, n))
+        cols["SMOOTH.NS"] = 100 * np.exp(np.linspace(0, 1.0, n) + rng.normal(0, 0.002, n))
+        vols["NOISY.NS"] = vols["SMOOTH.NS"] = np.full(n, 200_000.0)
+        cols["NIFTYBEES.NS"] = 100 * (1.0005) ** np.arange(n)
+        vols["NIFTYBEES.NS"] = np.full(n, 1e6)
+        C, V = pd.DataFrame(cols, index=idx), pd.DataFrame(vols, index=idx)
+        sig = rules.signals(C, V)
+        self.assertIn("SMOOTH.NS", sig["ranked"])
+        self.assertIn("NOISY.NS", sig["ranked"])
+        self.assertLess(sig["ranked"].index("SMOOTH.NS"), sig["ranked"].index("NOISY.NS"))
+        self.assertGreater(sig["r12"]["NOISY.NS"], sig["r12"]["SMOOTH.NS"])
