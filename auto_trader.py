@@ -131,18 +131,30 @@ def place_limit_sell(kite: KiteConnect, symbol: str, qty: int, ltp: float, tick:
 
 # ── Position monitor ──────────────────────────────────────────────────────────
 
+class _AllHoldings:
+    def __contains__(self, item):
+        return True
+
+
+ALL_HOLDINGS = _AllHoldings()
+
+
 def vmm_owned_symbols():
     """Symbols the India VMM bot owns or is buying (results/india_vmm/state.json).
     The VMM bot exits by its own rules, so no GTT stop/target is put on these."""
     import json, os
+    adopt = os.environ.get("INDIA_VMM_ADOPT", "").strip()
+    if adopt.upper() == "ALL":
+        return ALL_HOLDINGS
+    extra = {a.strip().upper() for a in adopt.split(",") if a.strip()}
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "india_vmm", "state.json")
     try:
         with open(path) as f:
             st = json.load(f)
         syms = set(st.get("ledger", {})) | set(st.get("pending", {}))
-        return {s[:-3] if s.endswith(".NS") else s for s in syms}
+        return {s[:-3] if s.endswith(".NS") else s for s in syms} | extra
     except FileNotFoundError:
-        return set()
+        return extra
     except Exception as e:
         log.error("could not read VMM state: %s", e)
         return None  # unknown: place no new GTTs this run
@@ -201,6 +213,9 @@ def run_monitor():
             f"{status_icon} `{symbol}` {qty} shares | avg ₹{avg_cost:.2f} | LTP ₹{ltp:.2f} | {pnl_pct:+.2f}%"
         )
 
+        if vmm_owned is None or symbol in vmm_owned:
+            continue  # the India VMM bot manages this stock (its own sell rules)
+
         if symbol in LEGACY_LOSSES:
             if selling is None or symbol in selling:
                 continue    # sell order already working (or order book unknown)
@@ -228,8 +243,6 @@ def run_monitor():
 
         # Every other holding must have an exchange-side stop/target (GTT OCO),
         # except the India VMM bot's stocks (it sells by its own 200-day / ranking rules)
-        if vmm_owned is None or symbol in vmm_owned:
-            continue
         if protected is None or symbol in protected:
             continue
         try:
