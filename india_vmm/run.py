@@ -218,6 +218,17 @@ def main():
     def finish(state_out):
         if not offline:
             mark_slot(state_out, today, slot)
+            lines = {}
+            for t in set(ledger) | {o["ticker"] for o in orders if o["action"] == "BUY"}:
+                try:
+                    lines[t] = {"sma200": round(float(sig["sma200"][t]), 2), "r12": round(float(sig["r12"][t]), 4),
+                                "close": round(float(sig["close"][t]), 2)}
+                except Exception:
+                    pass
+            state_out["lines"] = lines
+            state_out["keep_cut"] = float(sig["keep_cut"]) if sig["keep_cut"] == sig["keep_cut"] else None
+            state_out["market_ok"] = bool(sig["market_ok"])
+            state_out["equity"], state_out["cash"] = round(equity, 2), round(cash, 2)
             save_json(STATE, state_out)
         write_report(plan_out, sig, ledger, placed)
         os.makedirs(OUT, exist_ok=True)
