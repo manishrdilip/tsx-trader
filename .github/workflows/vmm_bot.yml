@@ -12,6 +12,9 @@ on:
     - cron: "50 16 * * 1-5"
     - cron: "40 17 * * 1-5"
     - cron: "40 18 * * 1-5"
+    # afternoon redeploy run: puts the cash from morning sales back to work the same day
+    - cron: "45 19 * * 1-5"
+    - cron: "15 20 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -54,9 +57,12 @@ jobs:
         id: guard
         run: |
           today=$(TZ=America/Toronto date +%F)
-          last=$(python3 -c "import json;print(json.load(open('results/vmm_bot/state.json')).get('last_run_date',''))" 2>/dev/null || true)
-          if [ "${{ github.event_name }}" = "schedule" ] && [ "$last" = "$today" ]; then
-            echo "Already traded today ($today); skipping."; echo "skip=true" >> $GITHUB_OUTPUT
+          hour=$(TZ=America/Toronto date +%H)
+          if [ "$hour" -ge 14 ]; then slot=PM; else slot=AM; fi
+          echo "RUN_SLOT=$slot" >> $GITHUB_ENV
+          done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$done" = "yes" ]; then
+            echo "$slot run already done today ($today); skipping."; echo "skip=true" >> $GITHUB_OUTPUT
           else echo "skip=false" >> $GITHUB_OUTPUT; fi
       - uses: actions/setup-python@v5.3.0
         if: steps.guard.outputs.skip != 'true'

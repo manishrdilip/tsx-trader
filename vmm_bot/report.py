@@ -7,6 +7,18 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from notifier import send_telegram  # noqa: E402
 
+import urllib.request
+TOPIC = os.environ.get("NTFY_TOPIC", "tsx-dilip-fe7bc02c")
+
+
+def push(title, msg, priority="default", tags="chart_with_upwards_trend"):
+    try:
+        urllib.request.urlopen(urllib.request.Request(f"https://ntfy.sh/{TOPIC}", data=msg.encode(), method="POST",
+                               headers={"Title": title, "Priority": priority, "Tags": tags}), timeout=30)
+    except Exception as e:
+        print("push failed", e)
+
+
 OUT = os.path.join(ROOT, "results", "vmm_bot")
 
 
@@ -43,6 +55,17 @@ def main(plan_path, exec_path):
     if errs:
         lines.append(f"⚠️ {len(errs)} order error(s) — check report.md")
     send_telegram("\n".join(lines))
+    sells = [r for r in res if r["action"] == "SELL"]
+    buys = [r for r in res if r["action"] == "BUY"]
+    body = [f"{r['status']} {r['action']} {r['units']} {r['ticker']} @ {r['limit']} ({r.get('reason','')[:60]})" for r in res]
+    if plan.get("guard"):
+        body.insert(0, "GUARD MODE: " + "; ".join(plan["guard"]) + " - no new buys today")
+    body.append(f"Idle cash after orders: ${plan.get('idle_cash', 0):,.2f}")
+    if errs:
+        body.append(f"{len(errs)} order error(s) - check report.md")
+    title = f"VMM {plan.get('run_slot','')} run: {len(sells)} sell, {len(buys)} buy" + (" (GUARD)" if plan.get("guard") else "")
+    push(title, "\n".join(body), "high" if (sells or errs or plan.get("guard")) else "default",
+         "warning" if (errs or plan.get("guard")) else "moneybag")
     print(md)
 
 

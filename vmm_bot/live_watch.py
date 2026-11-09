@@ -43,6 +43,23 @@ def main(snap_path, test=False):
     if now.weekday() > 4 or not (9 * 60 + 30 <= now.hour * 60 + now.minute <= 16 * 60 + 5):
         print("market closed"); return
     snap = json.load(open(snap_path))
+    today0 = now.date().isoformat()
+    seen0 = json.load(open(SEEN)) if os.path.exists(SEEN) else {}
+    try:
+        xi = yf.download("XIU.TO", period="5d", interval="15m", progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        xd = yf.download("XIU.TO", period="10d", interval="1d", progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        vx = yf.download("^VIX", period="10d", interval="1d", progress=False, threads=False, multi_level_index=False)["Close"].dropna()
+        xchg = (float(xi.iloc[-1]) / float(xd[xd.index.date < now.date()].iloc[-1]) - 1) * 100
+        vl, vp = float(vx.iloc[-1]), float(vx.iloc[-2])
+        why = ([f"XIU {xchg:+.1f}% today"] if xchg <= -2 else []) + ([f"VIX {vl:.1f}"] if vl >= 30 else []) \
+              + ([f"VIX jumped {(vl/vp-1)*100:.0f}%"] if (vl / vp - 1) * 100 >= 20 else [])
+        print(f"market: XIU {xchg:+.1f}%, VIX {vl:.1f}")
+        if why and seen0.get("market:guard") != today0:
+            push("MARKET SHOCK - guard mode", "; ".join(why) + ". Bot pauses new buys and VEQT selling; sell rules stay on. Watching every 10 min.", "urgent", "rotating_light")
+            seen0["market:guard"] = today0
+            json.dump(seen0, open(SEEN, "w"), indent=1)
+    except Exception as e:
+        print("market check failed:", e)
     tickers = sorted({to_yahoo(p["symbol"]) for p in snap["positions"] if p.get("symbol") and (p.get("units") or 0) > 0}
                      - PROTECTED)  # only stocks the bot manages
     if not tickers:
