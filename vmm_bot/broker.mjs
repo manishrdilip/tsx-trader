@@ -13,8 +13,10 @@ const MAX_ORDER = Number(process.env.MAX_ORDER_CAD ?? "800");
 const MAX_ORDERS = Number(process.env.MAX_ORDERS_PER_RUN ?? "25");
 
 function die(msg) { console.error("FATAL: " + msg); process.exit(1); }
-if (!SNAPTRADE_CLIENT_ID || !SNAPTRADE_CONSUMER_KEY) die("SnapTrade secrets missing");
-if (!VMM_ACCOUNT_ID) die("VMM_ACCOUNT_ID missing (pinned account)");
+if (!process.env.VMM_TEST) {
+  if (!SNAPTRADE_CLIENT_ID || !SNAPTRADE_CONSUMER_KEY) die("SnapTrade secrets missing");
+  if (!VMM_ACCOUNT_ID) die("VMM_ACCOUNT_ID missing (pinned account)");
+}
 
 const st = new Snaptrade({ auth: SnaptradeAuth.personalApiKey({ clientId: SNAPTRADE_CLIENT_ID, consumerKey: SNAPTRADE_CONSUMER_KEY }) });
 const acct = VMM_ACCOUNT_ID;
@@ -54,6 +56,28 @@ function guard(orders, plan = {}) {
   }
 }
 
+const PRICE_BAND = Number(process.env.VMM_PRICE_BAND_PCT ?? "15") / 100;
+
+// Pure helper (unit-tested): compare each order's reference close with the broker's live price.
+// BUY with no broker quote, or live price more than PRICE_BAND away -> dropped (likely bad Yahoo data).
+// SELL is never blocked (exits must go through); a mismatch only adds a warning.
+export function priceCheck(orders, quotes, band = PRICE_BAND) {
+  const keep = [], warnings = [];
+  for (const o of orders) {
+    const ref = o.action === "BUY" ? o.limit / 1.01 : o.limit / 0.97;
+    const live = quotes[o.broker_symbol];
+    const off = live > 0 ? Math.abs(live / ref - 1) : null;
+    if (o.action === "BUY" && (off === null || off > band)) {
+      warnings.push(`${o.ticker}: BUY skipped, ${off === null ? "no broker quote" : `broker ${live} vs data ${ref.toFixed(2)} (${(off * 100).toFixed(0)}% apart)`}`);
+      continue;
+    }
+    if (o.action === "SELL" && off !== null && off > band)
+      warnings.push(`${o.ticker}: SELL kept, but broker ${live} vs data ${ref.toFixed(2)} (${(off * 100).toFixed(0)}% apart) - check prices`);
+    keep.push(o);
+  }
+  return { keep, warnings };
+}
+
 async function check(file) {
   const plan = JSON.parse(fs.readFileSync(file, "utf8"));
   const { orders } = plan;
@@ -61,8 +85,20 @@ async function check(file) {
   if (!orders.length) { console.log("no orders to check"); return; }
   const syms = [...new Set(orders.map((o) => o.broker_symbol))].join(",");
   const q = await st.trading.getUserAccountQuotes({ accountId: acct, symbols: syms, useTicker: true });
-  const found = new Set((q.data || []).map((x) => x.symbol?.symbol || x.symbol?.raw_symbol));
-  for (const o of orders) console.log(`${o.broker_symbol}: ${found.has(o.broker_symbol) ? "OK" : "NOT FOUND by broker"}`);
+  const quotes = {};
+  for (const x of q.data || []) {
+    const s = x.symbol?.symbol || x.symbol?.raw_symbol;
+    const bid = num(x.bid_price), ask = num(x.ask_price);
+    const live = num(x.last_trade_price) || (bid > 0 && ask > 0 ? (bid + ask) / 2 : null);
+    if (s) quotes[s] = live;
+  }
+  const { keep, warnings } = priceCheck(orders, quotes);
+  for (const o of orders) console.log(`${o.broker_symbol}: broker ${quotes[o.broker_symbol] ?? "NOT FOUND"}`);
+  for (const w of warnings) console.log("PRICE CHECK: " + w);
+  plan.orders = keep;
+  plan.price_check = warnings;
+  plan.notes = [...(plan.notes || []), ...warnings.map((w) => "Price check: " + w)];
+  fs.writeFileSync(file, JSON.stringify(plan, null, 2));
 }
 
 async function execute(file, out) {
@@ -90,7 +126,7 @@ async function execute(file, out) {
 }
 
 const [cmd, a, b] = process.argv.slice(2);
-try {
+if (!process.env.VMM_TEST) try {
   if (cmd === "snapshot") await snapshot(a);
   else if (cmd === "check") await check(a);
   else if (cmd === "execute") await execute(a, b);

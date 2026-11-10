@@ -52,6 +52,23 @@ FUND_KEEP = float(os.environ.get("VMM_FUND_KEEP_CAD", "0") or 0)  # never sell b
 
 GUARD_XIU_DROP = float(os.environ.get("VMM_GUARD_XIU_DROP_PCT", "2.0"))   # XIU down this much today -> guard
 GUARD_VIX = float(os.environ.get("VMM_GUARD_VIX", "30"))                   # VIX at/above this -> guard
+LOSS_HALT_PCT = float(os.environ.get("VMM_LOSS_HALT_PCT", "15"))  # account down this much vs its 7-day high -> no buys
+STALE_BDAYS = int(os.environ.get("VMM_STALE_BDAYS", "2"))  # newest close older than this many business days -> no trading
+
+
+def stale(last_date, today):
+    """True when the newest close is too old (e.g. Yahoo stopped updating)."""
+    return int(np.busday_count(last_date, today)) > STALE_BDAYS
+
+
+def loss_halt(eq_hist, equity, today, pct=None):
+    """Account equity vs its highest value recorded over the last 7 days."""
+    pct = LOSS_HALT_PCT if pct is None else pct
+    recent = [v for d, v in eq_hist.items() if (today - dt.date.fromisoformat(d)).days <= 7]
+    peak = max(recent + [equity])
+    return pct > 0 and equity < peak * (1 - pct / 100), peak
+
+
 GUARD_VIX_JUMP = float(os.environ.get("VMM_GUARD_VIX_JUMP_PCT", "20"))     # VIX up this much today -> guard
 RUN_SLOT = os.environ.get("RUN_SLOT", "AM")
 # 28% trailing rule (tested 9 Nov 2026, claude/vmm-exit-rules-grid-2026-11-09.md):
@@ -154,6 +171,9 @@ def main(snap_path, out_path):
     held = ledger
     tick = sorted(set(universe()) | set(held) | {XIU} | ({FUND_TICKER} if FUND_TICKER else set()))
     C, V = prices(tick)
+    today_d = dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date()
+    if stale(C.index[-1].date(), today_d):
+        raise SystemExit(f"STALE DATA: newest close is {C.index[-1].date()}, today {today_d}. No trading.")
     last = C.index[-1]
     close = C.iloc[-1]
     sma = C.rolling(200).mean().iloc[-1]
@@ -165,6 +185,7 @@ def main(snap_path, out_path):
     elig[XIU] = False
     if FUND_TICKER in elig.index:
         elig[FUND_TICKER] = False
+    elig[elig.index.isin(PROTECTED)] = False  # protected tickers are never ranked or bought
     r = r12[elig].dropna()
     top10, top40 = r.quantile(0.9), r.quantile(0.6)
     ranked = r[(r >= top10) & (close[r.index] > sma[r.index])].sort_values(ascending=False)
@@ -182,6 +203,12 @@ def main(snap_path, out_path):
 
     orders, notes, sells = [], [], set()
     guard = market_guard()
+    eq_hist = {d: v for d, v in state.get("equity_hist", {}).items()
+               if (today_d - dt.date.fromisoformat(d)).days <= 10}
+    halted, eq_peak = loss_halt(eq_hist, equity, today_d)
+    if halted:
+        guard.append(f"LOSS HALT: account ${equity:,.0f} is {(1-equity/eq_peak)*100:.0f}% below its 7-day high ${eq_peak:,.0f}")
+    eq_hist[today_d.isoformat()] = round(equity, 2)
     if guard:
         notes.append("GUARD MODE: " + "; ".join(guard) + " -> no new buys, no VEQT selling (sell rules still active)")
     if open_syms:
@@ -342,6 +369,7 @@ def main(snap_path, out_path):
                           "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
                           "peaks": {t: v for t, v in peaks.items() if t not in sells},
                           "rebuy_blocks": blocks,
+                          "equity_hist": eq_hist,
                           "entry": {**{t: d for t, d in entry.items() if t not in sells},
                                     **{o["ticker"]: today_s.isoformat() for o in orders if o["action"] == "BUY"}},
                           "last_review_month": month_now if review else state.get("last_review_month"),

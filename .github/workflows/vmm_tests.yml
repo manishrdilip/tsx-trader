@@ -1,0 +1,33 @@
+name: VMM bot tests
+
+# Offline tests (fake accounts and prices, no broker, no orders) on every change to the bot.
+on:
+  pull_request:
+    paths: ["vmm_bot/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
+  push:
+    branches: [main]
+    paths: ["vmm_bot/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: actions/setup-python@v5.3.0
+        with:
+          python-version: "3.11"
+      - uses: actions/setup-node@v4.1.0
+        with:
+          node-version: "20"
+      - run: pip install -r requirements.txt pytest
+      - run: npm install --no-audit --no-fund
+        working-directory: vmm_bot
+      - run: python -m pytest tests -q
+      - run: node --test tests/test_broker_price_check.mjs
+        env:
+          VMM_TEST: "1"
