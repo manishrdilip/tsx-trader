@@ -1,20 +1,23 @@
-# VMM bot — 2026-11-09 (LIVE)
-Signals from close of 2026-11-06. Account equity $1,732.70, cash $860.14.
+# VMM bot — 2026-11-10 (LIVE)
+Signals from close of 2026-11-09. Account equity $2,309.55, cash $1,432.29.
 XIU above 200-day: yes. Momentum share 100%.
 
 | Status | Action | Shares | Stock | Limit | Why |
 |---|---|---|---|---|---|
-| PENDING | BUY | 10 | FTG.TO | 32.89 | rank 7, 12m 186%, sell line 22.31 |
-| PENDING | BUY | 43 | NUAG.TO | 8.04 | rank 8, 12m 172%, sell line 7.07 |
-| PENDING | BUY | 5 | AYA.TO | 36.14 | rank 10, 12m 153%, sell line 29.16 |
-| PENDING | BUY | 2 | CVVY.TO | 1.97 | rank 20, 12m 114%, sell line 1.65 |
+| PENDING | SELL | 14 | VEQT.TO | 59.88 | raise cash for 9 unaffordable pick(s) (AYA.TO, MAU.TO, BDT.TO, DRX.TO, GTE.TO); VEQT used so far $1,639 of $3,500 |
+| PENDING | BUY | 60 | TLO.TO | 7.62 | rank 1, 12m 1833%, sell line 7.16 |
+| PENDING | BUY | 54 | ARG.TO | 8.48 | rank 4, 12m 211%, sell line 6.56 |
+| PENDING | BUY | 13 | FTG.TO | 34.8 | rank 6, 12m 205%, sell line 22.41 |
+| PENDING | BUY | 7 | NUAG.TO | 8.73 | rank 7, 12m 195%, sell line 7.09 |
+| PENDING | BUY | 1 | ORE.TO | 3.05 | rank 16, 12m 131%, sell line 2.54 |
 
-| Holding | Close | Sell line (200d) | % above | 12m % |
-|---|---|---|---|---|
-| MSA.TO | 9.67 | 6.92 | 39.7 | 111 |
-| LCFS.TO | 19.0 | 13.14 | 44.6 | 352 |
-| TWM.TO | 21.5 | 16.09 | 33.6 | 258 |
-| LGD.TO | 2.09 | 1.58 | 32.6 | 190 |
-| SOIL.TO | 7.41 | 5.93 | 24.9 | 186 |
+| Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
+|---|---|---|---|---|---|---|
+| MSA.TO | 9.66 | 6.94 | 39.3 | 96 | 9.66 | 6.96 |
+| LCFS.TO | 19.21 | 13.21 | 45.4 | 352 | 19.21 | 13.83 |
+| TWM.TO | 21.69 | 16.17 | 34.1 | 263 | 21.69 | 15.62 |
+| LGD.TO | 2.19 | 1.58 | 38.5 | 208 | 2.19 | 1.58 |
+| SOIL.TO | 7.27 | 5.95 | 22.1 | 193 | 7.27 | 5.23 |
+| CVVY.TO | 1.91 | 1.66 | 15.2 | 110 | 1.91 | 1.38 |
 
-- Open orders already waiting: ['ARG.TO', 'QTRH.TO', 'TLO.TO'] (no duplicates placed)
+- Selling 14 VEQT.TO to fund buys; picks get bought on the next run

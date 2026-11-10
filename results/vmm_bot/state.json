@@ -6,45 +6,46 @@
     "LCFS.TO": 21,
     "TWM.TO": 6,
     "LGD.TO": 7,
-    "SOIL.TO": 38
+    "SOIL.TO": 38,
+    "CVVY.TO": 2
   },
-  "last_run_date": "2026-11-09",
+  "last_run_date": "2026-11-10",
   "run_slots": {
-    "date": "2026-11-09",
+    "date": "2026-11-10",
     "slots": [
-      "AM",
-      "PM"
+      "AM"
     ]
   },
-  "fund_date": "2026-11-09",
-  "funded_cad": 1638.56,
+  "fund_date": "2026-11-10",
+  "peaks": {
+    "MSA.TO": 9.66,
+    "LCFS.TO": 19.21,
+    "TWM.TO": 21.69,
+    "LGD.TO": 2.19,
+    "SOIL.TO": 7.27,
+    "CVVY.TO": 1.91
+  },
+  "rebuy_blocks": {},
+  "funded_cad": 2476.88,
   "pending": {
     "TLO.TO": {
-      "units": 39,
+      "units": 60,
       "pre_units": 0
     },
     "ARG.TO": {
-      "units": 36,
-      "pre_units": 0
-    },
-    "QTRH.TO": {
-      "units": 1,
+      "units": 54,
       "pre_units": 0
     },
     "FTG.TO": {
-      "units": 10,
+      "units": 13,
       "pre_units": 0
     },
     "NUAG.TO": {
-      "units": 43,
+      "units": 7,
       "pre_units": 0
     },
-    "AYA.TO": {
-      "units": 5,
-      "pre_units": 0
-    },
-    "CVVY.TO": {
-      "units": 2,
+    "ORE.TO": {
+      "units": 1,
       "pre_units": 0
     }
   }
