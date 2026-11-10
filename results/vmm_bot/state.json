@@ -7,46 +7,53 @@
     "TWM.TO": 6,
     "LGD.TO": 7,
     "SOIL.TO": 38,
-    "CVVY.TO": 2
+    "CVVY.TO": 2,
+    "TLO.TO": 60,
+    "ARG.TO": 54,
+    "FTG.TO": 13,
+    "NUAG.TO": 7,
+    "ORE.TO": 1
   },
   "last_run_date": "2026-11-10",
   "run_slots": {
     "date": "2026-11-10",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "fund_date": "2026-11-10",
   "peaks": {
-    "MSA.TO": 9.66,
-    "LCFS.TO": 19.21,
-    "TWM.TO": 21.69,
+    "MSA.TO": 9.73,
+    "LCFS.TO": 21.22,
+    "TWM.TO": 24.02,
     "LGD.TO": 2.19,
-    "SOIL.TO": 7.27,
-    "CVVY.TO": 1.91
+    "SOIL.TO": 8.53,
+    "CVVY.TO": 2.44,
+    "TLO.TO": 7.54,
+    "ARG.TO": 8.4,
+    "FTG.TO": 34.46,
+    "NUAG.TO": 8.64,
+    "ORE.TO": 3.02
   },
   "rebuy_blocks": {},
+  "equity_hist": {
+    "2026-11-10": 3198.56
+  },
+  "entry": {
+    "MSA.TO": "2026-11-10",
+    "LCFS.TO": "2026-11-10",
+    "TWM.TO": "2026-11-10",
+    "LGD.TO": "2026-11-10",
+    "SOIL.TO": "2026-11-10",
+    "CVVY.TO": "2026-11-10",
+    "TLO.TO": "2026-11-10",
+    "ARG.TO": "2026-11-10",
+    "FTG.TO": "2026-11-10",
+    "NUAG.TO": "2026-11-10",
+    "ORE.TO": "2026-11-10"
+  },
+  "last_review_month": "2026-11",
   "funded_cad": 2476.88,
-  "pending": {
-    "TLO.TO": {
-      "units": 60,
-      "pre_units": 0
-    },
-    "ARG.TO": {
-      "units": 54,
-      "pre_units": 0
-    },
-    "FTG.TO": {
-      "units": 13,
-      "pre_units": 0
-    },
-    "NUAG.TO": {
-      "units": 7,
-      "pre_units": 0
-    },
-    "ORE.TO": {
-      "units": 1,
-      "pre_units": 0
-    }
-  }
+  "pending": {}
 }
