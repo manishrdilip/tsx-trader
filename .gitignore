@@ -8,3 +8,4 @@ india_laptop/logs/
 .alerted_today.json
 india_vmm/results/
 results/india_vmm/
+vmm_bot/node_modules/
