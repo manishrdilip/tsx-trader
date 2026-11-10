@@ -63,9 +63,11 @@ def main(plan_path, exec_path):
     body.append(f"Idle cash after orders: ${plan.get('idle_cash', 0):,.2f}")
     if errs:
         body.append(f"{len(errs)} order error(s) - check report.md")
+    pc = plan.get("price_check") or []
+    body += ["PRICE CHECK: " + w for w in pc]
     title = f"VMM {plan.get('run_slot','')} run: {len(sells)} sell, {len(buys)} buy" + (" (GUARD)" if plan.get("guard") else "")
-    push(title, "\n".join(body), "high" if (sells or errs or plan.get("guard")) else "default",
-         "warning" if (errs or plan.get("guard")) else "moneybag")
+    push(title, "\n".join(body), "high" if (sells or errs or pc or plan.get("guard")) else "default",
+         "warning" if (errs or pc or plan.get("guard")) else "moneybag")
     print(md)
 
 

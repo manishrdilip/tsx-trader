@@ -103,6 +103,12 @@ jobs:
       - run: npm install --no-audit --no-fund
         if: steps.guard.outputs.skip != 'true'
         working-directory: vmm_bot
+      - name: Self-test (no trading if the bot's own tests fail)
+        if: steps.guard.outputs.skip != 'true'
+        run: |
+          pip install -q pytest
+          python -m pytest tests -q
+          VMM_TEST=1 node --test tests/test_broker_price_check.mjs
       - name: Snapshot account
         if: steps.guard.outputs.skip != 'true'
         run: node vmm_bot/broker.mjs snapshot /tmp/snap.json
