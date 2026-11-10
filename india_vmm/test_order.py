@@ -20,6 +20,15 @@ import local_env  # noqa: E402,F401
 from broker import KiteBroker  # noqa: E402
 
 
+def live_price(k, sym):
+    """Price without Kite's paid quote API: holdings last_price if held, else Yahoo (about 1 min old)."""
+    for h in k.holdings():
+        if h["tradingsymbol"].upper() == sym and float(h.get("last_price") or 0) > 0:
+            return float(h["last_price"])
+    import yfinance as yf
+    return float(yf.Ticker(sym + ".NS").fast_info["last_price"])
+
+
 def main():
     if len(sys.argv) != 4 or sys.argv[1].upper() not in ("BUY", "SELL"):
         print(__doc__)
@@ -27,7 +36,7 @@ def main():
     side, sym, qty = sys.argv[1].upper(), sys.argv[2].upper(), int(sys.argv[3])
     b = KiteBroker()
     k = b.k
-    ltp = float(k.ltp([f"NSE:{sym}"])[f"NSE:{sym}"]["last_price"])
+    ltp = live_price(k, sym)
     tick = 0.05
     if side == "SELL":
         held = int(next((h.get("quantity") or 0 for h in k.holdings() if h["tradingsymbol"].upper() == sym), 0))
