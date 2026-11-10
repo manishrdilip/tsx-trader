@@ -41,6 +41,10 @@ jobs:
     env:
       ACCT: ${{ matrix.acct }}
       VMM_STATE_DIR: ${{ matrix.acct == 'rrsp' && 'results/vmm_bot_rrsp' || 'results/vmm_bot' }}
+      # TFSA = slow mode (monthly review, 3-month min hold, max 8 stocks) to keep trading low; RRSP = daily bot.
+      VMM_MODE: ${{ matrix.acct == 'rrsp' && 'daily' || 'slow' }}
+      VMM_MAX_SLOTS: ${{ matrix.acct == 'rrsp' && '20' || '8' }}
+      VMM_MIN_HOLD_DAYS: ${{ vars.VMM_MIN_HOLD_DAYS || '91' }}
       SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
       SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
       VMM_ACCOUNT_ID: ${{ matrix.acct == 'rrsp' && vars.VMM_RRSP_ACCOUNT_ID || matrix.acct == 'tfsa' && (vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID) || '' }}
