@@ -156,8 +156,15 @@ async def main():
         access_token  = generate_access_token(request_token)
         TOKEN_FILE.write_text(access_token, encoding="utf-8")
         log.info("Saved token to %s", TOKEN_FILE.name)
-        if GH_TOKEN:
+        if GH_TOKEN and os.environ.get("GITHUB_ACTIONS"):
+            # Only GitHub runs need the token as a repo secret. On the India server/laptop
+            # GH_TOKEN is used to publish bot results, and the token is already saved locally.
             push_github_secret("KITE_ACCESS_TOKEN", access_token)
+        elif GH_TOKEN and os.environ.get("PUSH_KITE_SECRET", "").lower() == "true":
+            try:
+                push_github_secret("KITE_ACCESS_TOKEN", access_token)
+            except Exception as e:  # not fatal: the local token file is what the server uses
+                log.warning("Could not update the GitHub secret (token still saved locally): %s", e)
         log.info("🎉 Token refresh complete.")
         if not os.environ.get("GITHUB_ACTIONS"):
             from notifier import send_telegram
