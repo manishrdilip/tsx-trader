@@ -1,0 +1,78 @@
+{
+  "ledger": {
+    "11DPD.NS": 100,
+    "APCL.NS": 4,
+    "ASHOKLEY.NS": 4,
+    "IBULLSLTD.NS": 29,
+    "KMCSHIL.NS": 5,
+    "SANGAMIND.NS": 5,
+    "SUNTV.NS": 2,
+    "SUZLON.NS": 100,
+    "TRIDENT.NS": 13,
+    "WIPRO.NS": 8
+  },
+  "pending": {},
+  "last_run": "2026-11-10T11:07:06",
+  "run_slots": {
+    "date": "2026-11-10",
+    "slots": [
+      "AM"
+    ]
+  },
+  "lines": {
+    "IBULLSLTD.NS": {
+      "sma200": NaN,
+      "r12": 0.4263,
+      "close": 30.01
+    },
+    "11DPD.NS": {
+      "sma200": NaN,
+      "r12": NaN,
+      "close": NaN
+    },
+    "TRIDENT.NS": {
+      "sma200": NaN,
+      "r12": -0.1678,
+      "close": 23.57
+    },
+    "SUNTV.NS": {
+      "sma200": NaN,
+      "r12": 0.1138,
+      "close": 609.9
+    },
+    "SUZLON.NS": {
+      "sma200": NaN,
+      "r12": -0.3432,
+      "close": 38.91
+    },
+    "KMCSHIL.NS": {
+      "sma200": NaN,
+      "r12": NaN,
+      "close": 164.49
+    },
+    "WIPRO.NS": {
+      "sma200": NaN,
+      "r12": -0.1415,
+      "close": 199.0
+    },
+    "ASHOKLEY.NS": {
+      "sma200": NaN,
+      "r12": 0.2805,
+      "close": 174.86
+    },
+    "APCL.NS": {
+      "sma200": NaN,
+      "r12": -0.2832,
+      "close": 89.48
+    },
+    "SANGAMIND.NS": {
+      "sma200": NaN,
+      "r12": 0.4079,
+      "close": 619.65
+    }
+  },
+  "keep_cut": null,
+  "market_ok": false,
+  "equity": NaN,
+  "cash": -160.3
+}
