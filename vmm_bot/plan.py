@@ -20,12 +20,19 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 import stock_filter as sf  # noqa: E402
 
-STATE = os.path.join(ROOT, "results", "vmm_bot", "state.json")
+STATE_DIR = os.path.join(ROOT, os.environ.get("VMM_STATE_DIR", "results/vmm_bot"))  # one folder per account
+STATE = os.path.join(STATE_DIR, "state.json")
 XIU = "XIU.TO"
 SUFFIX = os.environ.get("BROKER_SYMBOL_SUFFIX", ".TO")  # how the broker names TSX tickers
 FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|Target 20|Split|"
                   r"Income Trust|Private|Mint|Trust Units|Corton|Arbitrage|Long Short|Market Neutral", re.I)
-SLOT_DOLLARS, MAX_SLOTS, MIN_SLOTS = 400.0, 20, 5
+SLOT_DOLLARS, MIN_SLOTS = 400.0, 5
+MAX_SLOTS = int(os.environ.get("VMM_MAX_SLOTS", "20"))
+# Mode: "daily" = sell rules every day (RRSP). "slow" = TFSA low-turnover: 200d/top-40% sells only at the first run
+# of each month and only after VMM_MIN_HOLD_DAYS held; 28% trail stays daily; buys at the monthly review or on a deposit.
+MODE = os.environ.get("VMM_MODE", "daily").strip().lower()
+MIN_HOLD_DAYS = int(os.environ.get("VMM_MIN_HOLD_DAYS", "91"))
+DEPOSIT_BUY_CAD = float(os.environ.get("VMM_DEPOSIT_BUY_CAD", "300"))
 MIN_MOM = float(os.environ.get("VMM_MIN_BUDGET", "0") or 0)  # 0 = always invest free cash (tested plan used 2000)
 BUY_LIMIT_UP, SELL_LIMIT_DN = 1.01, 0.97
 ADOPT = {t.strip().upper() for t in os.environ.get("VMM_ADOPT", "LCFS.TO,MSA.TO,TWM.TO").split(",") if t.strip()}  # manual holdings handed to the bot
@@ -188,6 +195,12 @@ def main(snap_path, out_path):
         if t in old_peaks: cands_.append(float(old_peaks[t]))
         if cands_: peaks[t] = round(max(cands_), 4)
     blocks = {t: v for t, v in state.get("rebuy_blocks", {}).items()}
+    today_s = dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date()
+    month_now = last.strftime("%Y-%m")
+    review = MODE != "slow" or state.get("last_review_month") != month_now
+    entry = {t: state.get("entry", {}).get(t, today_s.isoformat()) for t in mom_held}
+    if MODE == "slow":
+        notes.append("Slow mode: " + ("MONTHLY REVIEW today" if review else "no review today (only the 28% emergency sell)"))
     # 1) sell rules for momentum holdings
     for t, u in mom_held.items():
         c, s, rr = close.get(t), sma.get(t), r12.get(t)
@@ -199,6 +212,12 @@ def main(snap_path, out_path):
             why.append(f"close {c:.2f} is {TRAIL_PCT:.0f}%+ below its high {peaks[t]:.2f}"); trail_hit = True
         if np.isfinite(s) and c < s: why.append(f"close {c:.2f} < 200d {s:.2f}")
         if np.isfinite(rr) and rr < top40: why.append(f"12m {rr*100:.0f}% < top-40% cut {top40*100:.0f}%")
+        if MODE == "slow" and why and not trail_hit:
+            held_days = (today_s - dt.date.fromisoformat(entry[t])).days
+            if not review or held_days < MIN_HOLD_DAYS:
+                notes.append(f"{t}: sell signal ({'; '.join(why)}) waits: " +
+                             ("held only %d days" % held_days if review else "not a review day"))
+                why = []
         if why and t in open_syms:
             notes.append(f"{t}: sell signal but an order is already open"); continue
         if why:
@@ -248,6 +267,8 @@ def main(snap_path, out_path):
     keep = [t for t in mom_held if t not in sells]
     if guard:
         pass
+    elif MODE == "slow" and not review and cash_avail < DEPOSIT_BUY_CAD:
+        notes.append("Slow mode: buys wait for the monthly review or a deposit")
     elif not xiu_ok:
         notes.append("XIU below its 200-day: no new momentum buys")
     elif mom_budget < MIN_MOM:
@@ -321,6 +342,9 @@ def main(snap_path, out_path):
                           "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
                           "peaks": {t: v for t, v in peaks.items() if t not in sells},
                           "rebuy_blocks": blocks,
+                          "entry": {**{t: d for t, d in entry.items() if t not in sells},
+                                    **{o["ticker"]: today_s.isoformat() for o in orders if o["action"] == "BUY"}},
+                          "last_review_month": month_now if review else state.get("last_review_month"),
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),
                           "pending": {**carry, **{o["ticker"]: {"units": o["units"], "pre_units": actual.get(o["ticker"], 0)}
                                       for o in orders if o["action"] == "BUY"}}}}

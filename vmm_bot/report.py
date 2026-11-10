@@ -19,7 +19,7 @@ def push(title, msg, priority="default", tags="chart_with_upwards_trend"):
         print("push failed", e)
 
 
-OUT = os.path.join(ROOT, "results", "vmm_bot")
+OUT = os.path.join(ROOT, os.environ.get("VMM_STATE_DIR", "results/vmm_bot"))  # one folder per account
 
 
 def main(plan_path, exec_path):
