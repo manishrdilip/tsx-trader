@@ -20,6 +20,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import rules  # noqa: E402
+import safety  # noqa: E402
 import data  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
@@ -35,6 +36,10 @@ STATE = os.path.join(OUT, "state.json")
 LAST_PLAN = os.path.join(OUT, "last_plan.json")
 REPORT = os.path.join(OUT, "report.md")
 LOG = os.path.join(OUT, "log.jsonl")
+
+
+def pd_date(d):
+    return d.date() if hasattr(d, "date") else d
 
 
 def ist_now():
@@ -189,13 +194,45 @@ def main():
         closes, volumes = data.load_yfinance(tick)
 
     sig = rules.signals(closes, volumes)
-    held_value = sum(q * float(sig["close"].get(t, 0.0) or 0.0) for t, q in ledger.items())
+    if not offline:  # stop before trading on broken or old data (slot not marked: the backup slot retries)
+        probs = safety.data_health(sig, ledger)
+        if safety.stale(sig["date"], now.date()):
+            probs.append(f"newest close is {pd_date(sig['date'])}, too old")
+        if probs:
+            msg = f"India VMM {slot} STOPPED (no orders): bad price data - " + "; ".join(probs)
+            print(msg)
+            notify(msg)
+            raise SystemExit(msg)
+    def px(t):  # a holding with no price today counts as 0, not NaN (NaN made equity unusable)
+        v = float(sig["close"].get(t, 0.0) or 0.0)
+        return v if v == v else 0.0
+    held_value = sum(q * px(t) for t, q in ledger.items())
     total = held_value + cash
     budget = float(os.environ.get("INDIA_VMM_BUDGET_INR", "0") or 0)
     equity = min(total, budget) if budget > 0 else total
 
     orders, notes = rules.plan(sig, ledger, equity=equity, cash=cash, open_syms=open_syms,
                                protected=rules.PROTECTED)
+    eq_hist = {d: v for d, v in state.get("equity_hist", {}).items()
+               if (now.date() - dt.date.fromisoformat(d)).days <= 10}
+    halted, peak = safety.loss_halt(eq_hist, equity, now.date())
+    if halted and any(o["action"] == "BUY" for o in orders):
+        orders = [o for o in orders if o["action"] != "BUY"]
+        notes.append(f"LOSS HALT: money Rs {equity:,.0f} is {(1 - equity / peak) * 100:.0f}% below its 7-day high "
+                     f"Rs {peak:,.0f}: no new buys (sells still run)")
+    if equity == equity:
+        eq_hist[today] = round(equity, 2)
+    state["equity_hist"] = eq_hist
+    if broker is not None and orders:
+        try:
+            live_px = broker.ltp([o["ticker"] for o in orders])
+        except Exception as e:  # no live prices: keep sells, drop buys
+            print("price check: ltp failed", e)
+            live_px = {}
+        orders, warns = safety.price_check(orders, live_px)
+        notes += ["Price check: " + w for w in warns]
+        if warns:
+            notify("India VMM price check:\n" + "\n".join(warns))
 
     print(f"\nsession {sig['date'].date() if hasattr(sig['date'], 'date') else sig['date']} | "
           f"eligible {sig['n_eligible']} | ranked {len(sig['ranked'])} | "

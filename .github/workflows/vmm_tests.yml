@@ -3,10 +3,10 @@ name: VMM bot tests
 # Offline tests (fake accounts and prices, no broker, no orders) on every change to the bot.
 on:
   pull_request:
-    paths: ["vmm_bot/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
+    paths: ["vmm_bot/**", "india_vmm/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
   push:
     branches: [main]
-    paths: ["vmm_bot/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
+    paths: ["vmm_bot/**", "india_vmm/**", "tests/**", ".github/workflows/vmm_*.yml", "requirements.txt"]
   workflow_dispatch:
 
 permissions:
@@ -28,6 +28,7 @@ jobs:
       - run: npm install --no-audit --no-fund
         working-directory: vmm_bot
       - run: python -m pytest tests -q
+      - run: pip install -r india_vmm/requirements.txt && python -m unittest discover -s india_vmm/tests
       - run: node --test tests/test_broker_price_check.mjs
         env:
           VMM_TEST: "1"

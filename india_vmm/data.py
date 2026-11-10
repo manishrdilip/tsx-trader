@@ -8,6 +8,8 @@ from zoneinfo import ZoneInfo
 
 import pandas as pd
 
+from safety import clean_panel
+
 IST = ZoneInfo("Asia/Kolkata")
 
 
@@ -21,7 +23,7 @@ def load_parquet(path, tickers=None):
         df = df[df["ticker"].isin(set(tickers))]
     closes = df.pivot_table(index="Date", columns="ticker", values="Close", aggfunc="last")
     volumes = df.pivot_table(index="Date", columns="ticker", values="Volume", aggfunc="last")
-    return trim_completed(closes, volumes)
+    return trim_completed(*clean_panel(closes, volumes))
 
 
 def load_yfinance(tickers, period="2y"):
@@ -36,7 +38,7 @@ def load_yfinance(tickers, period="2y"):
     closes = pd.DataFrame({t: D[t]["Close"] for t in lv})
     volumes = pd.DataFrame({t: D[t]["Volume"] for t in lv})
     closes = closes.dropna(how="all")
-    return trim_completed(closes, volumes.reindex(closes.index))
+    return trim_completed(*clean_panel(closes, volumes.reindex(closes.index)))
 
 
 def trim_completed(closes, volumes):
