@@ -57,7 +57,13 @@ jobs:
           declare -A tries
           while :; do
             dow=$(TZ=America/Toronto date +%u); hm=$((10#$(TZ=America/Toronto date +%H%M))); today=$(TZ=America/Toronto date +%F)
-            if [ "$dow" -ge 6 ] || [ "$hm" -ge 1605 ] || [ "$(date +%s)" -ge "$stop" ]; then echo "done for today ($hm)"; break; fi
+            if [ "$dow" -ge 6 ] || [ "$hm" -ge 1605 ]; then echo "done for today ($hm)"; break; fi
+            if [ "$(date +%s)" -ge "$stop" ]; then
+              # GitHub caps a job at 6h: hand off to a fresh run (it queues and starts when this one ends)
+              echo "time limit at $hm, starting a fresh monitor run for the rest of the day"
+              gh workflow run vmm_live_watch.yml -R "$GITHUB_REPOSITORY" --ref main || echo "hand-off failed"
+              break
+            fi
             if [ "$hm" -ge 930 ]; then
               node vmm_bot/broker.mjs snapshot /tmp/snap.json && python vmm_bot/live_watch.py /tmp/snap.json || echo "check failed, retrying next loop"
               git add results/vmm_bot/alerts.json 2>/dev/null
