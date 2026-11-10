@@ -20,7 +20,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 import stock_filter as sf  # noqa: E402
 
-STATE = os.path.join(ROOT, "results", "vmm_bot", "state.json")
+STATE_DIR = os.path.join(ROOT, os.environ.get("VMM_STATE_DIR", "results/vmm_bot"))  # one folder per account
+STATE = os.path.join(STATE_DIR, "state.json")
 XIU = "XIU.TO"
 SUFFIX = os.environ.get("BROKER_SYMBOL_SUFFIX", ".TO")  # how the broker names TSX tickers
 FUND = re.compile(r"Fund|Pool|Portfolio|Class\b|Alternative|Bond|Yield|Savings|Target 20|Split|"

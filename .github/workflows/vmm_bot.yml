@@ -28,12 +28,22 @@ concurrency:
 
 jobs:
   run:
+    # One job per account, one after the other (they share the repo for state commits).
+    # TFSA = the original account. RRSP runs only once the VMM_RRSP_ACCOUNT_ID variable is set.
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        acct: [tfsa, rrsp]
+    name: run (${{ matrix.acct }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
+      ACCT: ${{ matrix.acct }}
+      VMM_STATE_DIR: ${{ matrix.acct == 'rrsp' && 'results/vmm_bot_rrsp' || 'results/vmm_bot' }}
       SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
       SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
-      VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID }}
+      VMM_ACCOUNT_ID: ${{ matrix.acct == 'rrsp' && vars.VMM_RRSP_ACCOUNT_ID || matrix.acct == 'tfsa' && (vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID) || '' }}
       # Safety switches (repo Settings -> Secrets and variables -> Actions -> Variables).
       # Orders are sent ONLY when DRY_RUN=false AND TRADING_ENABLED=true.
       DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
@@ -43,9 +53,9 @@ jobs:
       MAX_ORDERS_PER_RUN: ${{ vars.MAX_ORDERS_PER_RUN || '25' }}
       VMM_INDEX_LEG: ${{ vars.VMM_INDEX_LEG || 'false' }}
       VMM_MIN_BUDGET: ${{ vars.VMM_MIN_BUDGET || '0' }}
-      VMM_ADOPT: ${{ vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
+      VMM_ADOPT: ${{ matrix.acct == 'rrsp' && 'none' || vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
-      VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}
+      VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}  # same exclusions in both accounts
       VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
       VMM_FUND_MAX_CAD: '0'  # HOLD: VEQT selling paused (was vars.VMM_FUND_MAX_CAD || '3500')
       VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
@@ -67,8 +77,12 @@ jobs:
           if [ "$dow" -ge 6 ] || [ "$hm" -lt 930 ] || [ "$hm" -ge 1545 ]; then
             echo "Outside 9:30-3:45 Toronto market window ($hm); no trading."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
           fi
+          if [ -z "$VMM_ACCOUNT_ID" ]; then
+            echo "No account ID for $ACCT (set repo variable VMM_RRSP_ACCOUNT_ID); skipping."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
+          fi
           echo "RUN_SLOT=$slot" >> $GITHUB_ENV
-          done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
+          git pull -q --rebase origin "${GITHUB_REF_NAME}" || true   # pick up the other account's state commit
+          done=$(python3 -c "import json;r=json.load(open('$VMM_STATE_DIR/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
           if [ "$done" = "yes" ]; then   # applies to every run, manual or scheduled: rules first
             echo "$slot run already done today ($today); skipping."; echo "skip=true" >> $GITHUB_OUTPUT
           else echo "skip=false" >> $GITHUB_OUTPUT; fi
@@ -105,12 +119,12 @@ jobs:
         run: |
           git config user.name "vmm-bot"
           git config user.email "vmm-bot@users.noreply.github.com"
-          git add results/vmm_bot || true
-          git diff --cached --quiet || git commit -m "VMM bot $(date -u +%F)"
+          git add "$VMM_STATE_DIR" || true
+          git diff --cached --quiet || git commit -m "VMM bot $ACCT $(date -u +%F)"
           git pull --rebase --autostash && git push
       - name: Phone alert if the run failed
         if: failure()
         run: |
-          curl -s -H "Title: VMM bot FAILED" -H "Priority: urgent" -H "Tags: warning" \
+          curl -s -H "Title: VMM bot FAILED ($ACCT)" -H "Priority: urgent" -H "Tags: warning" \
             -d "Run failed $(TZ=America/Toronto date '+%a %b %d %H:%M'). Claude reviews it at 2 pm; or tap Run workflow. ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             "https://ntfy.sh/${NTFY_TOPIC:-tsx-dilip-fe7bc02c}"
