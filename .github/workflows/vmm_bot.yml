@@ -47,7 +47,7 @@ jobs:
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
       VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}
       VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
-      VMM_FUND_MAX_CAD: ${{ vars.VMM_FUND_MAX_CAD || '3500' }}
+      VMM_FUND_MAX_CAD: '0'  # HOLD: VEQT selling paused (was vars.VMM_FUND_MAX_CAD || '3500')
       VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
       VMM_TRAIL_PCT: ${{ vars.VMM_TRAIL_PCT || '28' }}
       VMM_REBUY_DROP_PCT: ${{ vars.VMM_REBUY_DROP_PCT || '10' }}
