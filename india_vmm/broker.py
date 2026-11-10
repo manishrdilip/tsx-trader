@@ -40,6 +40,14 @@ class KiteBroker:
         return sorted({i["tradingsymbol"].upper() + ".NS"
                        for i in self.k.instruments("NSE") if i.get("instrument_type") == "EQ"})
 
+    def ltp(self, tickers):
+        """{ticker.NS: last traded price} from Kite (used by the pre-order price check)."""
+        if not tickers:
+            return {}
+        keys = ["NSE:" + t[:-3] for t in tickers]
+        q = self.k.ltp(keys)
+        return {t: float(q[k]["last_price"]) for t, k in zip(tickers, keys) if k in q}
+
     def place(self, order):
         """Place one LIMIT / CNC / DAY order. Returns the Kite order id."""
         k = self.k
