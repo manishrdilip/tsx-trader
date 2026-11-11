@@ -1,6 +1,6 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 1.0,
+  "mom_share": 1,
   "ledger": {
     "MSA.TO": 5,
     "LCFS.TO": 21,
@@ -18,10 +18,11 @@
   "run_slots": {
     "date": "2026-11-11",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
-  "fund_date": "2026-11-10",
+  "fund_date": "2026-11-11",
   "peaks": {
     "MSA.TO": 9.73,
     "LCFS.TO": 21.22,
@@ -51,9 +52,15 @@
     "ARG.TO": "2026-11-10",
     "FTG.TO": "2026-11-10",
     "NUAG.TO": "2026-11-10",
-    "ORE.TO": "2026-11-10"
+    "ORE.TO": "2026-11-10",
+    "VEQT.TO": "2026-11-11"
   },
   "last_review_month": "2026-11",
-  "funded_cad": 2476.88,
-  "pending": {}
+  "funded_cad": 3223.64,
+  "pending": {
+    "VEQT.TO": {
+      "units": 12,
+      "pre_units": 17
+    }
+  }
 }

@@ -2,7 +2,9 @@
 Signals from close of 2026-11-10. Account equity $3,145.36, cash $903.82.
 XIU above 200-day: yes. Momentum share 100%.
 
-No orders today.
+| Status | Action | Shares | Stock | Limit | Why |
+|---|---|---|---|---|---|
+| PENDING | BUY | 12 | VEQT.TO | 62.23 | park idle cash $884 long-term (no momentum slot/pick for it) |
 
 | Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
 |---|---|---|---|---|---|---|
@@ -20,3 +22,4 @@ No orders today.
 
 - Slow mode: no review today (only the 28% emergency sell)
 - TLO.TO: sell signal (close 7.11 < 200d 7.20) waits: not a review day
+- Parking $747 of idle cash in VEQT.TO
