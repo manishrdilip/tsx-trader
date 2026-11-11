@@ -48,6 +48,11 @@ PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "XIU.TO,
 FUND_TICKER = os.environ.get("VMM_FUND_TICKER", "VEQT.TO").strip().upper()
 FUND_MAX = float(os.environ.get("VMM_FUND_MAX_CAD", "3500") or 0)
 FUND_KEEP = float(os.environ.get("VMM_FUND_KEEP_CAD", "0") or 0)  # never sell below this VEQT value
+# Parking: cash left after momentum buys (e.g. all slots full) goes into a long-term ETF so money is never idle.
+# Momentum buys always get first claim on cash each run; only the leftover is parked. "" = off.
+PARK_TICKER = os.environ.get("VMM_PARK_TICKER", "VEQT.TO").strip().upper()
+PARK_MIN = float(os.environ.get("VMM_PARK_MIN_CAD", "100") or 100)   # park only if leftover is at least this
+PARK_KEEP = float(os.environ.get("VMM_PARK_KEEP_CAD", "20") or 0)    # small cash buffer left in the account
 
 
 GUARD_XIU_DROP = float(os.environ.get("VMM_GUARD_XIU_DROP_PCT", "2.0"))   # XIU down this much today -> guard
@@ -169,7 +174,7 @@ def main(snap_path, out_path):
     ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED and t != FUND_TICKER}
     print("account holdings:", actual, "| bot manages:", ledger)
     held = ledger
-    tick = sorted(set(universe()) | set(held) | {XIU} | ({FUND_TICKER} if FUND_TICKER else set()))
+    tick = sorted(set(universe()) | set(held) | {XIU} | ({FUND_TICKER} if FUND_TICKER else set()) | ({PARK_TICKER} if PARK_TICKER else set()))
     C, V = prices(tick)
     today_d = dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date()
     if stale(C.index[-1].date(), today_d):
@@ -185,6 +190,8 @@ def main(snap_path, out_path):
     elig[XIU] = False
     if FUND_TICKER in elig.index:
         elig[FUND_TICKER] = False
+    if PARK_TICKER in elig.index:
+        elig[PARK_TICKER] = False
     elig[elig.index.isin(PROTECTED)] = False  # protected tickers are never ranked or bought
     r = r12[elig].dropna()
     top10, top40 = r.quantile(0.9), r.quantile(0.6)
@@ -347,6 +354,18 @@ def main(snap_path, out_path):
                 notes.append(f"Selling {u} {FUND_TICKER} to fund buys; picks get bought on the next run")
             elif FUND_MAX - funded <= 0:
                 notes.append(f"VEQT funding cap ${FUND_MAX:,.0f} used up")
+
+    # 6) park leftover cash in the long-term ETF (never sold by the bot's momentum rules)
+    left = cash_avail - sum(o["units"] * o["limit"] for o in orders if o["action"] == "BUY") - PARK_KEEP
+    ppx = float(close.get(PARK_TICKER, np.nan)) if PARK_TICKER else float("nan")
+    if PARK_TICKER and left >= PARK_MIN and np.isfinite(ppx) and PARK_TICKER not in open_syms \
+            and not any(o["ticker"] == PARK_TICKER for o in orders) and PARK_TICKER not in PROTECTED:
+        plim = round(ppx * BUY_LIMIT_UP, 2)
+        pu = int(min(left, order_cap) // plim)
+        if pu > 0:
+            orders.append({"action": "BUY", "ticker": PARK_TICKER, "broker_symbol": to_broker(PARK_TICKER), "units": pu,
+                           "limit": plim, "reason": f"park idle cash ${left:,.0f} long-term (no momentum slot/pick for it)"})
+            notes.append(f"Parking ${pu * plim:,.0f} of idle cash in {PARK_TICKER}")
 
     watch = [{"ticker": t, "close": round(float(close[t]), 2), "sell_line": round(float(sma[t]), 2),
               "pct_above": round((float(close[t]) / float(sma[t]) - 1) * 100, 1), "r12_pct": round(float(r12[t]) * 100)}

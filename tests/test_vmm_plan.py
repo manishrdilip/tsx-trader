@@ -153,3 +153,23 @@ def test_state_records_entry_and_equity(plan):
     ns = out["new_state"]
     assert set(ns["entry"]) >= {o["ticker"] for o in buys(out)}
     assert TODAY.isoformat() in ns["equity_hist"]
+
+
+def test_idle_cash_parked_in_veqt_when_slots_full(plan):
+    C, V = make_prices()
+    C["VEQT.TO"] = 40.0; V["VEQT.TO"] = 1_000_000
+    held = {f"S{i:02d}.TO": 10 for i in range(29, 26, -1)}  # 3 held, slot limit 3 -> nothing free
+    _, run = plan(env={"VMM_MAX_SLOTS": "3"}, prices=(C, V), state={"ledger": held})
+    out = run(held, 900)
+    park = [o for o in buys(out) if o["ticker"] == "VEQT.TO"]
+    assert len(park) == 1 and park[0]["units"] * park[0]["limit"] <= 900 - 20
+    assert out["idle_cash"] < 150  # per-order cap ($800) leaves a little; next run parks it
+
+
+def test_momentum_buys_come_before_parking(plan):
+    C, V = make_prices()
+    C["VEQT.TO"] = 40.0; V["VEQT.TO"] = 1_000_000
+    _, run = plan(prices=(C, V))
+    out = run({}, 2000)
+    assert buys(out)[0]["ticker"] != "VEQT.TO"
+    assert sum(o["units"] * o["limit"] for o in buys(out)) <= 2000 + 1
