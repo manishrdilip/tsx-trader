@@ -13,7 +13,7 @@ class KiteBroker:
     def __init__(self):
         from kiteconnect import KiteConnect
 
-        self.k = KiteConnect(api_key=os.environ["KITE_API_KEY"])
+        self.k = KiteConnect(api_key=os.environ["KITE_API_KEY"], timeout=20)
         self.k.set_access_token(os.environ["KITE_ACCESS_TOKEN"])
 
     def holdings(self):

@@ -27,6 +27,7 @@ Env vars required:
 
 import local_env  # noqa: F401  (.env / .kite_token when running on the India laptop)
 import os
+import time
 import sys
 import json
 import logging
@@ -53,9 +54,29 @@ LEGACY_LOSSES = {"APCL", "WIPRO", "TRIDENT", "IBULLSLTD", "11DPD"}
 # ── Kite setup ────────────────────────────────────────────────────────────────
 
 def get_kite() -> KiteConnect:
-    kite = KiteConnect(api_key=os.environ["KITE_API_KEY"])
+    # Kite's default read timeout is 7 s; slow mornings were raising false alerts.
+    kite = KiteConnect(api_key=os.environ["KITE_API_KEY"], timeout=20)
     kite.set_access_token(os.environ["KITE_ACCESS_TOKEN"])
     return kite
+
+
+def kite_read(fn, *args, tries=3, wait=3, **kw):
+    """Retry a read-only Kite call on network errors (never use for placing orders)."""
+    for n in range(tries):
+        try:
+            return fn(*args, **kw)
+        except Exception as e:
+            if n == tries - 1 or not _transient(e):
+                raise
+            log.warning("Kite read failed (%s), retry %d/%d", e, n + 1, tries - 1)
+            time.sleep(wait)
+
+
+def _transient(e) -> bool:
+    import requests
+    from kiteconnect import exceptions as kex
+    return isinstance(e, (requests.exceptions.ConnectionError, requests.exceptions.Timeout,
+                          kex.NetworkException))
 
 _INSTRUMENTS = {}
 
@@ -169,7 +190,7 @@ def run_monitor():
     kite = get_kite()
 
     try:
-        holdings = kite.holdings()
+        holdings = kite_read(kite.holdings)
     except Exception as e:
         msg = f"⚠️ Auto-trader: failed to fetch holdings — {e}"
         log.error(msg)
@@ -182,12 +203,12 @@ def run_monitor():
         return
 
     try:
-        protected = active_gtt_symbols(kite)
+        protected = kite_read(active_gtt_symbols, kite)
     except Exception as e:
         notify_once("gtt-list", f"⚠️ Auto-trader: failed to fetch GTTs — {e}")
         protected = None    # unknown: don't risk placing duplicate GTTs this run
     try:
-        selling = open_sell_symbols(kite)
+        selling = kite_read(open_sell_symbols, kite)
     except Exception as e:
         notify_once("order-list", f"⚠️ Auto-trader: failed to fetch orders — {e}")
         selling = None      # unknown: don't risk a second sell order this run
