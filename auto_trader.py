@@ -32,6 +32,7 @@ import sys
 import json
 import logging
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 from kiteconnect import KiteConnect
@@ -112,6 +113,26 @@ def open_sell_symbols(kite: KiteConnect) -> set:
 
 ALERT_STATE = local_env.ROOT / ".alerted_today.json"
 
+def _log_for_checks(msg: str):
+    """Copy the alert into results/india_vmm/alerts.json so the published file
+    (and Claude's morning/post-market checks) can see auto-trader problems too."""
+    try:
+        from zoneinfo import ZoneInfo
+        now = datetime.now(ZoneInfo("Asia/Kolkata"))
+        path = Path(__file__).resolve().parent / "results" / "india_vmm" / "alerts.json"
+        try:
+            al = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            al = {}
+        if al.get("date") != now.date().isoformat():
+            al = {"date": now.date().isoformat(), "sent": [], "seen_orders": {}, "log": []}
+        al.setdefault("log", []).append({"time": now.strftime("%H:%M"), "text": msg})
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(al, indent=1), encoding="utf-8")
+    except Exception as e:  # never let logging break the monitor
+        log.warning("could not write alerts.json: %s", e)
+
+
 def notify_once(key: str, msg: str):
     """The laptop runs this every 5 minutes; repeat the same alert at most once a day."""
     today = datetime.now().strftime("%Y-%m-%d")
@@ -125,6 +146,7 @@ def notify_once(key: str, msg: str):
         log.info("(already alerted today) %s", msg.splitlines()[0])
         return
     send_telegram(msg)
+    _log_for_checks(msg)
     state["keys"].append(key)
     try:
         ALERT_STATE.write_text(json.dumps(state), encoding="utf-8")
