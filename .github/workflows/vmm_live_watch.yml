@@ -76,8 +76,8 @@ jobs:
               [ "$hm" -lt "$from" ] || [ "$hm" -ge "$to" ] && continue
               done=$(python3 -c "import json;r=json.load(open('results/vmm_bot/state.json')).get('run_slots',{});print('yes' if r.get('date')=='$today' and '$slot' in r.get('slots',[]) else 'no')" 2>/dev/null || echo no)
               [ "$done" = yes ] && continue
-              running=$(gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s in_progress -L 1 --json databaseId -q 'length'; gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s queued -L 1 --json databaseId -q 'length')
-              case "$running" in *1*) echo "bot run already in progress"; continue;; esac
+              running=$(gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s in_progress -L 1 --json databaseId -q 'length'; gh run list -R "$GITHUB_REPOSITORY" -w vmm_bot.yml -s queued -L 5 --json createdAt -q "[.[] | select((now - (.createdAt | fromdateiso8601)) < 1800)] | length")   # ignore ghost runs stuck in 'queued' >30 min
+              case "$running" in *[1-9]*) echo "bot run already in progress"; continue;; esac
               n=${tries[$slot]:-0}; last=${tries[${slot}_t]:-0}
               if [ $(( $(date +%s) - last )) -lt 1200 ]; then continue; fi   # at most every 20 min
               if [ "$n" -ge 3 ]; then
