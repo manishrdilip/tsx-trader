@@ -46,3 +46,25 @@ def trim_completed(closes, volumes):
     today = dt.datetime.now(IST).date()
     keep = [d for d in closes.index if pd.Timestamp(d).date() < today]
     return closes.loc[keep], volumes.reindex(closes.index).loc[keep]
+
+
+def live_prices(tickers):
+    """{ticker.NS: latest traded price} from yfinance 1-minute bars (used when Kite quotes are
+    not on the API plan). Tickers with no bar today are left out."""
+    import yfinance as yf
+
+    if not tickers:
+        return {}
+    df = yf.download(list(tickers), period="1d", interval="1m", progress=False, auto_adjust=False,
+                     group_by="column", threads=True)
+    if df is None or df.empty:
+        return {}
+    close = df["Close"]
+    if isinstance(close, pd.Series):
+        close = close.to_frame(list(tickers)[0])
+    out = {}
+    for t in close.columns:
+        s = close[t].dropna()
+        if len(s):
+            out[str(t)] = float(s.iloc[-1])
+    return out
