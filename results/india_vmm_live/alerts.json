@@ -1,13 +1,18 @@
 {
   "date": "2026-11-12",
   "sent": [
-    "watchdog:AM"
+    "watchdog:AM",
+    "watchdog:PM"
   ],
   "seen_orders": {},
   "log": [
     {
       "time": "09:55",
       "text": "India VMM: AM run missing at 09:55; starting it now."
+    },
+    {
+      "time": "15:05",
+      "text": "India VMM: PM run missing at 15:05; starting it now."
     }
   ]
 }
