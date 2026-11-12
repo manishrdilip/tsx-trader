@@ -85,14 +85,26 @@ def main(snap_path, test=False):
         sma = float(d.iloc[-200:].mean()) if len(d) >= 200 else None
         chg = (last / prev - 1) * 100
         print(f"{t}: {last:.2f} ({chg:+.1f}%), sell line {sma:.2f}" if sma else f"{t}: {last:.2f} ({chg:+.1f}%)")
+        peak = peaks.get(t)
+        trail_line = peak * (1 - TRAIL / 100) if peak else None
+        slow = os.environ.get("VMM_MODE", "slow").strip().lower() == "slow"  # TFSA bot runs slow mode
         if chg <= -DROP and seen.get(t + ":drop") != today:
-            push(f"{t} down {chg:.1f}% today", f"Now {last:.2f} vs {prev:.2f} yesterday. No action needed unless it closes below the sell line"
-                 + (f" ({sma:.2f})." if sma else "."))
+            if slow:
+                msg = f"Now {last:.2f} vs {prev:.2f} yesterday. Today the bot only sells if it closes below the 28% line" + (
+                    f" ({trail_line:.2f})." if trail_line else ".")
+                if sma and last < sma:
+                    msg += f" It is below the 200d line ({sma:.2f}), so it sells at the next monthly review if still below."
+            else:
+                msg = f"Now {last:.2f} vs {prev:.2f} yesterday. No action needed unless it closes below the sell line" + (
+                    f" ({sma:.2f})." if sma else ".")
+            push(f"{t} down {chg:.1f}% today", msg)
             seen[t + ":drop"] = today
         if sma and last < sma and seen.get(t + ":line") != today:
-            push(f"{t} below sell line", f"Now {last:.2f}, sell line {sma:.2f}. If it CLOSES below, the bot sells at the next run.", "urgent", "rotating_light")
+            push(f"{t} below sell line", f"Now {last:.2f}, sell line {sma:.2f}. " + (
+                 "If still below at the monthly review (1st run of the month, held 91+ days), the bot sells then"
+                 + (f"; it sells sooner only below the 28% line ({trail_line:.2f})." if trail_line else ".")
+                 if slow else "If it CLOSES below, the bot sells at the next run."), "urgent", "rotating_light")
             seen[t + ":line"] = today
-        peak = peaks.get(t)
         if peak and last <= peak * (1 - TRAIL / 100) and seen.get(t + ":trail") != today:
             push(f"{t} hit the 28% line", f"Now {last:.2f}, high {peak:.2f}, 28% line {peak*(1-TRAIL/100):.2f}. "
                  "If it closes there, the bot sells at the next run.", "urgent", "rotating_light")
