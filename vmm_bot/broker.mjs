@@ -78,6 +78,59 @@ export function priceCheck(orders, quotes, band = PRICE_BAND) {
   return { keep, warnings };
 }
 
+// Pure helper (unit-tested): last safety layer before any order is sent, using broker truth.
+//  1. never sell more shares than the account holds (no accidental short); 0 held -> sell dropped
+//  2. idempotency: skip any symbol+action already sent to the broker today (protects against a
+//     re-run after a failed state commit, a ghost run, or a manual Run workflow)
+//  3. if the account already sent MAX_ORDERS today -> send nothing more (runaway-loop breaker)
+//  4. total BUY cost must fit in cash + this run's sell proceeds; extra buys are dropped
+//  5. todayOrders === null (broker order history unreadable) -> no BUYs this run; sells still go
+export function preTradeCheck(orders, snap, todayOrders, maxOrders = MAX_ORDERS) {
+  const keep = [], warnings = [];
+  const held = {};
+  for (const p of snap?.positions || []) if (p.symbol) held[String(p.symbol).toUpperCase()] = (held[String(p.symbol).toUpperCase()] || 0) + Math.floor(Number(p.units) || 0);
+  const sent = new Set((todayOrders || []).map((o) => `${String(o.action).toUpperCase()}:${String(o.symbol).toUpperCase()}`));
+  if (todayOrders && todayOrders.length >= maxOrders) {
+    return { keep: [], warnings: [`daily order limit: ${todayOrders.length} orders already sent today, nothing more sent`] };
+  }
+  for (let o of orders) {
+    const sym = String(o.broker_symbol).toUpperCase();
+    if (sent.has(`${o.action}:${sym}`)) { warnings.push(`${o.ticker}: ${o.action} skipped, already sent to the broker today`); continue; }
+    if (o.action === "BUY" && todayOrders === null) { warnings.push(`${o.ticker}: BUY skipped, could not read today's broker orders`); continue; }
+    if (o.action === "SELL") {
+      const h = held[sym] ?? held[sym.replace(/\.TO$/, "")] ?? 0;
+      if (h <= 0) { warnings.push(`${o.ticker}: SELL dropped, account holds 0 shares`); continue; }
+      if (o.units > h) { warnings.push(`${o.ticker}: SELL cut from ${o.units} to ${h} shares (all that is held)`); o = { ...o, units: h }; }
+    }
+    keep.push(o);
+  }
+  let room = (Number(snap?.cash_cad) || 0) + keep.filter((o) => o.action === "SELL").reduce((a, o) => a + o.units * o.limit, 0);
+  const out = [];
+  for (const o of keep) {
+    if (o.action === "BUY") {
+      const cost = o.units * o.limit;
+      if (cost > room + 0.01) { warnings.push(`${o.ticker}: BUY dropped, $${cost.toFixed(2)} is more than cash left $${room.toFixed(2)}`); continue; }
+      room -= cost;
+    }
+    out.push(o);
+  }
+  return { keep: out, warnings };
+}
+
+async function todaysOrders() {
+  try {
+    const r = await st.accountInformation.getUserAccountOrders({ accountId: acct, state: "all", days: 1 });
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Toronto" });
+    return (r.data || [])
+      .filter((o) => !o.time_placed || new Date(o.time_placed).toLocaleDateString("en-CA", { timeZone: "America/Toronto" }) === today)
+      .filter((o) => !/REJECT|FAILED/i.test(String(o.status || "")))
+      .map((o) => ({ symbol: o.universal_symbol?.symbol || o.symbol?.symbol || o.symbol, action: o.action, status: o.status }));
+  } catch (e) {
+    console.error("could not read today's orders:", e?.message || e);
+    return null;
+  }
+}
+
 async function check(file) {
   const plan = JSON.parse(fs.readFileSync(file, "utf8"));
   const { orders } = plan;
@@ -107,6 +160,13 @@ async function execute(file, out) {
   guard(orders, plan);
   const results = [];
   const live = !DRY_RUN && ENABLED;
+  if (live) {
+    let snap = null;
+    try { snap = JSON.parse(fs.readFileSync(process.env.SNAP_FILE || "/tmp/snap.json", "utf8")); } catch { die("no account snapshot: refusing to trade"); }
+    const { keep, warnings } = preTradeCheck(orders, snap, await todaysOrders());
+    for (const w of warnings) { console.log("PRE-TRADE: " + w); results.push({ action: "-", units: 0, ticker: "", broker_symbol: "", limit: 0, status: "BLOCKED", error: w }); }
+    orders.length = 0; orders.push(...keep);
+  }
   console.log(live ? "LIVE MODE: placing orders" : `DRY RUN (DRY_RUN=${DRY_RUN}, TRADING_ENABLED=${ENABLED}): no orders sent`);
   // sells first so a failed buy never leaves an unintended position
   for (const o of [...orders].sort((a, b) => (a.action === "SELL" ? -1 : 1))) {
