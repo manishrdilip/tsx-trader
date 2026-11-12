@@ -226,9 +226,13 @@ def main():
     if broker is not None and orders:
         try:
             live_px = broker.ltp([o["ticker"] for o in orders])
-        except Exception as e:  # no live prices: keep sells, drop buys
-            print("price check: ltp failed", e)
-            live_px = {}
+        except Exception as e:  # Kite quotes need a paid Connect plan: fall back to yfinance 1-min bars
+            print("price check: Kite ltp failed (", e, ") - using yfinance live prices")
+            try:
+                live_px = data.live_prices([o["ticker"] for o in orders])
+            except Exception as e2:  # still nothing: keep sells, drop buys
+                print("price check: yfinance live prices failed", e2)
+                live_px = {}
         orders, warns = safety.price_check(orders, live_px)
         notes += ["Price check: " + w for w in warns]
         if warns:
