@@ -42,6 +42,10 @@ def data_health(sig, held):
     if sig.get("market_sma") is not None and not np.isfinite(sig.get("market_sma", np.nan)):
         probs.append(f"market line ({sig.get('market')}) 200-day average is missing")
     held = [t for t in held if t in sig["sma200"].index]
+    # a stock with under 200 closes of history (new listing, SME, or a non-equity like a bond/SGB)
+    # can never have a 200-day line: that is not bad data, so it must not stop the whole run
+    if "hist" in sig:
+        held = [t for t in held if float(sig["hist"].get(t, 0) or 0) >= 200]
     if held:
         bad = [t for t in held if not np.isfinite(sig["sma200"].get(t, np.nan))]
         if len(bad) > 0.3 * len(held):
