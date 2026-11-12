@@ -19,17 +19,17 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import rules  # noqa: E402
-import safety  # noqa: E402
-import data  # noqa: E402
-
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
-try:  # .env and today's Kite token on the India laptop/server; no-op elsewhere
-    import local_env  # noqa: E402
+try:  # .env and today's Kite token on the India laptop/server; no-op elsewhere.
+    import local_env  # noqa: E402  # must load BEFORE rules: rules reads INDIA_VMM_* at import
     local_env.load()
 except Exception:
     pass
+
+import rules  # noqa: E402
+import safety  # noqa: E402
+import data  # noqa: E402
 
 OUT = os.path.join(ROOT, "results", "india_vmm")
 STATE = os.path.join(OUT, "state.json")
