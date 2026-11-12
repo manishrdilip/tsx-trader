@@ -9,6 +9,13 @@ import os
 TERMINAL = {"COMPLETE", "CANCELLED", "REJECTED"}
 
 
+def main_board(sym):
+    """True for a regular NSE stock symbol. Series-suffixed symbols end in a 2-character code
+    (-BE, -ST, -SM, -RE, -N1, -Z4, -GB ...); real names with a hyphen (BAJAJ-AUTO, MCDOWELL-N) don't."""
+    sym = sym.upper()
+    return "-" not in sym or len(sym.rsplit("-", 1)[1]) != 2
+
+
 class KiteBroker:
     def __init__(self):
         from kiteconnect import KiteConnect
@@ -36,9 +43,12 @@ class KiteBroker:
         return syms
 
     def universe(self):
-        """NSE equity (EQ) symbols from Kite's instrument dump, as .NS tickers."""
+        """Main-board NSE stocks from Kite's instrument dump, as .NS tickers.
+        Kite tags bonds, NCDs, T-bills and BE/BZ/ST/SM/RE series as "EQ" too; those are dropped
+        (Yahoo has no data for them, and they made each run download thousands of dead symbols)."""
         return sorted({i["tradingsymbol"].upper() + ".NS"
-                       for i in self.k.instruments("NSE") if i.get("instrument_type") == "EQ"})
+                       for i in self.k.instruments("NSE")
+                       if i.get("instrument_type") == "EQ" and main_board(i["tradingsymbol"])})
 
     def ltp(self, tickers):
         """{ticker.NS: last traded price} from Kite (used by the pre-order price check)."""
