@@ -118,6 +118,7 @@ def signals(closes, volumes):
         "date": closes.index[-1],
         "close": close,
         "sma200": sma200,
+        "hist": hist,
         "r12": r12,
         "vol": vol,
         "eligible": elig,

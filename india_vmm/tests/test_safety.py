@@ -52,6 +52,13 @@ class TestHealthAndStale(unittest.TestCase):
         probs = safety.data_health(bad, ["UP1.NS", "DN1.NS"])
         self.assertEqual(len(probs), 2)
 
+    def test_health_ignores_holdings_too_young_for_a_200d_line(self):
+        closes, volumes = make_panel()
+        sig = rules.signals(closes, volumes)
+        young = dict(sig, sma200=sig["sma200"] * np.nan, hist=sig["hist"] * 0 + 50)
+        self.assertEqual(safety.data_health(young, ["UP1.NS", "DN1.NS"]), [])
+        self.assertEqual(safety.data_health(young, ["NOT_IN_DATA.NS"]), [])
+
     def test_stale(self):
         today = dt.date(2026, 11, 10)  # Tuesday
         self.assertFalse(safety.stale(pd.Timestamp("2026-11-09"), today, 3))
