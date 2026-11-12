@@ -1,0 +1,45 @@
+# Control the India trader DigitalOcean server from GitHub (Actions tab -> "India server" -> Run workflow).
+# Needs repo secrets: INDIA_SSH_KEY (private key whose .pub is in the server's ~/.ssh/authorized_keys)
+# and INDIA_HOST (server IP). Never prints .env.
+name: India server
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to do on the server
+        type: choice
+        default: status
+        options: [status, logs, deploy, dry-run, stop-trading, start-trading, custom]
+      command:
+        description: Only for "custom" - a shell command run in ~/tsx-trader
+        required: false
+        default: ""
+concurrency: india-server
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: SSH setup
+        env:
+          KEY: ${{ secrets.INDIA_SSH_KEY }}
+          HOST: ${{ secrets.INDIA_HOST }}
+        run: |
+          mkdir -p ~/.ssh && printf '%s\n' "$KEY" > ~/.ssh/id && chmod 600 ~/.ssh/id
+          ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+      - name: Run on server
+        env:
+          HOST: ${{ secrets.INDIA_HOST }}
+          ACTION: ${{ inputs.action }}
+          CMD: ${{ inputs.command }}
+        run: |
+          case "$ACTION" in
+            status) R='cd ~/tsx-trader && git log -1 --format="%h %ci %s" && grep -E "^(TRADING_ENABLED|INDIA_VMM_BUDGET_INR|INDIA_VMM_ADOPT|INDIA_VMM_PROTECTED)=" .env && crontab -l | grep -v "^#" && uptime' ;;
+            logs) R='cd ~/tsx-trader/india_server/logs && for f in $(ls -t vmm-*.log watch-*.log refresh-*.log 2>/dev/null | head -3); do echo "=== $f"; grep -v "No data found\|Failed download" "$f" | tail -40; done' ;;
+            deploy) R='cd ~/tsx-trader && git pull --ff-only && git log -1 --format="%h %s"' ;;
+            dry-run) R='cd ~/tsx-trader && .venv/bin/python india_vmm/run.py --force 2>&1 | grep -v "No data found\|Failed download\|delisted" | tail -40' ;;
+            stop-trading) R='sed -i "s/^[[:space:]]*TRADING_ENABLED=.*/TRADING_ENABLED=false/" ~/tsx-trader/.env && grep ^TRADING_ENABLED ~/tsx-trader/.env' ;;
+            start-trading) R='sed -i "s/^[[:space:]]*TRADING_ENABLED=.*/TRADING_ENABLED=true/" ~/tsx-trader/.env && grep ^TRADING_ENABLED ~/tsx-trader/.env' ;;
+            custom) R="cd ~/tsx-trader && $CMD" ;;
+          esac
+          ssh -i ~/.ssh/id -o BatchMode=yes root@"$HOST" "$R"
