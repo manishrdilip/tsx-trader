@@ -173,3 +173,23 @@ def test_momentum_buys_come_before_parking(plan):
     out = run({}, 2000)
     assert buys(out)[0]["ticker"] != "VEQT.TO"
     assert sum(o["units"] * o["limit"] for o in buys(out)) <= 2000 + 1
+
+
+def test_parked_veqt_counts_toward_loss_halt(plan):
+    # cash moved into parked VEQT (outside the bot ledger) is not a loss: no false LOSS HALT
+    yday = (TODAY - dt.timedelta(days=1)).isoformat()
+    C, V = make_prices()
+    C["VEQT.TO"] = 40.0; V["VEQT.TO"] = 1_000_000
+    _, run = plan(prices=(C, V), state={"equity_hist": {yday: 10_000}})
+    units = int(8_000 / C["VEQT.TO"].iloc[-1])
+    out = run({"VEQT.TO": units}, 2_000)
+    assert not any("LOSS HALT" in g for g in out["guard"])
+
+
+def test_loss_halt_still_fires_with_veqt(plan):
+    yday = (TODAY - dt.timedelta(days=1)).isoformat()
+    C, V = make_prices()
+    C["VEQT.TO"] = 40.0; V["VEQT.TO"] = 1_000_000
+    _, run = plan(prices=(C, V), state={"equity_hist": {yday: 10_000}})
+    out = run({"VEQT.TO": int(1_000 / C["VEQT.TO"].iloc[-1])}, 2_000)
+    assert any("LOSS HALT" in g for g in out["guard"])
