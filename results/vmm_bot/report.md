@@ -1,10 +1,10 @@
 # VMM bot — 2026-11-13 (LIVE)
-Signals from close of 2026-11-12. Account equity $3,449.00, cash $1,105.06.
+Signals from close of 2026-11-12. Account equity $2,707.16, cash $363.22.
 XIU above 200-day: yes. Momentum share 100%.
 
 | Status | Action | Shares | Stock | Limit | Why |
 |---|---|---|---|---|---|
-| PENDING | BUY | 12 | VEQT.TO | 62.67 | park idle cash $1,085 long-term (no momentum slot/pick for it) |
+| BLOCKED | - | 0 |  | 0 |  — VEQT.TO: BUY skipped, already sent to the broker today |
 
 | Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
 |---|---|---|---|---|---|---|
@@ -20,6 +20,7 @@ XIU above 200-day: yes. Momentum share 100%.
 | NUAG.TO | 7.45 | 7.12 | 4.7 | 122 | 8.64 | 6.22 |
 | ORE.TO | 2.65 | 2.54 | 4.3 | 87 | 3.02 | 2.17 |
 
+- GUARD MODE: LOSS HALT: account $2,707 is 22% below its 7-day high $3,449 -> no new buys, no VEQT selling (sell rules still active)
 - Slow mode: no review today (only the 28% emergency sell)
 - TLO.TO: sell signal (close 6.25 < 200d 7.23) waits: not a review day
-- Parking $752 of idle cash in VEQT.TO
+- Parking $313 of idle cash in VEQT.TO
