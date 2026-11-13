@@ -212,10 +212,19 @@ def main(snap_path, out_path):
     guard = market_guard()
     eq_hist = {d: v for d, v in state.get("equity_hist", {}).items()
                if (today_d - dt.date.fromisoformat(d)).days <= 10}
-    halted, eq_peak = loss_halt(eq_hist, equity, today_d)
+    # The loss halt watches total money: bot holdings + cash + VEQT (the parking/funding fund).
+    # VEQT is left out of the ledger, so without this every parking buy that fills
+    # moved cash out of "equity" and looked like a loss (false LOSS HALT 2026-11-13).
+    park_val = 0.0
+    for t in {FUND_TICKER, PARK_TICKER} - {""}:
+        px = float(close.get(t, np.nan)) if t in close.index else float("nan")
+        if actual.get(t, 0) > 0 and px == px:
+            park_val += actual[t] * px
+    halt_equity = equity + park_val
+    halted, eq_peak = loss_halt(eq_hist, halt_equity, today_d)
     if halted:
-        guard.append(f"LOSS HALT: account ${equity:,.0f} is {(1-equity/eq_peak)*100:.0f}% below its 7-day high ${eq_peak:,.0f}")
-    eq_hist[today_d.isoformat()] = round(equity, 2)
+        guard.append(f"LOSS HALT: account ${halt_equity:,.0f} is {(1-halt_equity/eq_peak)*100:.0f}% below its 7-day high ${eq_peak:,.0f}")
+    eq_hist[today_d.isoformat()] = round(halt_equity, 2)
     if guard:
         notes.append("GUARD MODE: " + "; ".join(guard) + " -> no new buys, no VEQT selling (sell rules still active)")
     if open_syms:
