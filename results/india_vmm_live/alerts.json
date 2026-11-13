@@ -4,7 +4,8 @@
     "order:2121098655128662016:COMPLETE",
     "order:2121098655329988608:COMPLETE",
     "order:2121098655531311104:COMPLETE",
-    "order:2121098655959134208:COMPLETE"
+    "order:2121098655959134208:COMPLETE",
+    "watchdog:PM"
   ],
   "seen_orders": {
     "2121098655128662016": "COMPLETE",
@@ -28,6 +29,10 @@
     {
       "time": "10:05",
       "text": "India VMM order COMPLETE: BUY 5 MBAPL @ 193.46"
+    },
+    {
+      "time": "15:05",
+      "text": "India VMM: PM run missing at 15:05; starting it now."
     }
   ]
 }
