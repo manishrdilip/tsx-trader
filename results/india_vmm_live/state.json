@@ -1,7 +1,58 @@
 {
   "ledger": {},
-  "pending": {},
-  "last_run": "2026-11-13T09:27:41",
+  "pending": {
+    "CUPID.NS": {
+      "units": 3,
+      "pre_units": 0,
+      "order_id": "2121098654117834752"
+    },
+    "SHREEJISPG.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2121098654319157248"
+    },
+    "GCSL.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2121098654528876544"
+    },
+    "SBC.NS": {
+      "units": 15,
+      "pre_units": 0,
+      "order_id": "2121098654721810432"
+    },
+    "SGMART.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2121098654927335424"
+    },
+    "INDSWFTLAB.NS": {
+      "units": 2,
+      "pre_units": 0,
+      "order_id": "2121098655128662016"
+    },
+    "TFCILTD.NS": {
+      "units": 6,
+      "pre_units": 0,
+      "order_id": "2121098655329988608"
+    },
+    "NINSYS.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2121098655531311104"
+    },
+    "SKYGOLD.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2121098655745220608"
+    },
+    "MBAPL.NS": {
+      "units": 5,
+      "pre_units": 0,
+      "order_id": "2121098655959134208"
+    }
+  },
+  "last_run": "2026-11-13T10:01:42",
   "run_slots": {
     "date": "2026-11-13",
     "slots": [
@@ -14,30 +65,10 @@
       "r12": 6.2375,
       "close": 354.0
     },
-    "SGMART.NS": {
-      "sma200": 616.22,
-      "r12": 1.6949,
-      "close": 902.65
-    },
-    "SKYGOLD.NS": {
-      "sma200": 584.02,
-      "r12": 1.7492,
-      "close": 983.4
-    },
     "SBC.NS": {
       "sma200": 41.02,
       "r12": 1.8486,
       "close": 68.51
-    },
-    "MBAPL.NS": {
-      "sma200": 127.45,
-      "r12": 1.3539,
-      "close": 192.14
-    },
-    "NINSYS.NS": {
-      "sma200": 626.96,
-      "r12": 1.0789,
-      "close": 897.35
     },
     "INDSWFTLAB.NS": {
       "sma200": 224.06,
@@ -49,6 +80,21 @@
       "r12": 2.3427,
       "close": 785.8
     },
+    "SGMART.NS": {
+      "sma200": 616.22,
+      "r12": 1.6949,
+      "close": 902.65
+    },
+    "SKYGOLD.NS": {
+      "sma200": 584.02,
+      "r12": 1.7492,
+      "close": 983.4
+    },
+    "MBAPL.NS": {
+      "sma200": 127.45,
+      "r12": 1.3539,
+      "close": 192.14
+    },
     "TFCILTD.NS": {
       "sma200": 96.62,
       "r12": 1.39,
@@ -58,6 +104,11 @@
       "sma200": 536.55,
       "r12": 2.2454,
       "close": 881.2
+    },
+    "NINSYS.NS": {
+      "sma200": 626.96,
+      "r12": 1.0789,
+      "close": 897.35
     }
   },
   "keep_cut": 0.0300631059412797,
