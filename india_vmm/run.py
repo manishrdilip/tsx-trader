@@ -258,7 +258,8 @@ def main():
 
     def finish(state_out):
         if not offline:
-            mark_slot(state_out, today, slot)
+            if live:  # a dry run must never use up the day's AM/PM slot
+                mark_slot(state_out, today, slot)
             lines = {}
             for t in set(ledger) | {o["ticker"] for o in orders if o["action"] == "BUY"}:
                 try:
