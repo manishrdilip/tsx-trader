@@ -1,6 +1,33 @@
 {
   "date": "2026-11-13",
-  "sent": [],
-  "seen_orders": {},
-  "log": []
+  "sent": [
+    "order:2121098655128662016:COMPLETE",
+    "order:2121098655329988608:COMPLETE",
+    "order:2121098655531311104:COMPLETE",
+    "order:2121098655959134208:COMPLETE"
+  ],
+  "seen_orders": {
+    "2121098655128662016": "COMPLETE",
+    "2121098655329988608": "COMPLETE",
+    "2121098655531311104": "COMPLETE",
+    "2121098655959134208": "COMPLETE"
+  },
+  "log": [
+    {
+      "time": "10:05",
+      "text": "India VMM order COMPLETE: BUY 2 INDSWFTLAB @ 359.25"
+    },
+    {
+      "time": "10:05",
+      "text": "India VMM order COMPLETE: BUY 6 TFCILTD @ 166.77"
+    },
+    {
+      "time": "10:05",
+      "text": "India VMM order COMPLETE: BUY 1 NINSYS @ 898.6"
+    },
+    {
+      "time": "10:05",
+      "text": "India VMM order COMPLETE: BUY 5 MBAPL @ 193.46"
+    }
+  ]
 }
