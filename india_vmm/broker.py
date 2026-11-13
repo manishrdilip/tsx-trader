@@ -16,6 +16,21 @@ def main_board(sym):
     return "-" not in sym or len(sym.rsplit("-", 1)[1]) != 2
 
 
+def merge_day_positions(holdings, net_positions):
+    """Add today's NSE CNC net quantity (buys +, sells of holdings -) to holdings."""
+    out = dict(holdings)
+    for p in net_positions:
+        if p.get("product") != "CNC" or p.get("exchange") != "NSE":
+            continue
+        t = p["tradingsymbol"].upper() + ".NS"
+        q = out.get(t, 0) + int(p.get("quantity") or 0)
+        if q > 0:
+            out[t] = q
+        else:
+            out.pop(t, None)
+    return out
+
+
 class KiteBroker:
     def __init__(self):
         from kiteconnect import KiteConnect
@@ -24,13 +39,25 @@ class KiteBroker:
         self.k.set_access_token(os.environ["KITE_ACCESS_TOKEN"])
 
     def holdings(self):
-        """{symbol.NS: qty} for every delivery holding in the account."""
+        """{symbol.NS: qty} for every delivery holding in the account, including shares
+        bought today (only in positions until T+1) and yesterday's buys (t1_quantity until settled).
+        Without these the bot saw same-day fills as missing: equity fell to cash alone and the
+        loss halt fired falsely (2026-11-13)."""
         out = {}
         for h in self.k.holdings():
-            qty = int(h.get("quantity") or 0)
+            qty = int(h.get("quantity") or 0) + int(h.get("t1_quantity") or 0)
             if qty > 0:
                 out[h["tradingsymbol"].upper() + ".NS"] = qty
-        return out
+        return merge_day_positions(out, self.k.positions().get("net", []))
+
+    def open_buy_value(self):
+        """Rupees blocked by today's still-open BUY orders (counted as money, not a loss)."""
+        tot = 0.0
+        for o in self.k.orders():
+            if o.get("status") not in TERMINAL and o.get("transaction_type") == "BUY":
+                left = int(o.get("pending_quantity") or 0)
+                tot += left * float(o.get("price") or 0)
+        return tot
 
     def cash(self):
         return float(self.k.margins("equity")["available"]["live_balance"])
