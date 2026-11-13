@@ -1,79 +1,70 @@
 {
-  "ledger": {
-    "11DPD.NS": 100,
-    "APCL.NS": 4,
-    "ASHOKLEY.NS": 4,
-    "IBULLSLTD.NS": 29,
-    "KMCSHIL.NS": 5,
-    "SANGAMIND.NS": 5,
-    "SUNTV.NS": 2,
-    "SUZLON.NS": 100,
-    "TRIDENT.NS": 13,
-    "WIPRO.NS": 8
-  },
+  "ledger": {},
   "pending": {},
-  "last_run": "2026-11-10T16:02:08",
+  "last_run": "2026-11-13T09:27:41",
   "run_slots": {
-    "date": "2026-11-10",
+    "date": "2026-11-13",
     "slots": [
-      "AM",
-      "PM"
+      "AM"
     ]
   },
   "lines": {
-    "11DPD.NS": {
-      "sma200": NaN,
-      "r12": NaN,
-      "close": NaN
+    "CUPID.NS": {
+      "sma200": 186.19,
+      "r12": 6.2375,
+      "close": 354.0
     },
-    "ASHOKLEY.NS": {
-      "sma200": NaN,
-      "r12": 0.2805,
-      "close": 174.86
+    "SGMART.NS": {
+      "sma200": 616.22,
+      "r12": 1.6949,
+      "close": 902.65
     },
-    "TRIDENT.NS": {
-      "sma200": NaN,
-      "r12": -0.1678,
-      "close": 23.57
+    "SKYGOLD.NS": {
+      "sma200": 584.02,
+      "r12": 1.7492,
+      "close": 983.4
     },
-    "KMCSHIL.NS": {
-      "sma200": NaN,
-      "r12": NaN,
-      "close": 164.49
+    "SBC.NS": {
+      "sma200": 41.02,
+      "r12": 1.8486,
+      "close": 68.51
     },
-    "SUZLON.NS": {
-      "sma200": NaN,
-      "r12": -0.3432,
-      "close": 38.91
+    "MBAPL.NS": {
+      "sma200": 127.45,
+      "r12": 1.3539,
+      "close": 192.14
     },
-    "IBULLSLTD.NS": {
-      "sma200": NaN,
-      "r12": 0.4263,
-      "close": 30.01
+    "NINSYS.NS": {
+      "sma200": 626.96,
+      "r12": 1.0789,
+      "close": 897.35
     },
-    "WIPRO.NS": {
-      "sma200": NaN,
-      "r12": -0.1415,
-      "close": 199.0
+    "INDSWFTLAB.NS": {
+      "sma200": 224.06,
+      "r12": 2.5531,
+      "close": 363.2
     },
-    "APCL.NS": {
-      "sma200": NaN,
-      "r12": -0.2832,
-      "close": 89.48
+    "GCSL.NS": {
+      "sma200": 472.57,
+      "r12": 2.3427,
+      "close": 785.8
     },
-    "SANGAMIND.NS": {
-      "sma200": NaN,
-      "r12": 0.4079,
-      "close": 619.65
+    "TFCILTD.NS": {
+      "sma200": 96.62,
+      "r12": 1.39,
+      "close": 166.31
     },
-    "SUNTV.NS": {
-      "sma200": NaN,
-      "r12": 0.1138,
-      "close": 609.9
+    "SHREEJISPG.NS": {
+      "sma200": 536.55,
+      "r12": 2.2454,
+      "close": 881.2
     }
   },
-  "keep_cut": null,
-  "market_ok": false,
-  "equity": NaN,
-  "cash": -160.3
+  "keep_cut": 0.0300631059412797,
+  "market_ok": true,
+  "equity": 11000.0,
+  "cash": 11038.6,
+  "equity_hist": {
+    "2026-11-13": 11000.0
+  }
 }
