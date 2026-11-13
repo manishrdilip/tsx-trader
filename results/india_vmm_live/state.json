@@ -26,96 +26,26 @@
       "pre_units": 0,
       "order_id": "2121098654927335424"
     },
-    "INDSWFTLAB.NS": {
-      "units": 2,
-      "pre_units": 0,
-      "order_id": "2121098655128662016"
-    },
-    "TFCILTD.NS": {
-      "units": 6,
-      "pre_units": 0,
-      "order_id": "2121098655329988608"
-    },
-    "NINSYS.NS": {
-      "units": 1,
-      "pre_units": 0,
-      "order_id": "2121098655531311104"
-    },
     "SKYGOLD.NS": {
       "units": 1,
       "pre_units": 0,
       "order_id": "2121098655745220608"
-    },
-    "MBAPL.NS": {
-      "units": 5,
-      "pre_units": 0,
-      "order_id": "2121098655959134208"
     }
   },
-  "last_run": "2026-11-13T10:01:42",
+  "last_run": "2026-11-13T15:09:07",
   "run_slots": {
     "date": "2026-11-13",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
-  "lines": {
-    "CUPID.NS": {
-      "sma200": 186.19,
-      "r12": 6.2375,
-      "close": 354.0
-    },
-    "SBC.NS": {
-      "sma200": 41.02,
-      "r12": 1.8486,
-      "close": 68.51
-    },
-    "INDSWFTLAB.NS": {
-      "sma200": 224.06,
-      "r12": 2.5531,
-      "close": 363.2
-    },
-    "GCSL.NS": {
-      "sma200": 472.57,
-      "r12": 2.3427,
-      "close": 785.8
-    },
-    "SGMART.NS": {
-      "sma200": 616.22,
-      "r12": 1.6949,
-      "close": 902.65
-    },
-    "SKYGOLD.NS": {
-      "sma200": 584.02,
-      "r12": 1.7492,
-      "close": 983.4
-    },
-    "MBAPL.NS": {
-      "sma200": 127.45,
-      "r12": 1.3539,
-      "close": 192.14
-    },
-    "TFCILTD.NS": {
-      "sma200": 96.62,
-      "r12": 1.39,
-      "close": 166.31
-    },
-    "SHREEJISPG.NS": {
-      "sma200": 536.55,
-      "r12": 2.2454,
-      "close": 881.2
-    },
-    "NINSYS.NS": {
-      "sma200": 626.96,
-      "r12": 1.0789,
-      "close": 897.35
-    }
-  },
-  "keep_cut": 0.0300631059412797,
+  "lines": {},
+  "keep_cut": 0.03728476920146869,
   "market_ok": true,
-  "equity": 11000.0,
-  "cash": 11038.6,
+  "equity": 2167.99,
+  "cash": 2167.99,
   "equity_hist": {
-    "2026-11-13": 11000.0
+    "2026-11-13": 2167.99
   }
 }
