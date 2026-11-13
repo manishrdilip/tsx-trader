@@ -1,0 +1,59 @@
+# Gemini assistant: comment "@gemini-cli <request>" on an issue or PR (only the repo owner can trigger it).
+# Safety: gets ONLY the Gemini key + a scoped GitHub token. No broker secrets. Writes go to a lab/ branch + PR.
+name: Gemini
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+concurrency:
+  group: gemini-${{ github.event.issue.number || github.event.pull_request.number }}
+  cancel-in-progress: false
+jobs:
+  gemini:
+    if: >-
+      contains(github.event.comment.body, '@gemini-cli') &&
+      github.event.comment.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -q -r requirements.txt || true
+      - name: Work branch
+        run: |
+          git config user.name "gemini-bot"; git config user.email "gemini-bot@users.noreply.github.com"
+          git checkout -b "gemini/${{ github.run_id }}"
+      - uses: google-github-actions/run-gemini-cli@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          settings: |
+            { "model": { "name": "gemini-3.1-pro-preview" }, "tools": { "autoAccept": true } }
+          prompt: |
+            Read GEMINI.md first and follow it strictly.
+            Request from the repo owner (on #${{ github.event.issue.number || github.event.pull_request.number }}):
+            ${{ github.event.comment.body }}
+            When done, reply on that issue/PR with `gh` with your results.
+      - name: Guard and open PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add -A
+          if git diff --cached --quiet; then echo "no file changes"; exit 0; fi
+          if git diff --cached --name-only | grep -Ev '^(lab/|GEMINI_NOTES)'; then
+            echo "Gemini touched files outside lab/ - refusing."; exit 1; fi
+          git commit -qm "Gemini: ${{ github.event.issue.title || 'lab work' }}"
+          git push -q origin HEAD
+          gh pr create --base main --title "Gemini lab: ${{ github.event.issue.title || 'work' }}" \
+            --body "From @gemini-cli request on #${{ github.event.issue.number || github.event.pull_request.number }}. Lab only, needs review."
