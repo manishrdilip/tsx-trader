@@ -205,7 +205,16 @@ def main(snap_path, out_path):
     cash_avail = float(snap.get("buying_power_cad") or snap["cash_cad"]) if open_syms else float(snap["cash_cad"])
     if BUDGET > 0:
         cash_avail = max(0.0, min(cash_avail, BUDGET - held_val))
-    equity = held_val + cash_avail
+    # money tied up in open BUY orders left buying power but is not a position yet: count it,
+    # otherwise a same-day unfilled buy looks like a loss and trips the LOSS HALT
+    open_buy_val = 0.0
+    if open_syms:
+        for o in snap.get("open_orders", []):
+            if str(o.get("action", "")).upper().startswith("BUY"):
+                px = float(close.get(from_broker(o.get("symbol")), np.nan))
+                if px == px:
+                    open_buy_val += float(o.get("units") or 0) * px
+    equity = held_val + cash_avail + open_buy_val
     order_cap = max(MAX_ORDER, MAX_ORDER_PCT * equity)
 
     orders, notes, sells = [], [], set()
