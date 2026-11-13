@@ -27,10 +27,23 @@ class KiteBroker:
         """{symbol.NS: qty} for every delivery holding in the account."""
         out = {}
         for h in self.k.holdings():
-            qty = int(h.get("quantity") or 0)
+            # quantity excludes T1 shares (bought yesterday, not yet settled): count them too
+            qty = int(h.get("quantity") or 0) + int(h.get("t1_quantity") or 0)
             if qty > 0:
                 out[h["tradingsymbol"].upper() + ".NS"] = qty
-        return out
+        # shares bought today only show in positions (day, CNC) until tomorrow
+        try:
+            day = self.k.positions().get("day", [])
+        except Exception:
+            day = []
+        for p in day:
+            if p.get("product") != "CNC" or p.get("exchange", "NSE") != "NSE":
+                continue
+            qty = int(p.get("quantity") or 0)
+            if qty:
+                t = p["tradingsymbol"].upper() + ".NS"
+                out[t] = out.get(t, 0) + qty
+        return {t: q for t, q in out.items() if q > 0}
 
     def cash(self):
         return float(self.k.margins("equity")["available"]["live_balance"])
