@@ -14,24 +14,23 @@
     "NUAG.TO": 7,
     "ORE.TO": 1
   },
-  "last_run_date": "2026-11-11",
+  "last_run_date": "2026-11-13",
   "run_slots": {
-    "date": "2026-11-11",
+    "date": "2026-11-13",
     "slots": [
-      "AM",
-      "PM"
+      "AM"
     ]
   },
-  "fund_date": "2026-11-11",
+  "fund_date": "2026-11-13",
   "peaks": {
     "MSA.TO": 9.73,
-    "LCFS.TO": 21.22,
-    "TWM.TO": 24.02,
+    "LCFS.TO": 22.78,
+    "TWM.TO": 26.03,
     "LGD.TO": 2.19,
-    "SOIL.TO": 8.53,
+    "SOIL.TO": 8.61,
     "CVVY.TO": 2.44,
     "TLO.TO": 7.54,
-    "ARG.TO": 8.4,
+    "ARG.TO": 8.56,
     "FTG.TO": 34.46,
     "NUAG.TO": 8.64,
     "ORE.TO": 3.02
@@ -39,7 +38,8 @@
   "rebuy_blocks": {},
   "equity_hist": {
     "2026-11-10": 3198.56,
-    "2026-11-11": 3145.36
+    "2026-11-11": 3145.36,
+    "2026-11-13": 3449
   },
   "entry": {
     "MSA.TO": "2026-11-10",
@@ -53,10 +53,10 @@
     "FTG.TO": "2026-11-10",
     "NUAG.TO": "2026-11-10",
     "ORE.TO": "2026-11-10",
-    "VEQT.TO": "2026-11-11"
+    "VEQT.TO": "2026-11-13"
   },
   "last_review_month": "2026-11",
-  "funded_cad": 3223.64,
+  "funded_cad": 3975.68,
   "pending": {
     "VEQT.TO": {
       "units": 12,
