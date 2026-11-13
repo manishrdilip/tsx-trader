@@ -40,7 +40,7 @@ jobs:
         with:
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           settings: |
-            { "model": { "name": "gemini-3.1-pro-preview" }, "tools": { "autoAccept": true } }
+            { "model": { "name": "gemini-3.8-flash" }, "tools": { "autoAccept": true } }
           prompt: |
             Read GEMINI.md first and follow it strictly.
             Request from the repo owner (on #${{ github.event.issue.number || github.event.pull_request.number }}):
@@ -50,6 +50,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          rm -rf gemini-artifacts .gemini
           git add -A
           if git diff --cached --quiet; then echo "no file changes"; exit 0; fi
           if git diff --cached --name-only | grep -Ev '^(lab/|GEMINI_NOTES)'; then
