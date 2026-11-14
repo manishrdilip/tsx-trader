@@ -1,17 +1,17 @@
 id,family,strategy,market,why_it_should_work,rules,timeframe,data,data_free,status
-S0001,calendar,Turn-of-month,US:SPY,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
-S0002,calendar,Turn-of-month,CA:XIU.TO,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
-S0003,calendar,Turn-of-month,IN:NIFTYBEES.NS,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
+S0001,calendar,Turn-of-month,US:SPY,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,tested_fail_oos
+S0002,calendar,Turn-of-month,CA:XIU.TO,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,tested_fail_oos
+S0003,calendar,Turn-of-month,IN:NIFTYBEES.NS,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,tested_fail_oos
 S0004,calendar,Pre-holiday drift,US:SPY,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
 S0005,calendar,Pre-holiday drift,CA:XIU.TO,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
 S0006,calendar,Pre-holiday drift,IN:NIFTYBEES.NS,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
-S0007,calendar,Overnight-only index,US:SPY,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
+S0007,calendar,Overnight-only index,US:SPY,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,tested_fail_oos
 S0008,calendar,Overnight-only index,CA:XIU.TO,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
 S0009,calendar,Overnight-only index,IN:NIFTYBEES.NS,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
 S0010,calendar,Intraday-only index (control),US:SPY,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
 S0011,calendar,Intraday-only index (control),CA:XIU.TO,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
 S0012,calendar,Intraday-only index (control),IN:NIFTYBEES.NS,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
-S0013,calendar,Halloween / Sell in May,US:SPY,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
+S0013,calendar,Halloween / Sell in May,US:SPY,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,tested_fail_oos
 S0014,calendar,Halloween / Sell in May,CA:XIU.TO,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
 S0015,calendar,Halloween / Sell in May,IN:NIFTYBEES.NS,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
 S0016,calendar,FOMC pre-announcement drift,US,Equity premium earned in 24h before FOMC,"Long SPY close 2 days before FOMC, exit at 2pm FOMC day close",daily,fomc dates (public list),yes,untested
@@ -91,7 +91,7 @@ S0089,relval,ETF vs NAV premium (crypto ETFs),Crypto: BTC/ETH,Premium/discount c
 S0090,relval,NIFTY vs BANKNIFTY spread,IN,Bank index overshoot vs broad market,Z-score 20d of ratio; long laggard 5d when |z|>2,daily,yf,yes,untested
 S0091,relval,Canadian vs US small caps,CA,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
 S0092,relval,Canadian vs US small caps,US,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
-S0093,meanrev,Internal bar strength (IBS) < 0.2,US:SPY,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
+S0093,meanrev,Internal bar strength (IBS) < 0.2,US:SPY,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,tested_fail_oos
 S0094,meanrev,Internal bar strength (IBS) < 0.2,CA:XIU.TO,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
 S0095,meanrev,Internal bar strength (IBS) < 0.2,IN:NIFTYBEES.NS,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
 S0096,meanrev,3 lower lows,US:SPY,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
