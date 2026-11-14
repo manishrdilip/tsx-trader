@@ -92,18 +92,18 @@ S0090,relval,NIFTY vs BANKNIFTY spread,IN,Bank index overshoot vs broad market,Z
 S0091,relval,Canadian vs US small caps,CA,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
 S0092,relval,Canadian vs US small caps,US,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
 S0093,meanrev,Internal bar strength (IBS) < 0.2,US:SPY,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,tested_fail_oos
-S0094,meanrev,Internal bar strength (IBS) < 0.2,CA:XIU.TO,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
-S0095,meanrev,Internal bar strength (IBS) < 0.2,IN:NIFTYBEES.NS,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
-S0096,meanrev,3 lower lows,US:SPY,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
-S0097,meanrev,3 lower lows,CA:XIU.TO,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
+S0094,meanrev,Internal bar strength (IBS) < 0.2,CA:XIU.TO,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,tested_fail_oos
+S0095,meanrev,Internal bar strength (IBS) < 0.2,IN:NIFTYBEES.NS,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,tested_fail_oos
+S0096,meanrev,3 lower lows,US:SPY,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,tested_fail_oos
+S0097,meanrev,3 lower lows,CA:XIU.TO,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,tested_fail_oos
 S0098,meanrev,3 lower lows,IN:NIFTYBEES.NS,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
-S0099,meanrev,Consecutive down days (5),US:SPY,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
-S0100,meanrev,Consecutive down days (5),CA:XIU.TO,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
-S0101,meanrev,Consecutive down days (5),IN:NIFTYBEES.NS,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0099,meanrev,Consecutive down days (5),US:SPY,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,tested_fail_oos
+S0100,meanrev,Consecutive down days (5),CA:XIU.TO,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,tested_fail_oos
+S0101,meanrev,Consecutive down days (5),IN:NIFTYBEES.NS,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,tested_fail_oos
 S0102,meanrev,Consecutive down days (5),US stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
 S0103,meanrev,Consecutive down days (5),CA stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
 S0104,meanrev,Consecutive down days (5),IN stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
-S0105,meanrev,Bollinger %b<0 in uptrend,US:SPY,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
+S0105,meanrev,Bollinger %b<0 in uptrend,US:SPY,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,tested_fail_oos
 S0106,meanrev,Bollinger %b<0 in uptrend,CA:XIU.TO,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
 S0107,meanrev,Bollinger %b<0 in uptrend,IN:NIFTYBEES.NS,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
 S0108,meanrev,Weekly loser reversal (large caps),US stocks,Liquidity-provision premium,"Each Friday buy 5 worst weekly large-cap losers, hold 1 week",weekly,yf,yes,untested
@@ -120,9 +120,9 @@ S0118,meanrev,Distance from VWAP (daily anchored),CA stocks,Anchored-VWAP revers
 S0119,meanrev,Distance from VWAP (daily anchored),IN stocks,Anchored-VWAP reversion,"Buy when price 2 ATR below 20-day anchored VWAP in uptrend, exit at VWAP",daily,yf,yes,untested
 S0120,meanrev,Crypto weekend reversal,Crypto: BTC/ETH,Thin weekend liquidity overshoots,"Fade Sat-Sun BTC move >5% on Monday, hold 3 days",daily,yf BTC-USD,yes,untested
 S0121,meanrev,FX extreme z-score (USDCAD/USDINR),"FX: USDCAD, USDINR",Range-bound majors mean-revert,"Fade 20d z-score >2, exit at 0",daily,yf,yes,untested
-S0122,trend,Time-series momentum (multi-asset),Multi-asset ETFs,Trend premium across assets (Moskowitz et al.),"Long each of stocks/bonds/gold/oil/FX if 12m return>0 else short/cash, vol-target 10%",monthly,yf ETFs,yes,untested
-S0123,trend,Dual momentum (Antonacci),Multi-asset ETFs,Relative + absolute momentum,Hold best of US/intl equity if > T-bills else bonds,monthly,yf,yes,untested
-S0124,trend,Sector rotation top-3,US,Industry momentum stronger than stock,"Hold top 3 of 11 sector ETFs by 6m return, monthly",monthly,yf,yes,untested
+S0122,trend,Time-series momentum (multi-asset),Multi-asset ETFs,Trend premium across assets (Moskowitz et al.),"Long each of stocks/bonds/gold/oil/FX if 12m return>0 else short/cash, vol-target 10%",monthly,yf ETFs,yes,tested_fail_oos
+S0123,trend,Dual momentum (Antonacci),Multi-asset ETFs,Relative + absolute momentum,Hold best of US/intl equity if > T-bills else bonds,monthly,yf,yes,tested_fail_oos
+S0124,trend,Sector rotation top-3,US,Industry momentum stronger than stock,"Hold top 3 of 11 sector ETFs by 6m return, monthly",monthly,yf,yes,tested_fail_oos
 S0125,trend,Sector rotation top-3,CA,Industry momentum stronger than stock,"Hold top 3 of 11 sector ETFs by 6m return, monthly",monthly,yf,yes,untested
 S0126,trend,Country rotation,Multi-asset ETFs,Country momentum,Hold top 3 country ETFs by 12m-1m return,monthly,yf,yes,untested
 S0127,trend,Residual (idiosyncratic) momentum,US stocks,Less crash-prone than raw momentum,"Rank stocks by 12m residual vs market beta, hold top decile",monthly,yf,yes,untested
