@@ -1,0 +1,193 @@
+id,family,strategy,market,why_it_should_work,rules,timeframe,data,data_free,status
+S0001,calendar,Turn-of-month,US:SPY,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
+S0002,calendar,Turn-of-month,CA:XIU.TO,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
+S0003,calendar,Turn-of-month,IN:NIFTYBEES.NS,Pension/payroll inflows cluster at month end/start,"Long index ETF last 4 + first 3 trading days of month, cash otherwise",daily,yf,yes,untested
+S0004,calendar,Pre-holiday drift,US:SPY,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
+S0005,calendar,Pre-holiday drift,CA:XIU.TO,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
+S0006,calendar,Pre-holiday drift,IN:NIFTYBEES.NS,Pre-holiday optimism/short covering,"Long index close of day before exchange holiday, exit next close",daily,yf,yes,untested
+S0007,calendar,Overnight-only index,US:SPY,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
+S0008,calendar,Overnight-only index,CA:XIU.TO,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
+S0009,calendar,Overnight-only index,IN:NIFTYBEES.NS,"Returns concentrate overnight (retail open-selling, institutional close-buying)","Buy at close, sell at next open, every day",daily,yf,yes,untested
+S0010,calendar,Intraday-only index (control),US:SPY,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
+S0011,calendar,Intraday-only index (control),CA:XIU.TO,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
+S0012,calendar,Intraday-only index (control),IN:NIFTYBEES.NS,Mirror of overnight effect; expected negative - use as control/short leg,"Buy open, sell close",daily,yf,yes,untested
+S0013,calendar,Halloween / Sell in May,US:SPY,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
+S0014,calendar,Halloween / Sell in May,CA:XIU.TO,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
+S0015,calendar,Halloween / Sell in May,IN:NIFTYBEES.NS,Seasonal risk appetite; Nov-Apr historically stronger,"Long Nov-Apr, T-bills May-Oct",monthly,yf,yes,untested
+S0016,calendar,FOMC pre-announcement drift,US,Equity premium earned in 24h before FOMC,"Long SPY close 2 days before FOMC, exit at 2pm FOMC day close",daily,fomc dates (public list),yes,untested
+S0017,calendar,Day-of-week seasonality,US:SPY,Weekend risk & settlement flows,Long weekday with best in-sample mean only; tested out-of-sample,daily,yf,yes,untested
+S0018,calendar,Day-of-week seasonality,CA:XIU.TO,Weekend risk & settlement flows,Long weekday with best in-sample mean only; tested out-of-sample,daily,yf,yes,untested
+S0019,calendar,Day-of-week seasonality,IN:NIFTYBEES.NS,Weekend risk & settlement flows,Long weekday with best in-sample mean only; tested out-of-sample,daily,yf,yes,untested
+S0020,calendar,Options-expiry week,US,Dealer hedging pins prices then releases,Long index Mon-Fri of monthly opex week only,daily,yf,yes,untested
+S0021,calendar,Quarter-end window dressing,US stocks,Funds buy winners before quarter-end reporting,"Long top-decile 3m winners last 5 days of quarter, exit 2nd day of new quarter",daily,yf,yes,untested
+S0022,calendar,Quarter-end window dressing,CA stocks,Funds buy winners before quarter-end reporting,"Long top-decile 3m winners last 5 days of quarter, exit 2nd day of new quarter",daily,yf,yes,untested
+S0023,calendar,Quarter-end window dressing,IN stocks,Funds buy winners before quarter-end reporting,"Long top-decile 3m winners last 5 days of quarter, exit 2nd day of new quarter",daily,yf,yes,untested
+S0024,calendar,January small-cap effect,US:SPY,Tax-loss selling reversal,Long small-cap ETF (IWM/XCS) late Dec to end Jan,daily,yf,yes,untested
+S0025,calendar,January small-cap effect,CA:XIU.TO,Tax-loss selling reversal,Long small-cap ETF (IWM/XCS) late Dec to end Jan,daily,yf,yes,untested
+S0026,calendar,January small-cap effect,IN:NIFTYBEES.NS,Tax-loss selling reversal,Long small-cap ETF (IWM/XCS) late Dec to end Jan,daily,yf,yes,untested
+S0027,calendar,Tax-loss harvesting reversal (stocks),US stocks,Forced Dec selling of YTD losers reverses in Jan,"Buy bottom-decile YTD losers on Dec 20, sell Jan 31",daily,yf,yes,untested
+S0028,calendar,Tax-loss harvesting reversal (stocks),CA stocks,Forced Dec selling of YTD losers reverses in Jan,"Buy bottom-decile YTD losers on Dec 20, sell Jan 31",daily,yf,yes,untested
+S0029,calendar,Tax-loss harvesting reversal (stocks),IN stocks,Forced Dec selling of YTD losers reverses in Jan,"Buy bottom-decile YTD losers on Dec 20, sell Jan 31",daily,yf,yes,untested
+S0030,calendar,Diwali/Muhurat & Indian festival drift,IN,Festival-season retail inflows in India,"Long NIFTYBEES 5 days pre-Diwali, exit 5 days after",daily,yf + festival dates,yes,untested
+S0031,calendar,Indian budget-day volatility,IN,Event-vol premium around Union Budget,Long straddle proxy: long NIFTY if >1% move day after (needs options for true test),daily,yf; options missing,no/partial,untested
+S0032,calendar,Canadian RRSP-season flows,CA,RRSP deadline inflows into Canadian ETFs (Jan-Feb),Long XIU/XIC Jan 15 - Mar 1,daily,yf,yes,untested
+S0033,calendar,Payday effect,US:SPY,Retail contribution timing mid-month,Long index on 15th +/-2 trading days,daily,yf,yes,untested
+S0034,calendar,Payday effect,CA:XIU.TO,Retail contribution timing mid-month,Long index on 15th +/-2 trading days,daily,yf,yes,untested
+S0035,calendar,Payday effect,IN:NIFTYBEES.NS,Retail contribution timing mid-month,Long index on 15th +/-2 trading days,daily,yf,yes,untested
+S0036,flows,Index addition run-up,US stocks,Index funds must buy at effective date; front-run announcement-to-inclusion,"Buy on S&P/TSX/NIFTY addition announcement, sell on effective date",daily,index change lists (scrape; partial),no/partial,untested
+S0037,flows,Index addition run-up,CA stocks,Index funds must buy at effective date; front-run announcement-to-inclusion,"Buy on S&P/TSX/NIFTY addition announcement, sell on effective date",daily,index change lists (scrape; partial),no/partial,untested
+S0038,flows,Index addition run-up,IN stocks,Index funds must buy at effective date; front-run announcement-to-inclusion,"Buy on S&P/TSX/NIFTY addition announcement, sell on effective date",daily,index change lists (scrape; partial),no/partial,untested
+S0039,flows,Index deletion rebound,US stocks,Forced selling overshoots,"Buy deleted names on effective date, hold 20 days",daily,index change lists,yes,untested
+S0040,flows,Index deletion rebound,CA stocks,Forced selling overshoots,"Buy deleted names on effective date, hold 20 days",daily,index change lists,yes,untested
+S0041,flows,Index deletion rebound,IN stocks,Forced selling overshoots,"Buy deleted names on effective date, hold 20 days",daily,index change lists,yes,untested
+S0042,flows,Leveraged ETF rebalance,US,LETFs must buy into close on up days / sell on down days,"If index +1%+ by 15:30, long into close, exit next open; mirror short",intraday 30m,yf 1h (2y),yes,untested
+S0043,flows,Month-end pension rebalance,US,Balanced funds sell the winner asset class at month end,"If equities beat bonds by >3% MTD, short equities/long bonds last 3 days of month",daily,yf,yes,untested
+S0044,flows,ETF creation-flow proxy,US,Large ETF inflows push underlying next days,Long sector ETF after top-decile shares-outstanding increase (proxy volume*price),daily,yf (proxy),yes,untested
+S0045,flows,Closing auction imbalance proxy,US,Late-day order imbalance continues into close,"Long if last-hour return > +0.5% and volume > 1.5x, exit close",intraday 1h,yf 1h,yes,untested
+S0046,flows,Short-squeeze candidate,US,Crowded shorts forced to cover on positive momentum,High short interest (>15% float) + 20d high break; hold 10d,daily,"short interest (FINRA bimonthly, free)",yes,untested
+S0047,flows,Insider cluster buying,US,Insiders know their firm; cluster buys are informative,Buy when >=3 insiders buy within 10 days (SEDI/SEC Form 4); hold 60d,daily,"SEC Form 4 / SEDI (free, scrape)",yes,untested
+S0048,flows,Insider cluster buying,CA,Insiders know their firm; cluster buys are informative,Buy when >=3 insiders buy within 10 days (SEDI/SEC Form 4); hold 60d,daily,"SEC Form 4 / SEDI (free, scrape)",yes,untested
+S0049,flows,Share buyback announcements,US,Undervaluation signal + steady buyer,"Buy 1 day after buyback >5% mkt cap announced, hold 120d",daily,8-K/news (partial),no/partial,untested
+S0050,flows,13F copy (smallest positions excluded),US,Skilled managers' top new positions,"Buy top-10 new positions of selected funds 46 days after quarter end, hold 1 quarter",quarterly,SEC 13F (free),yes,untested
+S0051,flows,Congress trading copy,US,Possible information edge,"Buy disclosed congressional purchases on disclosure date, hold 60d",daily,public disclosure sites (free),yes,untested
+S0052,flows,"Dividend capture (high-yield, ex-date)",CA,Price drop < dividend due to tax clienteles,"Buy 2 days before ex-date, sell 3 days after",daily,yf dividends,yes,untested
+S0053,flows,"Dividend capture (high-yield, ex-date)",US,Price drop < dividend due to tax clienteles,"Buy 2 days before ex-date, sell 3 days after",daily,yf dividends,yes,untested
+S0054,flows,Pre-dividend run-up,CA,Dividend-seeking demand before ex-date,"Buy 15 days before ex-date, sell day before ex-date",daily,yf dividends,yes,untested
+S0055,flows,Pre-dividend run-up,US,Dividend-seeking demand before ex-date,"Buy 15 days before ex-date, sell day before ex-date",daily,yf dividends,yes,untested
+S0056,flows,Pre-dividend run-up,IN,Dividend-seeking demand before ex-date,"Buy 15 days before ex-date, sell day before ex-date",daily,yf dividends,yes,untested
+S0057,flows,Spin-off drift,US,Parent holders dump spun-off shares,"Buy spin-off on day 20 after listing, hold 6-12 months",daily,spin-off list (scrape),yes,untested
+S0058,flows,IPO lock-up expiry short,US,Insider supply hits on lock-up end,"Short/avoid 5 days before lock-up expiry, cover 5 days after",daily,IPO dates (partial),no/partial,untested
+S0059,event,Post-earnings drift (gap),US,Under-reaction to earnings news,Buy if earnings-day gap >5% and close in top 25% of range; hold 40d,daily,yf earnings dates,yes,untested
+S0060,event,Post-earnings drift (gap),CA,Under-reaction to earnings news,Buy if earnings-day gap >5% and close in top 25% of range; hold 40d,daily,yf earnings dates,yes,untested
+S0061,event,Post-earnings drift (gap),IN,Under-reaction to earnings news,Buy if earnings-day gap >5% and close in top 25% of range; hold 40d,daily,yf earnings dates,yes,untested
+S0062,event,Earnings-day volume shock,US stocks,Volume spike signals information arrival,"Buy if earnings-day volume >4x and return >0, hold 20d",daily,yf,yes,untested
+S0063,event,Earnings-day volume shock,CA stocks,Volume spike signals information arrival,"Buy if earnings-day volume >4x and return >0, hold 20d",daily,yf,yes,untested
+S0064,event,Earnings-day volume shock,IN stocks,Volume spike signals information arrival,"Buy if earnings-day volume >4x and return >0, hold 20d",daily,yf,yes,untested
+S0065,event,Pre-earnings run-up,US,Attention/positioning before report,"Buy 10 days before earnings, sell day before",daily,yf earnings dates,yes,untested
+S0066,event,Analyst upgrade drift,US,Slow incorporation of analyst revisions,"Buy after upgrade (yf recommendations), hold 30d",daily,yf (partial),no/partial,untested
+S0067,event,52-week-high breakout on news-free day,US stocks,Anchoring: investors under-react near 52w high,"Buy first close at new 52w high, exit at 10% trailing stop",daily,yf,yes,untested
+S0068,event,52-week-high breakout on news-free day,CA stocks,Anchoring: investors under-react near 52w high,"Buy first close at new 52w high, exit at 10% trailing stop",daily,yf,yes,untested
+S0069,event,52-week-high breakout on news-free day,IN stocks,Anchoring: investors under-react near 52w high,"Buy first close at new 52w high, exit at 10% trailing stop",daily,yf,yes,untested
+S0070,event,Gap-down on market-wide news reversal,US:SPY,Overreaction to macro shock days,"If index -2%+ day, buy index at close, exit after 5 days",daily,yf,yes,untested
+S0071,event,Gap-down on market-wide news reversal,CA:XIU.TO,Overreaction to macro shock days,"If index -2%+ day, buy index at close, exit after 5 days",daily,yf,yes,untested
+S0072,event,Gap-down on market-wide news reversal,IN:NIFTYBEES.NS,Overreaction to macro shock days,"If index -2%+ day, buy index at close, exit after 5 days",daily,yf,yes,untested
+S0073,event,CPI-day reaction continuation,US,Macro surprise trend,Hold direction of CPI-day SPY close for 5 days,daily,CPI dates (public),yes,untested
+S0074,event,Central bank surprise (BoC/RBI),"FX: USDCAD, USDINR",Rate surprise moves currency for days,Trade CAD/INR direction of decision-day move for 5 days,daily,yf FX + decision dates,yes,untested
+S0075,event,Stock split announcement drift,US,Signal of management confidence,"Buy day after split announcement, hold 60d",daily,yf splits (dates of effect only),yes,untested
+S0076,event,Stock split announcement drift,IN,Signal of management confidence,"Buy day after split announcement, hold 60d",daily,yf splits (dates of effect only),yes,untested
+S0077,event,Delisting/penny reverse-split avoidance (filter),US,Reverse splits predict further decline,Short or exclude names after reverse split,daily,yf splits,yes,untested
+S0078,relval,TSX-NYSE interlisted gap,CA,Same company two listings; FX-adjusted gaps close,"If TSX price*USDCAD differs >0.5% from NYSE price at close, buy cheap leg, exit when <0.1%",daily/1h,yf both listings + USDCAD,yes,untested
+S0079,relval,India ADR vs NSE gap,IN,INFY/WIT/HDB ADR vs local share,"Buy cheap leg when gap >2% FX-adjusted, exit at 0.5%",daily,yf,yes,untested
+S0080,relval,Banks pair (TD/RY/BNS/BMO/CM),CA,Cointegrated Big-5 banks,"Z-score of spread >2: long laggard, short leader; exit z=0",daily,yf,yes,untested
+S0081,relval,Oil producers vs crude,CA,Equities lag crude moves,"If XEG 5d return < WTI 5d return by 4%, long XEG 5d",daily,yf,yes,untested
+S0082,relval,Gold miners vs gold,US,Leverage to gold mean reverts,"Long GDX/short GLD when ratio z<-2, reverse at z>2",daily,yf,yes,untested
+S0083,relval,Gold miners vs gold,Metals: GLD/SLV/CPER,Leverage to gold mean reverts,"Long GDX/short GLD when ratio z<-2, reverse at z>2",daily,yf,yes,untested
+S0084,relval,Silver/gold ratio,Metals: GLD/SLV/CPER,Ratio mean-reverts at extremes,"Long silver/short gold when ratio > 90th pct (rolling 5y), exit at median",daily,yf,yes,untested
+S0085,relval,Copper/gold vs yields,Metals: GLD/SLV/CPER,Growth proxy leads bond yields,Long TLT when copper/gold falls 5% in 20d,daily,yf,yes,untested
+S0086,relval,Sector ETF pairs (cointegration screen),US,Mean-reverting spreads within sector,"Screen pairs pre-2019 for cointegration, trade z-score 2/0 after",daily,yf,yes,untested
+S0087,relval,"Share-class arbitrage (GOOG/GOOGL, BRK)",US,"Same economics, different listings","Long cheap class when spread >1.5x 1y std, exit at mean",daily,yf,yes,untested
+S0088,relval,Closed-end fund discount reversion,US,Discounts mean-revert; arbitrage limited,"Buy CEF when discount 2 std below its 1y mean, sell at mean",daily,CEF NAV (cefconnect scrape; partial),no/partial,untested
+S0089,relval,ETF vs NAV premium (crypto ETFs),Crypto: BTC/ETH,Premium/discount closes,"Buy BTC ETF at >1% discount to spot-implied value, exit at par",daily,yf,yes,untested
+S0090,relval,NIFTY vs BANKNIFTY spread,IN,Bank index overshoot vs broad market,Z-score 20d of ratio; long laggard 5d when |z|>2,daily,yf,yes,untested
+S0091,relval,Canadian vs US small caps,CA,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
+S0092,relval,Canadian vs US small caps,US,Cross-border small-cap valuation mean reversion,"Long laggard of XCS/IWM after 3m spread >10%, hold 1m",daily,yf,yes,untested
+S0093,meanrev,Internal bar strength (IBS) < 0.2,US:SPY,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
+S0094,meanrev,Internal bar strength (IBS) < 0.2,CA:XIU.TO,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
+S0095,meanrev,Internal bar strength (IBS) < 0.2,IN:NIFTYBEES.NS,Close near low of day reverts next day in indices,"Buy index ETF when (C-L)/(H-L)<0.2, sell next close if IBS>0.8 or 3 days",daily,yf,yes,untested
+S0096,meanrev,3 lower lows,US:SPY,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
+S0097,meanrev,3 lower lows,CA:XIU.TO,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
+S0098,meanrev,3 lower lows,IN:NIFTYBEES.NS,Short-term exhaustion in uptrend,"In index above 200d: buy after 3 consecutive lower lows, sell on higher close",daily,yf,yes,untested
+S0099,meanrev,Consecutive down days (5),US:SPY,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0100,meanrev,Consecutive down days (5),CA:XIU.TO,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0101,meanrev,Consecutive down days (5),IN:NIFTYBEES.NS,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0102,meanrev,Consecutive down days (5),US stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0103,meanrev,Consecutive down days (5),CA stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0104,meanrev,Consecutive down days (5),IN stocks,Extreme short-term selling reverts,"Buy after 5 down closes, hold 5 days",daily,yf,yes,untested
+S0105,meanrev,Bollinger %b<0 in uptrend,US:SPY,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
+S0106,meanrev,Bollinger %b<0 in uptrend,CA:XIU.TO,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
+S0107,meanrev,Bollinger %b<0 in uptrend,IN:NIFTYBEES.NS,Pullback in trend,Above 200d and %b<0: buy; exit %b>0.5,daily,yf,yes,untested
+S0108,meanrev,Weekly loser reversal (large caps),US stocks,Liquidity-provision premium,"Each Friday buy 5 worst weekly large-cap losers, hold 1 week",weekly,yf,yes,untested
+S0109,meanrev,Weekly loser reversal (large caps),CA stocks,Liquidity-provision premium,"Each Friday buy 5 worst weekly large-cap losers, hold 1 week",weekly,yf,yes,untested
+S0110,meanrev,Weekly loser reversal (large caps),IN stocks,Liquidity-provision premium,"Each Friday buy 5 worst weekly large-cap losers, hold 1 week",weekly,yf,yes,untested
+S0111,meanrev,Monthly short-term reversal,US stocks,1-month reversal anomaly,Buy bottom-decile 1m return large caps monthly,monthly,yf,yes,untested
+S0112,meanrev,Monthly short-term reversal,CA stocks,1-month reversal anomaly,Buy bottom-decile 1m return large caps monthly,monthly,yf,yes,untested
+S0113,meanrev,Monthly short-term reversal,IN stocks,1-month reversal anomaly,Buy bottom-decile 1m return large caps monthly,monthly,yf,yes,untested
+S0114,meanrev,VIX spike buy,US,Fear overshoots,"Buy SPY when VIX close >30 and VIX fell from intraday high by 10%, hold 20d",daily,yf ^VIX,yes,untested
+S0115,meanrev,India VIX spike buy,IN,Same in India,"Buy NIFTYBEES when INDIAVIX > 90th pct, hold 20d",daily,yf ^INDIAVIX,yes,untested
+S0116,meanrev,Opening gap fill (index only),US,Index gaps fill more than stocks,"Fade index gaps 0.5-1% at open, exit at prior close or 11:30",intraday,yf 5m (60d) - short sample,yes,untested
+S0117,meanrev,Distance from VWAP (daily anchored),US stocks,Anchored-VWAP reversion,"Buy when price 2 ATR below 20-day anchored VWAP in uptrend, exit at VWAP",daily,yf,yes,untested
+S0118,meanrev,Distance from VWAP (daily anchored),CA stocks,Anchored-VWAP reversion,"Buy when price 2 ATR below 20-day anchored VWAP in uptrend, exit at VWAP",daily,yf,yes,untested
+S0119,meanrev,Distance from VWAP (daily anchored),IN stocks,Anchored-VWAP reversion,"Buy when price 2 ATR below 20-day anchored VWAP in uptrend, exit at VWAP",daily,yf,yes,untested
+S0120,meanrev,Crypto weekend reversal,Crypto: BTC/ETH,Thin weekend liquidity overshoots,"Fade Sat-Sun BTC move >5% on Monday, hold 3 days",daily,yf BTC-USD,yes,untested
+S0121,meanrev,FX extreme z-score (USDCAD/USDINR),"FX: USDCAD, USDINR",Range-bound majors mean-revert,"Fade 20d z-score >2, exit at 0",daily,yf,yes,untested
+S0122,trend,Time-series momentum (multi-asset),Multi-asset ETFs,Trend premium across assets (Moskowitz et al.),"Long each of stocks/bonds/gold/oil/FX if 12m return>0 else short/cash, vol-target 10%",monthly,yf ETFs,yes,untested
+S0123,trend,Dual momentum (Antonacci),Multi-asset ETFs,Relative + absolute momentum,Hold best of US/intl equity if > T-bills else bonds,monthly,yf,yes,untested
+S0124,trend,Sector rotation top-3,US,Industry momentum stronger than stock,"Hold top 3 of 11 sector ETFs by 6m return, monthly",monthly,yf,yes,untested
+S0125,trend,Sector rotation top-3,CA,Industry momentum stronger than stock,"Hold top 3 of 11 sector ETFs by 6m return, monthly",monthly,yf,yes,untested
+S0126,trend,Country rotation,Multi-asset ETFs,Country momentum,Hold top 3 country ETFs by 12m-1m return,monthly,yf,yes,untested
+S0127,trend,Residual (idiosyncratic) momentum,US stocks,Less crash-prone than raw momentum,"Rank stocks by 12m residual vs market beta, hold top decile",monthly,yf,yes,untested
+S0128,trend,Residual (idiosyncratic) momentum,CA stocks,Less crash-prone than raw momentum,"Rank stocks by 12m residual vs market beta, hold top decile",monthly,yf,yes,untested
+S0129,trend,Residual (idiosyncratic) momentum,IN stocks,Less crash-prone than raw momentum,"Rank stocks by 12m residual vs market beta, hold top decile",monthly,yf,yes,untested
+S0130,trend,Frog-in-the-pan momentum,US stocks,Smooth trends persist more than jumpy ones,"Momentum stocks with highest % of up days, hold 3m",monthly,yf,yes,untested
+S0131,trend,Frog-in-the-pan momentum,CA stocks,Smooth trends persist more than jumpy ones,"Momentum stocks with highest % of up days, hold 3m",monthly,yf,yes,untested
+S0132,trend,Frog-in-the-pan momentum,IN stocks,Smooth trends persist more than jumpy ones,"Momentum stocks with highest % of up days, hold 3m",monthly,yf,yes,untested
+S0133,trend,52-week-high proximity,US stocks,Anchoring on 52w high,"Buy top decile by price/52w-high ratio, hold 6m",monthly,yf,yes,untested
+S0134,trend,52-week-high proximity,CA stocks,Anchoring on 52w high,"Buy top decile by price/52w-high ratio, hold 6m",monthly,yf,yes,untested
+S0135,trend,52-week-high proximity,IN stocks,Anchoring on 52w high,"Buy top decile by price/52w-high ratio, hold 6m",monthly,yf,yes,untested
+S0136,trend,Industry-relative momentum,US stocks,Removes sector bets,Rank by 12m return minus sector ETF return,monthly,yf,yes,untested
+S0137,trend,Industry-relative momentum,CA stocks,Removes sector bets,Rank by 12m return minus sector ETF return,monthly,yf,yes,untested
+S0138,trend,Industry-relative momentum,IN stocks,Removes sector bets,Rank by 12m return minus sector ETF return,monthly,yf,yes,untested
+S0139,trend,Crypto trend (multi-coin),Crypto: BTC/ETH,Strong trend persistence in crypto,"Hold coins above 20d SMA among top-10 by mcap, equal weight",daily,yf,yes,untested
+S0140,trend,Gold trend with real-yield filter,Metals: GLD/SLV/CPER,Gold trends when real yields fall,Long gold if price>100d SMA and TIP 1m return>0,daily,yf,yes,untested
+S0141,trend,Commodity curve proxy (carry),Commodity ETFs,Backwardated commodities earn roll yield,Long commodity ETFs whose front ETF beats deferred ETF (USO vs USL),monthly,yf (proxy),yes,untested
+S0142,trend,Volatility-managed momentum,US stocks,Scale momentum by inverse recent vol (Barroso),VMM-like portfolio scaled to 12% vol target,daily,yf,yes,untested
+S0143,trend,Volatility-managed momentum,CA stocks,Scale momentum by inverse recent vol (Barroso),VMM-like portfolio scaled to 12% vol target,daily,yf,yes,untested
+S0144,trend,Volatility-managed momentum,IN stocks,Scale momentum by inverse recent vol (Barroso),VMM-like portfolio scaled to 12% vol target,daily,yf,yes,untested
+S0145,trend,Breadth thrust,US:SPY,Rapid breadth expansion starts bull legs,"Buy index when % stocks >50d MA goes from <40% to >60% in 10 days, hold 3m",daily,yf constituents,yes,untested
+S0146,trend,Breadth thrust,CA:XIU.TO,Rapid breadth expansion starts bull legs,"Buy index when % stocks >50d MA goes from <40% to >60% in 10 days, hold 3m",daily,yf constituents,yes,untested
+S0147,trend,Breadth thrust,IN:NIFTYBEES.NS,Rapid breadth expansion starts bull legs,"Buy index when % stocks >50d MA goes from <40% to >60% in 10 days, hold 3m",daily,yf constituents,yes,untested
+S0148,trend,Momentum with crash protection,US stocks,Avoid momentum crashes after bear markets,Momentum only when market 24m return >0,monthly,yf,yes,untested
+S0149,trend,Momentum with crash protection,CA stocks,Avoid momentum crashes after bear markets,Momentum only when market 24m return >0,monthly,yf,yes,untested
+S0150,trend,Momentum with crash protection,IN stocks,Avoid momentum crashes after bear markets,Momentum only when market 24m return >0,monthly,yf,yes,untested
+S0151,carry,FX carry (CAD/INR vs low-yielders),"FX: USDCAD, USDINR",Interest-rate carry premium,"Long high-yield vs low-yield currency (e.g., INR vs JPY) when 3m trend agrees",weekly,yf FX + policy rates,yes,untested
+S0152,carry,Bond term premium timing,US,Steep curve predicts bond excess returns,"Long TLT when 10y-3m spread >1.5%, else short-term",monthly,yf + FRED,yes,untested
+S0153,carry,Covered call ETF vs underlying switch,US,Sell vol when it is rich,Hold covered-call ETF when VIX > 1y median else underlying,monthly,yf,yes,untested
+S0154,carry,Covered call ETF vs underlying switch,CA,Sell vol when it is rich,Hold covered-call ETF when VIX > 1y median else underlying,monthly,yf,yes,untested
+S0155,carry,Cash-secured put proxy (PUTW),US,Variance risk premium,Hold put-write index ETF only when VIX term structure in contango,monthly,yf (proxy),yes,untested
+S0156,carry,Short VIX futures (SVXY) in contango,US,Roll yield on VIX futures,"Long SVXY when VIX < VIX3M by 10%, else cash",daily,yf ^VIX ^VIX3M,yes,untested
+S0157,carry,Crypto funding-rate carry,Crypto: BTC/ETH,Perp longs pay funding in bull runs,Long spot + short perp when funding > 0.03%/8h (needs exchange data),8h,"funding data missing (Binance API, free)",no/partial,untested
+S0158,carry,Dividend growth + low payout,CA,Income durability,"Hold top 20 by 5y dividend growth with payout<60%, annual",annual,yf dividends + financials (partial),no/partial,untested
+S0159,carry,Dividend growth + low payout,US,Income durability,"Hold top 20 by 5y dividend growth with payout<60%, annual",annual,yf dividends + financials (partial),no/partial,untested
+S0160,vol,Low-volatility anomaly,US stocks,Leverage-constrained investors overpay for high beta,"Hold lowest-vol quintile, monthly",monthly,yf,yes,untested
+S0161,vol,Low-volatility anomaly,CA stocks,Leverage-constrained investors overpay for high beta,"Hold lowest-vol quintile, monthly",monthly,yf,yes,untested
+S0162,vol,Low-volatility anomaly,IN stocks,Leverage-constrained investors overpay for high beta,"Hold lowest-vol quintile, monthly",monthly,yf,yes,untested
+S0163,vol,Volatility contraction breakout (NR7 on weekly),US stocks,Compression precedes expansion,"Weekly NR7 inside bar breakout, stop at bar low",weekly,yf,yes,untested
+S0164,vol,Volatility contraction breakout (NR7 on weekly),CA stocks,Compression precedes expansion,"Weekly NR7 inside bar breakout, stop at bar low",weekly,yf,yes,untested
+S0165,vol,Volatility contraction breakout (NR7 on weekly),IN stocks,Compression precedes expansion,"Weekly NR7 inside bar breakout, stop at bar low",weekly,yf,yes,untested
+S0166,vol,VIX term-structure inversion signal,US,Backwardation = stress; avoid/hedge,Hold SPY only when VIX/VIX3M <1,daily,yf,yes,untested
+S0167,vol,Realized-vol targeting overlay,US:SPY,Vol clustering improves Sharpe,Scale index exposure to 15% target vol,daily,yf,yes,untested
+S0168,vol,Realized-vol targeting overlay,CA:XIU.TO,Vol clustering improves Sharpe,Scale index exposure to 15% target vol,daily,yf,yes,untested
+S0169,vol,Realized-vol targeting overlay,IN:NIFTYBEES.NS,Vol clustering improves Sharpe,Scale index exposure to 15% target vol,daily,yf,yes,untested
+S0170,vol,Implied vs realized spread,US,Variance premium timing,Long index when VIX - 20d realized vol > 5 pts,daily,yf,yes,untested
+S0171,vol,Post-crash volatility selling,US,Vol mean-reverts after spikes,Long SVXY 5 days after VIX peaks above 35,daily,yf,yes,untested
+S0172,value,Earnings yield + momentum combo,US stocks,Value and momentum negatively correlated,"Rank by E/P + 12m momentum, top decile",monthly,"yf financials (partial, survivorship)",no/partial,untested
+S0173,value,Earnings yield + momentum combo,CA stocks,Value and momentum negatively correlated,"Rank by E/P + 12m momentum, top decile",monthly,"yf financials (partial, survivorship)",no/partial,untested
+S0174,value,Earnings yield + momentum combo,IN stocks,Value and momentum negatively correlated,"Rank by E/P + 12m momentum, top decile",monthly,"yf financials (partial, survivorship)",no/partial,untested
+S0175,value,Shareholder yield,US,Dividends + buybacks + debt paydown,Top decile shareholder yield,quarterly,financials partial,no/partial,untested
+S0176,value,Piotroski F-score >=8 in cheap stocks,US,Accounting quality within value,"Bottom-quintile P/B with F>=8, annual",annual,financials partial,no/partial,untested
+S0177,value,Gross profitability,US,Novy-Marx profitability premium,Top quintile gross profit/assets,annual,financials partial,no/partial,untested
+S0178,value,Accruals anomaly,US,Low accruals = higher-quality earnings,Bottom-decile accruals,annual,financials partial,no/partial,untested
+S0179,value,Net-net / deep value small caps,US,Liquidation value floor,"Buy stocks below net current asset value, hold 1y",annual,financials partial,no/partial,untested
+S0180,value,Net-net / deep value small caps,CA,Liquidation value floor,"Buy stocks below net current asset value, hold 1y",annual,financials partial,no/partial,untested
+S0181,value,Net-net / deep value small caps,IN,Liquidation value floor,"Buy stocks below net current asset value, hold 1y",annual,financials partial,no/partial,untested
+S0182,crypto,BTC halving cycle,Crypto: BTC/ETH,Supply shock cycle,"Long BTC 12 months before to 18 months after halving, else cash",daily,yf,yes,untested
+S0183,crypto,Altcoin season rotation,Crypto: BTC/ETH,Capital rotates BTC->ETH->alts,"Hold ETH when ETH/BTC > 50d SMA, else BTC",daily,yf,yes,untested
+S0184,crypto,Crypto Sunday-open gap,Crypto: BTC/ETH,CME gap fills,Trade toward Friday CME close level on Monday,daily,yf + CME close,yes,untested
+S0185,crypto,Stablecoin mint signal,Crypto: BTC/ETH,New stablecoin supply = buying power,Long BTC 7d after USDT supply +1B week (public data),weekly,stablecoin supply (free APIs),yes,untested
+S0186,macro,Yield-curve un-inversion exit,US,Recession risk signal,Hold equities unless 10y-2y re-steepens from inversion (then bonds 12m),monthly,FRED,yes,untested
+S0187,macro,Copper leads TSX materials,CA,Global demand proxy,Long XMA when copper 20d return >5%,daily,yf,yes,untested
+S0188,macro,Oil shock -> CAD,"FX: USDCAD, USDINR",CAD petro-currency,Long CAD vs USD 5d after WTI +5% week,daily,yf,yes,untested
+S0189,macro,Dollar strength vs EM/India,IN,DXY up hurts EM flows,Hold NIFTYBEES only when DXY < 50d SMA,daily,yf DX-Y.NYB,yes,untested
+S0190,macro,Credit spread signal,US,HY spreads widen before equity drops,Exit equities when HYG/IEF ratio < 50d SMA,daily,yf,yes,untested
+S0191,macro,Lumber/housing lead,US,Lumber leads housing stocks,Long homebuilders (XHB) when lumber 1m >10%,daily,yf,yes,untested
+S0192,macro,Monsoon/agri India,IN,Rainfall drives rural demand,Long Nifty FMCG/auto pre-monsoon if IMD forecast >100% LPA,seasonal,IMD forecasts (manual),yes,untested
