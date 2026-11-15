@@ -15,3 +15,5 @@
 2026-11-14 | strict-audit TSX proxies (XIU/XIC/XIT/ZQQ vol + SMA200) | no FX, 0.1% cost, same starts | FAIL all. Best: XIU vol0.25 med 17.3% (3/29 beat bot), DD -38.5%, worst yr -29.8%. None reach 30% median under frozen rules.
 
 2026-11-14 | strict search batch (XIU/XIC/XIT/ZQQ/XQQ SMA 50-200, vol 0.15-0.3, 12m mom, filters) | ~40 variants | FAIL all. Best ~23% med on ZQQ/XQQ vol0.3; none reach 30% med with controlled DD/worst year. 0 PASS.
+
+2026-11-14 | XIU/XIT 6m momentum rotation (CAD, monthly) | 1 variant | FAIL (med 13.5%, 0/20 beat bot, worstY -27.4%)
