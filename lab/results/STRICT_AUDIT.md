@@ -19,3 +19,15 @@
 - No parameter tuning after results.
 
 Scripts: `lab/strict_audit.py`
+
+## TSX proxies (no FX, 0.1% cost)
+
+| Strategy | median %/yr | worst start | med max drop | worst max drop | worst cal year | $5k final (med) | starts beating bot | Status |
+|----------|-------------|-------------|--------------|----------------|----------------|-----------------|--------------------|--------|
+| XIU.TO vol0.25 | 17.3 | 12.5 | -38.5 | -63.0 | -29.8 | 47903 | 3 of 29 | FAIL |
+| XIU.TO SMA200 | 5.7 | 3.9 | -24.4 | -34.2 | -14.7 | 11194 | 0 of 29 | FAIL |
+| XIC.TO vol0.25 | 16.7 | 12.4 | -40.9 | -52.3 | -30.5 | 46678 | 3 of 29 | FAIL |
+| XIT.TO vol0.3 | 17.6 | 6.9 | -56.0 | -68.2 | -48.4 | 83712 | 0 of 29 | FAIL |
+| ZQQ.TO SMA200 | 10.1 | 6.2 | -25.7 | -25.7 | -16.9 | 25103 | 0 of 29 | FAIL |
+
+Closest on return is XIU vol0.25 at 17.3% median — still well below the VMM ~30% benchmark, and worst year/DD do not satisfy PASS A or B.
