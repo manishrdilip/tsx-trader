@@ -25,3 +25,5 @@
 2026-11-14 | continued large grid + ensemble + top2 mom + vol sweeps | 200+ total variants | still 0 PASS vs VMM under strict full-history rules.
 
 2026-11-14 | large grid ~850 variants (SMA 30-300, vol 0.08-0.35, mom, dual-SMA on 8 CAD ETFs) | 0 PASS
+
+2026-11-14 | cumulative ~1000+ variants (grids + RSI + breakouts + seasonal) | still 0 PASS. Continuing toward 2500.
