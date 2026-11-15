@@ -27,3 +27,5 @@
 2026-11-14 | large grid ~850 variants (SMA 30-300, vol 0.08-0.35, mom, dual-SMA on 8 CAD ETFs) | 0 PASS
 
 2026-11-14 | cumulative ~1000+ variants (grids + RSI + breakouts + seasonal) | still 0 PASS. Continuing toward 2500.
+
+2026-11-14 | fine SMA grid + continued | cumulative ~1200+ | 0 PASS
