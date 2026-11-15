@@ -13,3 +13,5 @@
 2026-11-14 | strict-audit QQQ/XLK vol-target + SMA200 | frozen rules, 0.1%+1.5% FX, lev cap 3, starts 1999-2025+Mar00+Oct07, survivors-only | FAIL all (QQQ vol0.4 med 8.2% worst-start -2.9% DD -60%; 0 of 29 beat bot). High prior numbers required no FX and post-2011 window.
 
 2026-11-14 | strict-audit TSX proxies (XIU/XIC/XIT/ZQQ vol + SMA200) | no FX, 0.1% cost, same starts | FAIL all. Best: XIU vol0.25 med 17.3% (3/29 beat bot), DD -38.5%, worst yr -29.8%. None reach 30% median under frozen rules.
+
+2026-11-14 | strict search batch (XIU/XIC/XIT/ZQQ/XQQ SMA 50-200, vol 0.15-0.3, 12m mom, filters) | ~40 variants | FAIL all. Best ~23% med on ZQQ/XQQ vol0.3; none reach 30% med with controlled DD/worst year. 0 PASS.
