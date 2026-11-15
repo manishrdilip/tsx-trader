@@ -19,3 +19,5 @@
 2026-11-14 | XIU/XIT 6m momentum rotation (CAD, monthly) | 1 variant | FAIL (med 13.5%, 0/20 beat bot, worstY -27.4%)
 
 2026-11-14 | broader CAD (ZSP/XUS/HXQ BH+SMA, 4-asset rotation) | ~10 variants | FAIL all. Best HXQ BH med 20.6% (worstY -27.8). 0 PASS.
+
+2026-11-14 | extended strict search (SMA/vol/dual-mom/rotations/filters on XIU XIC ZSP XUS HXQ XIT + US+FX) | 100+ variants | 0 PASS. No strategy met A or B vs VMM ~30% med under full start-year history and frozen costs.
