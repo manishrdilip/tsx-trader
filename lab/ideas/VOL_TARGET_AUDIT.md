@@ -38,3 +38,19 @@ Higher targets (0.55–0.60) push median above 47–50% but DD exceeds -65%.
 - Core cohort results and parameter sweeps run in /tmp (scripts: audit_core.py, beat_vol40.py, stronger.py, etc.).
 - This report: lab/ideas/VOL_TARGET_AUDIT.md
 - Trial log updated in lab/ideas/TRIALS.md
+
+## Update 2026-11-14 — 50/50 QQQ + XLK blends (full cohorts)
+
+| Blend | Median CAGR | Min cohort | Median DD | 2011-start |
+|-------|-------------|------------|-----------|------------|
+| 50/50 vol 0.40 | 41.3% | 28.8% | -46.7% | 41.3% |
+| 50/50 vol 0.45 | 45.2% | 31.2% | -51.5% | 45.2% |
+| **50/50 vol 0.50** | **48.5%** | **33.3%** | **-55.9%** | **48.5%** |
+| 50/50 vol 0.55 | 51.2% | 34.9% | -60.1% | 51.2% |
+
+The 50/50 QQQ+XLK vol 0.50 blend improves on single-asset QQQ or XLK vol 0.50:
+- Higher median (48.5% vs ~44%)
+- Higher worst cohort (33.3% vs ~29%)
+- Similar or slightly better DD
+
+Early-start (2011) matches the median, indicating consistency across the full window.
