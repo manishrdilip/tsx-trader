@@ -48,7 +48,12 @@ class KiteBroker:
             qty = int(h.get("quantity") or 0) + int(h.get("t1_quantity") or 0)
             if qty > 0:
                 out[h["tradingsymbol"].upper() + ".NS"] = qty
-        return merge_day_positions(out, self.k.positions().get("net", []))
+        # shares bought today only show in positions (day, CNC) until tomorrow
+        try:
+            day = self.k.positions().get("day", [])
+        except Exception:
+            day = []
+        return merge_day_positions(out, day)
 
     def open_buy_value(self):
         """Rupees blocked by today's still-open BUY orders (counted as money, not a loss)."""
