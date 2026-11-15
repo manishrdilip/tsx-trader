@@ -1,0 +1,711 @@
+[
+  {
+    "id": "B2-001",
+    "proxy": "banks",
+    "tickers": [
+      "RY.TO",
+      "TD.TO",
+      "BNS.TO",
+      "BMO.TO",
+      "CM.TO"
+    ],
+    "cagr_2009_2022": 13.0,
+    "maxdd": -38.0,
+    "bars": 3512,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-002",
+    "proxy": "utilities",
+    "tickers": [
+      "FTS.TO",
+      "EMA.TO",
+      "AQN.TO",
+      "CPX.TO"
+    ],
+    "cagr_2009_2022": 10.9,
+    "maxdd": -33.6,
+    "bars": 3512,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-003",
+    "proxy": "oil_sands",
+    "tickers": [
+      "CNQ.TO",
+      "SU.TO",
+      "IMO.TO"
+    ],
+    "cagr_2009_2022": 6.6,
+    "maxdd": -72.9,
+    "bars": 3512,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-006",
+    "proxy": "industrials",
+    "tickers": [
+      "CNR.TO",
+      "CP.TO",
+      "WSP.TO"
+    ],
+    "cagr_2009_2022": 18.9,
+    "maxdd": -28.1,
+    "bars": 3512,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-007",
+    "proxy": "ITB",
+    "tickers": [
+      "ITB"
+    ],
+    "cagr_2009_2022": 14.3,
+    "maxdd": -52.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-011",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-081",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-082",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-084",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-086",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-087",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-088",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-091",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-092",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-093",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-096",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-097",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-099",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-100",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-101",
+    "proxy": "QQQ",
+    "tickers": [
+      "QQQ"
+    ],
+    "cagr_2009_2022": 17.7,
+    "maxdd": -35.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-102",
+    "proxy": "gold_miners",
+    "tickers": [
+      "ABX.TO",
+      "AEM.TO",
+      "K.TO"
+    ],
+    "cagr_2009_2022": -0.6,
+    "maxdd": -74.5,
+    "bars": 3512,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-103",
+    "proxy": "GLD",
+    "tickers": [
+      "GLD"
+    ],
+    "cagr_2009_2022": 4.9,
+    "maxdd": -45.6,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-104",
+    "proxy": "USO",
+    "tickers": [
+      "USO"
+    ],
+    "cagr_2009_2022": -9.5,
+    "maxdd": -95.3,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-105",
+    "proxy": "TLT",
+    "tickers": [
+      "TLT"
+    ],
+    "cagr_2009_2022": 1.6,
+    "maxdd": -44.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-106",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-107",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-108",
+    "proxy": "XLK",
+    "tickers": [
+      "XLK"
+    ],
+    "cagr_2009_2022": 17.5,
+    "maxdd": -33.6,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-109",
+    "proxy": "XLF",
+    "tickers": [
+      "XLF"
+    ],
+    "cagr_2009_2022": 11.0,
+    "maxdd": -51.2,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-110",
+    "proxy": "XLE",
+    "tickers": [
+      "XLE"
+    ],
+    "cagr_2009_2022": 7.4,
+    "maxdd": -71.3,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-111",
+    "proxy": "XLU",
+    "tickers": [
+      "XLU"
+    ],
+    "cagr_2009_2022": 10.3,
+    "maxdd": -36.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-112",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-113",
+    "proxy": "QQQ",
+    "tickers": [
+      "QQQ"
+    ],
+    "cagr_2009_2022": 17.7,
+    "maxdd": -35.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-114",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-115",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-116",
+    "proxy": "DIA",
+    "tickers": [
+      "DIA"
+    ],
+    "cagr_2009_2022": 12.3,
+    "maxdd": -36.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-117",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-118",
+    "proxy": "SMH",
+    "tickers": [
+      "SMH"
+    ],
+    "cagr_2009_2022": 20.0,
+    "maxdd": -45.3,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-119",
+    "proxy": "DIA",
+    "tickers": [
+      "DIA"
+    ],
+    "cagr_2009_2022": 12.3,
+    "maxdd": -36.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-120",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-121",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-122",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-129",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-130",
+    "proxy": "QQQ",
+    "tickers": [
+      "QQQ"
+    ],
+    "cagr_2009_2022": 17.7,
+    "maxdd": -35.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-131",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-132",
+    "proxy": "XLU",
+    "tickers": [
+      "XLU"
+    ],
+    "cagr_2009_2022": 10.3,
+    "maxdd": -36.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-133",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-134",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-138",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-139",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-140",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-142",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-147",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-150",
+    "proxy": "TLT",
+    "tickers": [
+      "TLT"
+    ],
+    "cagr_2009_2022": 1.6,
+    "maxdd": -44.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-160",
+    "proxy": "NVDA",
+    "tickers": [
+      "NVDA"
+    ],
+    "cagr_2009_2022": 35.9,
+    "maxdd": -66.3,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-162",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-171",
+    "proxy": "SPY",
+    "tickers": [
+      "SPY"
+    ],
+    "cagr_2009_2022": 12.8,
+    "maxdd": -33.7,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-181",
+    "proxy": "IWM",
+    "tickers": [
+      "IWM"
+    ],
+    "cagr_2009_2022": 10.8,
+    "maxdd": -41.1,
+    "bars": 3524,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  },
+  {
+    "id": "B2-183",
+    "proxy": "CWB",
+    "tickers": [
+      "CWB"
+    ],
+    "cagr_2009_2022": 10.4,
+    "maxdd": -32.1,
+    "bars": 3453,
+    "status": "fail",
+    "note": "locked simple proxy; 2009-2022 only; no 2023-2026"
+  }
+]
