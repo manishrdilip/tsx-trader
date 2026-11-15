@@ -1,0 +1,500 @@
+{
+  "S0001 Turn-of-month@SPY": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": 1.92,
+        "maxdd": -35.47,
+        "cagr_dd": 0.05,
+        "sharpe": 0.24,
+        "n": 3774,
+        "total": 32.89
+      },
+      "bh": {
+        "cagr": 8.96,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3775,
+        "total": 261.42
+      },
+      "random": {
+        "cagr": -9.86,
+        "maxdd": -78.98,
+        "cagr_dd": -0.12,
+        "sharpe": -0.96,
+        "n": 3774,
+        "total": -78.86
+      },
+      "long_days": 1260
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 2.72,
+        "maxdd": -23.55,
+        "cagr_dd": 0.12,
+        "sharpe": 0.3,
+        "n": 1727,
+        "total": 20.22
+      },
+      "bh": {
+        "cagr": 14.82,
+        "maxdd": -33.72,
+        "cagr_dd": 0.44,
+        "sharpe": 0.79,
+        "n": 1727,
+        "total": 157.77
+      },
+      "random": {
+        "cagr": -6.54,
+        "maxdd": -39.28,
+        "cagr_dd": -0.17,
+        "sharpe": -0.46,
+        "n": 1727,
+        "total": -37.09
+      },
+      "long_days": 577
+    },
+    "Full": {
+      "strat": {
+        "cagr": 2.22,
+        "maxdd": -35.47,
+        "cagr_dd": 0.06,
+        "sharpe": 0.26,
+        "n": 5501,
+        "total": 61.42
+      },
+      "bh": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.2,
+        "sharpe": 0.64,
+        "n": 5502,
+        "total": 831.63
+      },
+      "random": {
+        "cagr": -7.75,
+        "maxdd": -83.05,
+        "cagr_dd": -0.09,
+        "sharpe": -0.71,
+        "n": 5501,
+        "total": -82.81
+      },
+      "long_days": 1837
+    }
+  },
+  "S0002 Turn-of-month@XIU.TO": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": 1.03,
+        "maxdd": -25.01,
+        "cagr_dd": 0.04,
+        "sharpe": 0.15,
+        "n": 3764,
+        "total": 16.55
+      },
+      "bh": {
+        "cagr": 7.44,
+        "maxdd": -47.9,
+        "cagr_dd": 0.16,
+        "sharpe": 0.51,
+        "n": 3765,
+        "total": 192.17
+      },
+      "random": {
+        "cagr": -9.71,
+        "maxdd": -78.47,
+        "cagr_dd": -0.12,
+        "sharpe": -1.02,
+        "n": 3764,
+        "total": -78.24
+      },
+      "long_days": 1260
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 3.27,
+        "maxdd": -14.06,
+        "cagr_dd": 0.23,
+        "sharpe": 0.4,
+        "n": 1725,
+        "total": 24.61
+      },
+      "bh": {
+        "cagr": 14.93,
+        "maxdd": -35.46,
+        "cagr_dd": 0.42,
+        "sharpe": 0.9,
+        "n": 1725,
+        "total": 159.29
+      },
+      "random": {
+        "cagr": -3.24,
+        "maxdd": -36.65,
+        "cagr_dd": -0.09,
+        "sharpe": -0.22,
+        "n": 1725,
+        "total": -20.16
+      },
+      "long_days": 577
+    },
+    "Full": {
+      "strat": {
+        "cagr": 1.75,
+        "maxdd": -25.01,
+        "cagr_dd": 0.07,
+        "sharpe": 0.23,
+        "n": 5489,
+        "total": 45.77
+      },
+      "bh": {
+        "cagr": 9.74,
+        "maxdd": -47.9,
+        "cagr_dd": 0.2,
+        "sharpe": 0.63,
+        "n": 5490,
+        "total": 657.57
+      },
+      "random": {
+        "cagr": -8.19,
+        "maxdd": -85.11,
+        "cagr_dd": -0.1,
+        "sharpe": -0.84,
+        "n": 5489,
+        "total": -84.47
+      },
+      "long_days": 1837
+    }
+  },
+  "S0003 Turn-of-month@NIFTYBEES.NS": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": 2.95,
+        "maxdd": -23.36,
+        "cagr_dd": 0.13,
+        "sharpe": 0.32,
+        "n": 2702,
+        "total": 36.59
+      },
+      "bh": {
+        "cagr": 14.38,
+        "maxdd": -89.93,
+        "cagr_dd": 0.16,
+        "sharpe": 0.33,
+        "n": 2703,
+        "total": 322.67
+      },
+      "random": {
+        "cagr": -23.38,
+        "maxdd": -96.17,
+        "cagr_dd": -0.24,
+        "sharpe": -0.43,
+        "n": 2702,
+        "total": -94.24
+      },
+      "long_days": 924
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 8.18,
+        "maxdd": -12.59,
+        "cagr_dd": 0.65,
+        "sharpe": 0.88,
+        "n": 1699,
+        "total": 69.91
+      },
+      "bh": {
+        "cagr": 12.64,
+        "maxdd": -36.34,
+        "cagr_dd": 0.35,
+        "sharpe": 0.83,
+        "n": 1699,
+        "total": 123.17
+      },
+      "random": {
+        "cagr": -3.68,
+        "maxdd": -39.83,
+        "cagr_dd": -0.09,
+        "sharpe": -0.35,
+        "n": 1699,
+        "total": -22.36
+      },
+      "long_days": 577
+    },
+    "Full": {
+      "strat": {
+        "cagr": 4.96,
+        "maxdd": -23.36,
+        "cagr_dd": 0.21,
+        "sharpe": 0.52,
+        "n": 4401,
+        "total": 132.8
+      },
+      "bh": {
+        "cagr": 13.71,
+        "maxdd": -89.93,
+        "cagr_dd": 0.15,
+        "sharpe": 0.28,
+        "n": 4402,
+        "total": 843.25
+      },
+      "random": {
+        "cagr": 10.8,
+        "maxdd": -47.11,
+        "cagr_dd": 0.23,
+        "sharpe": 0.23,
+        "n": 4401,
+        "total": 499.55
+      },
+      "long_days": 1501
+    }
+  },
+  "S0007 Overnight-only@SPY": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": 8.95,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3774,
+        "total": 261.05
+      },
+      "bh": {
+        "cagr": 8.96,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3775,
+        "total": 261.42
+      },
+      "random": {
+        "cagr": 8.95,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3774,
+        "total": 261.05
+      },
+      "long_days": 3775
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 14.64,
+        "maxdd": -33.72,
+        "cagr_dd": 0.43,
+        "sharpe": 0.78,
+        "n": 1727,
+        "total": 155.12
+      },
+      "bh": {
+        "cagr": 14.82,
+        "maxdd": -33.72,
+        "cagr_dd": 0.44,
+        "sharpe": 0.79,
+        "n": 1727,
+        "total": 157.77
+      },
+      "random": {
+        "cagr": 14.64,
+        "maxdd": -33.72,
+        "cagr_dd": 0.43,
+        "sharpe": 0.78,
+        "n": 1727,
+        "total": 155.12
+      },
+      "long_days": 1727
+    },
+    "Full": {
+      "strat": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.19,
+        "sharpe": 0.64,
+        "n": 5501,
+        "total": 830.68
+      },
+      "bh": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.2,
+        "sharpe": 0.64,
+        "n": 5502,
+        "total": 831.63
+      },
+      "random": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.19,
+        "sharpe": 0.64,
+        "n": 5501,
+        "total": 830.68
+      },
+      "long_days": 5502
+    }
+  },
+  "S0013 Halloween@SPY": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": 6.75,
+        "maxdd": -33.95,
+        "cagr_dd": 0.2,
+        "sharpe": 0.59,
+        "n": 3774,
+        "total": 165.83
+      },
+      "bh": {
+        "cagr": 8.96,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3775,
+        "total": 261.42
+      },
+      "random": {
+        "cagr": -9.07,
+        "maxdd": -76.19,
+        "cagr_dd": -0.12,
+        "sharpe": -0.69,
+        "n": 3774,
+        "total": -75.91
+      },
+      "long_days": 1849
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 4.57,
+        "maxdd": -33.72,
+        "cagr_dd": 0.14,
+        "sharpe": 0.35,
+        "n": 1727,
+        "total": 35.8
+      },
+      "bh": {
+        "cagr": 14.82,
+        "maxdd": -33.72,
+        "cagr_dd": 0.44,
+        "sharpe": 0.79,
+        "n": 1727,
+        "total": 157.77
+      },
+      "random": {
+        "cagr": -9.67,
+        "maxdd": -53.81,
+        "cagr_dd": -0.18,
+        "sharpe": -0.63,
+        "n": 1727,
+        "total": -50.18
+      },
+      "long_days": 834
+    },
+    "Full": {
+      "strat": {
+        "cagr": 6.11,
+        "maxdd": -33.95,
+        "cagr_dd": 0.18,
+        "sharpe": 0.5,
+        "n": 5501,
+        "total": 264.73
+      },
+      "bh": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.2,
+        "sharpe": 0.64,
+        "n": 5502,
+        "total": 831.62
+      },
+      "random": {
+        "cagr": -6.59,
+        "maxdd": -80.63,
+        "cagr_dd": -0.08,
+        "sharpe": -0.46,
+        "n": 5501,
+        "total": -77.42
+      },
+      "long_days": 2683
+    }
+  },
+  "S0093 IBS<0.2@SPY": {
+    "IS_pre2020": {
+      "strat": {
+        "cagr": -0.93,
+        "maxdd": -38.23,
+        "cagr_dd": -0.02,
+        "sharpe": -0.02,
+        "n": 3774,
+        "total": -13.06
+      },
+      "bh": {
+        "cagr": 8.96,
+        "maxdd": -55.19,
+        "cagr_dd": 0.16,
+        "sharpe": 0.56,
+        "n": 3775,
+        "total": 261.42
+      },
+      "random": {
+        "cagr": -9.46,
+        "maxdd": -77.36,
+        "cagr_dd": -0.12,
+        "sharpe": -0.97,
+        "n": 3774,
+        "total": -77.42
+      },
+      "long_days": 1107
+    },
+    "OOS_2020plus": {
+      "strat": {
+        "cagr": 0.9,
+        "maxdd": -24.17,
+        "cagr_dd": 0.04,
+        "sharpe": 0.13,
+        "n": 1727,
+        "total": 6.3
+      },
+      "bh": {
+        "cagr": 14.82,
+        "maxdd": -33.72,
+        "cagr_dd": 0.44,
+        "sharpe": 0.79,
+        "n": 1727,
+        "total": 157.77
+      },
+      "random": {
+        "cagr": -7.87,
+        "maxdd": -45.44,
+        "cagr_dd": -0.17,
+        "sharpe": -0.63,
+        "n": 1727,
+        "total": -43.0
+      },
+      "long_days": 533
+    },
+    "Full": {
+      "strat": {
+        "cagr": -0.36,
+        "maxdd": -38.23,
+        "cagr_dd": -0.01,
+        "sharpe": 0.03,
+        "n": 5501,
+        "total": -7.58
+      },
+      "bh": {
+        "cagr": 10.76,
+        "maxdd": -55.19,
+        "cagr_dd": 0.2,
+        "sharpe": 0.64,
+        "n": 5502,
+        "total": 831.63
+      },
+      "random": {
+        "cagr": -6.23,
+        "maxdd": -75.78,
+        "cagr_dd": -0.08,
+        "sharpe": -0.62,
+        "n": 5501,
+        "total": -75.44
+      },
+      "long_days": 1640
+    }
+  }
+}
