@@ -172,6 +172,7 @@ def main():
         actual = {}
         open_syms = set()
         cash = float(args.cash or 0)
+        blocked = 0.0
         # offline: the ledger is only what the state file says (no real holdings to reconcile)
         actual = {t: int(q) for t, q in state.get("ledger", {}).items()}
         universe_hint = None
@@ -181,6 +182,7 @@ def main():
         broker = KiteBroker()
         actual = broker.holdings()
         cash = broker.cash()
+        blocked = broker.open_buy_value()
         open_syms = broker.open_symbols()
         universe_hint = broker.universe()
 
@@ -207,7 +209,7 @@ def main():
         v = float(sig["close"].get(t, 0.0) or 0.0)
         return v if v == v else 0.0
     held_value = sum(q * px(t) for t, q in ledger.items())
-    total = held_value + cash
+    total = held_value + cash + blocked  # money in open buy orders is not a loss
     budget = float(os.environ.get("INDIA_VMM_BUDGET_INR", "0") or 0)
     equity = min(total, budget) if budget > 0 else total
 
