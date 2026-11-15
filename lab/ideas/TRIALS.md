@@ -17,3 +17,5 @@
 2026-11-14 | strict search batch (XIU/XIC/XIT/ZQQ/XQQ SMA 50-200, vol 0.15-0.3, 12m mom, filters) | ~40 variants | FAIL all. Best ~23% med on ZQQ/XQQ vol0.3; none reach 30% med with controlled DD/worst year. 0 PASS.
 
 2026-11-14 | XIU/XIT 6m momentum rotation (CAD, monthly) | 1 variant | FAIL (med 13.5%, 0/20 beat bot, worstY -27.4%)
+
+2026-11-14 | broader CAD (ZSP/XUS/HXQ BH+SMA, 4-asset rotation) | ~10 variants | FAIL all. Best HXQ BH med 20.6% (worstY -27.8). 0 PASS.
