@@ -1,0 +1,186 @@
+{
+  "tested": 784,
+  "passed": false,
+  "sample": [
+    {
+      "label": "ZQQ.TO_vol0.24_L30",
+      "med": 20.2,
+      "ws": 10.7,
+      "mdd": -33.2,
+      "wy": -29.3,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.26_L30",
+      "med": 21.2,
+      "ws": 10.8,
+      "mdd": -35.3,
+      "wy": -31.5,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.28_L30",
+      "med": 21.8,
+      "ws": 11.1,
+      "mdd": -37.6,
+      "wy": -33.7,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.30_L30",
+      "med": 22.3,
+      "ws": 12.1,
+      "mdd": -39.7,
+      "wy": -35.8,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.32_L30",
+      "med": 22.5,
+      "ws": 13.1,
+      "mdd": -41.6,
+      "wy": -37.9,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.34_L30",
+      "med": 22.7,
+      "ws": 13.4,
+      "mdd": -43.5,
+      "wy": -40.0,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.08_L40",
+      "med": 7.6,
+      "ws": 3.8,
+      "mdd": -12.4,
+      "wy": -10.7,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.10_L40",
+      "med": 9.4,
+      "ws": 4.7,
+      "mdd": -15.3,
+      "wy": -13.2,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.12_L40",
+      "med": 11.2,
+      "ws": 5.5,
+      "mdd": -18.2,
+      "wy": -15.8,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.14_L40",
+      "med": 12.9,
+      "ws": 6.2,
+      "mdd": -21.0,
+      "wy": -18.3,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.16_L40",
+      "med": 14.3,
+      "ws": 7.1,
+      "mdd": -23.8,
+      "wy": -20.7,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.18_L40",
+      "med": 15.7,
+      "ws": 7.9,
+      "mdd": -26.5,
+      "wy": -23.2,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.20_L40",
+      "med": 17.2,
+      "ws": 8.1,
+      "mdd": -29.1,
+      "wy": -25.5,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.22_L40",
+      "med": 18.5,
+      "ws": 8.2,
+      "mdd": -31.6,
+      "wy": -27.9,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.24_L40",
+      "med": 19.6,
+      "ws": 8.2,
+      "mdd": -33.8,
+      "wy": -30.2,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.26_L40",
+      "med": 20.6,
+      "ws": 8.6,
+      "mdd": -36.0,
+      "wy": -32.4,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.28_L40",
+      "med": 21.1,
+      "ws": 9.9,
+      "mdd": -38.1,
+      "wy": -34.6,
+      "beat": "0/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.30_L40",
+      "med": 21.5,
+      "ws": 11.2,
+      "mdd": -40.0,
+      "wy": -36.8,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.32_L40",
+      "med": 21.7,
+      "ws": 11.7,
+      "mdd": -42.1,
+      "wy": -38.9,
+      "beat": "1/22",
+      "status": "FAIL"
+    },
+    {
+      "label": "ZQQ.TO_vol0.34_L40",
+      "med": 21.8,
+      "ws": 11.7,
+      "mdd": -43.9,
+      "wy": -40.7,
+      "beat": "1/22",
+      "status": "FAIL"
+    }
+  ]
+}
