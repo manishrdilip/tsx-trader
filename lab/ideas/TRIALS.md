@@ -9,3 +9,5 @@
 2026-11-14 | vol-target search + candles + combos | QQQ vol 0.35-0.65, lookbacks 10-60, TQQQ/SOXL/BTC, candle filters, VMM blend | QQQ vol0.45/20 and vol0.50/20 beat prior 40% benchmark on med+min CAGR (44.6%/29% for 0.50); candles fail; 50/50 VMM+vol40 improves worst year
 
 2026-11-14 | 50/50 QQQ+XLK vol blends | vol 0.40-0.55 full cohorts | vol0.50 blend: 48.5% med / 33.3% min / -56% DD — best balanced result so far
+
+2026-11-14 | strict-audit QQQ/XLK vol-target + SMA200 | frozen rules, 0.1%+1.5% FX, lev cap 3, starts 1999-2025+Mar00+Oct07, survivors-only | FAIL all (QQQ vol0.4 med 8.2% worst-start -2.9% DD -60%; 0 of 29 beat bot). High prior numbers required no FX and post-2011 window.

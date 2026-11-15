@@ -1,0 +1,38 @@
+[
+  {
+    "label": "QQQ vol0.4 (lev<=3) @0.1%+FX",
+    "n": 29,
+    "med_cagr": 8.2,
+    "worst_start": -2.9,
+    "med_dd": -60.5,
+    "worst_dd": -94.0,
+    "worst_cal_year": -60.2,
+    "med_final": 18313.0,
+    "beat_bot": "0 of 29",
+    "survivors_only": true
+  },
+  {
+    "label": "XLK vol0.45 (lev<=3) @0.1%+FX",
+    "n": 29,
+    "med_cagr": 11.3,
+    "worst_start": -0.2,
+    "med_dd": -57.7,
+    "worst_dd": -97.2,
+    "worst_cal_year": -68.3,
+    "med_final": 31766.0,
+    "beat_bot": "0 of 29",
+    "survivors_only": true
+  },
+  {
+    "label": "QQQ SMA200 @0.1%+FX",
+    "n": 29,
+    "med_cagr": 1.9,
+    "worst_start": -3.5,
+    "med_dd": -46.0,
+    "worst_dd": -86.4,
+    "worst_cal_year": -33.5,
+    "med_final": 6619.0,
+    "beat_bot": "0 of 29",
+    "survivors_only": true
+  }
+]
