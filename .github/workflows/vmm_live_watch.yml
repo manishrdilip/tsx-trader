@@ -71,7 +71,7 @@ jobs:
             fi
             if [ "$hm" -ge 930 ]; then
               node vmm_bot/broker.mjs snapshot /tmp/snap.json && python vmm_bot/live_watch.py /tmp/snap.json || echo "check failed, retrying next loop"
-              git add results/vmm_bot/alerts.json results/vmm_bot/ai_blocks.json results/vmm_bot/ai_judge 2>/dev/null
+              git add results/vmm_bot/alerts.json results/vmm_bot/ai_blocks.json results/vmm_bot/ai_judge 2>/dev/null || true   # missing file made git add exit 128 and kill the monitor
               git diff --cached --quiet || { git commit -qm "VMM live monitor $(date -u +%F' '%H:%M)"; git pull -q --rebase --autostash origin main && git push -q || true; }
             fi
             # watchdog: start a missing bot run (bot's own guard prevents double trading)
