@@ -4,13 +4,15 @@
     "order:2122182692245123072:COMPLETE",
     "order:2122182692421279744:COMPLETE",
     "order:2122182692610027520:COMPLETE",
-    "order:2122182692828127232:COMPLETE"
+    "order:2122182692828127232:COMPLETE",
+    "order:2122182693037846528:COMPLETE"
   ],
   "seen_orders": {
     "2122182692245123072": "COMPLETE",
     "2122182692421279744": "COMPLETE",
     "2122182692610027520": "COMPLETE",
-    "2122182692828127232": "COMPLETE"
+    "2122182692828127232": "COMPLETE",
+    "2122182693037846528": "COMPLETE"
   },
   "log": [
     {
@@ -28,6 +30,10 @@
     {
       "time": "09:50",
       "text": "India VMM order COMPLETE: BUY 18 SBC @ 70.43"
+    },
+    {
+      "time": "13:00",
+      "text": "India VMM order COMPLETE: BUY 7 NRL @ 174.25"
     }
   ],
   "ai_seen": {}
