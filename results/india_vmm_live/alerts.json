@@ -5,14 +5,16 @@
     "order:2122182692421279744:COMPLETE",
     "order:2122182692610027520:COMPLETE",
     "order:2122182692828127232:COMPLETE",
-    "order:2122182693037846528:COMPLETE"
+    "order:2122182693037846528:COMPLETE",
+    "order:2122259578065297408:COMPLETE"
   ],
   "seen_orders": {
     "2122182692245123072": "COMPLETE",
     "2122182692421279744": "COMPLETE",
     "2122182692610027520": "COMPLETE",
     "2122182692828127232": "COMPLETE",
-    "2122182693037846528": "COMPLETE"
+    "2122182693037846528": "COMPLETE",
+    "2122259578065297408": "COMPLETE"
   },
   "log": [
     {
@@ -34,6 +36,10 @@
     {
       "time": "13:00",
       "text": "India VMM order COMPLETE: BUY 7 NRL @ 174.25"
+    },
+    {
+      "time": "14:55",
+      "text": "India VMM order COMPLETE: BUY 1 SHILPAMED @ 934.65"
     }
   ],
   "ai_seen": {}
