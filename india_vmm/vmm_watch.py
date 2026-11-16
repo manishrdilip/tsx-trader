@@ -33,6 +33,39 @@ def load(path, default):
         return default
 
 
+def ai_check(rows, hold, b, al, alert, now):
+    """Sudden stock-specific drop -> Claude + Gemini debate -> sell only if both agree it's real bad news."""
+    from ai_judge import judge
+    import rules
+    seen = al.setdefault("ai_seen", {})
+    for t, q, ltp, *_ in rows:
+        if not ltp or not q or t not in hold:
+            continue
+        try:
+            res = judge.check_holding(t, ltp, "^NSEI", now.date(), seen, vmm.OUT,
+                                      company=hold[t].get("tradingsymbol"))
+        except Exception as e:
+            print("ai check failed", t, e); continue
+        if not res:
+            continue
+        det = res.get("detect", {})
+        head = (f"India VMM AI drop check: {t[:-3]} {det.get('stock_chg_pct')}% vs Nifty "
+                f"{det.get('market_chg_pct')}% ({det.get('z')} sigma).\n{res['summary']}")
+        if res["decision"] != "SELL":
+            alert(f"ai:{t}", head + "\nNo action: the bot keeps it under its normal rules.")
+            continue
+        live = os.environ.get("TRADING_ENABLED", "").lower() == "true"
+        judge.add_block(os.path.join(vmm.OUT, "ai_blocks.json"), t, now.date())
+        if not live:
+            alert(f"ai:{t}", head + "\nTrading is OFF, so no order was sent.")
+            continue
+        try:
+            oid = b.place({"symbol": t[:-3], "action": "SELL", "qty": int(q), "limit": rules.tick_down(ltp * rules.SELL_DN)})
+            alert(f"ai:{t}", head + f"\nSOLD: sell order for {q} placed (id {oid}). Not bought back for {judge.BLOCK_DAYS} days.")
+        except Exception as e:
+            alert(f"ai:{t}", head + f"\nSELL order FAILED: {e}. Check Kite.")
+
+
 def main():
     pre = "--pre" in sys.argv
     now = vmm.ist_now()
@@ -79,6 +112,9 @@ def main():
                                     f"Likely sold at the next run if it closes there.")
             elif gap < NEAR:
                 alert(f"near:{t}", f"India VMM: {t[:-3]} {ltp:.2f} is {gap * 100:.1f}% above its 200-day line {sma:.2f}.")
+
+    if not pre and 920 <= hm <= 1510:
+        ai_check(rows, hold, b, al, alert, now)
 
     if pre:
         kc = state.get("keep_cut")

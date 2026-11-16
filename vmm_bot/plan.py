@@ -43,6 +43,13 @@ MAX_ORDERS = int(os.environ.get("MAX_ORDERS_PER_RUN", "25"))
 BUDGET = float(os.environ.get("VMM_BUDGET_CAD", "0") or 0)  # max dollars the bot may manage (0 = whole account)
 EXCLUDE = {t.strip().upper() for t in os.environ.get("VMM_EXCLUDE", "LCFS.TO,TWM.TO").split(",") if t.strip()}  # e.g. takeover targets
 PROTECTED = {t.strip().upper() for t in os.environ.get("VMM_PROTECTED", "XIU.TO,AIQ.TO,SPCX.TO,SPCX").split(",") if t.strip()}
+try:  # stocks sold by the AI drop check are not bought back for a while (results/vmm_bot/ai_blocks.json)
+    from ai_judge import judge as _judge
+    AI_BLOCKED = _judge.blocked(os.path.join(ROOT, "results", "vmm_bot", "ai_blocks.json"),
+                                dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat())
+except Exception as _e:
+    print("ai block list unreadable:", _e); AI_BLOCKED = set()
+EXCLUDE = EXCLUDE | AI_BLOCKED
 # Funding source: when good picks can't be bought for lack of cash, the bot sells this ETF to raise it.
 # Never bought by the bot; total sold is capped by VMM_FUND_MAX_CAD (tracked in state). 0 = off.
 FUND_TICKER = os.environ.get("VMM_FUND_TICKER", "VEQT.TO").strip().upper()
