@@ -219,10 +219,17 @@ def main(snap_path, out_path):
     guard = market_guard()
     eq_hist = {d: v for d, v in state.get("equity_hist", {}).items()
                if (today_d - dt.date.fromisoformat(d)).days <= 10}
-    halted, eq_peak = loss_halt(eq_hist, equity, today_d)
+    # Loss-halt equity must include VEQT (park/fund ETF): parking cash in VEQT or selling VEQT for cash
+    # is a transfer, not a gain or loss. Without this, every VEQT park looked like a drop in the account.
+    halt_equity = equity
+    for t in {PARK_TICKER, FUND_TICKER} - {"", None}:
+        px = float(close.get(t, np.nan))
+        if actual.get(t, 0) > 0 and px == px:
+            halt_equity += actual[t] * px
+    halted, eq_peak = loss_halt(eq_hist, halt_equity, today_d)
     if halted:
-        guard.append(f"LOSS HALT: account ${equity:,.0f} is {(1-equity/eq_peak)*100:.0f}% below its 7-day high ${eq_peak:,.0f}")
-    eq_hist[today_d.isoformat()] = round(equity, 2)
+        guard.append(f"LOSS HALT: account ${halt_equity:,.0f} is {(1-halt_equity/eq_peak)*100:.0f}% below its 7-day high ${eq_peak:,.0f}")
+    eq_hist[today_d.isoformat()] = round(halt_equity, 2)
     if guard:
         notes.append("GUARD MODE: " + "; ".join(guard) + " -> no new buys, no VEQT selling (sell rules still active)")
     if open_syms:
