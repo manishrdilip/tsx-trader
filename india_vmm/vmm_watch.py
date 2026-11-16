@@ -55,7 +55,7 @@ def main():
     from broker import KiteBroker
     try:
         b = KiteBroker()
-        hold = {h["tradingsymbol"].upper() + ".NS": h for h in b.k.holdings() if int(h.get("quantity") or 0) > 0}
+        hold = {h["tradingsymbol"].upper() + ".NS": h for h in b.k.holdings() if int(h.get("quantity") or 0) + int(h.get("t1_quantity") or 0) > 0}
         orders = [o for o in b.k.orders() if (o.get("tag") or "") == "indiavmm"]
         cash = b.cash()
     except Exception as e:
