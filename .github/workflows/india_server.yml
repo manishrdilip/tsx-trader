@@ -9,7 +9,7 @@ on:
         description: What to do on the server
         type: choice
         default: status
-        options: [status, logs, deploy, dry-run, stop-trading, start-trading, custom]
+        options: [status, logs, deploy, dry-run, stop-trading, start-trading, sync-gemini-key, custom]
       command:
         description: Only for "custom" - a shell command run in ~/tsx-trader
         required: false
@@ -31,6 +31,7 @@ jobs:
         env:
           HOST: ${{ secrets.INDIA_HOST }}
           ACTION: ${{ inputs.action }}
+          GEMINI_API_KEY: ${{ inputs.action == 'sync-gemini-key' && secrets.GEMINI_API_KEY || '' }}
           CMD: ${{ inputs.command }}
         run: |
           case "$ACTION" in
@@ -41,5 +42,11 @@ jobs:
             stop-trading) R='sed -i "s/^[[:space:]]*TRADING_ENABLED=.*/TRADING_ENABLED=false/" ~/tsx-trader/.env && grep ^TRADING_ENABLED ~/tsx-trader/.env' ;;
             start-trading) R='sed -i "s/^[[:space:]]*TRADING_ENABLED=.*/TRADING_ENABLED=true/" ~/tsx-trader/.env && grep ^TRADING_ENABLED ~/tsx-trader/.env' ;;
             custom) R="cd ~/tsx-trader && $CMD" ;;
+            sync-gemini-key)
+              # copies the GEMINI_API_KEY repo secret into the server .env (sent over stdin, never printed)
+              [ -n "$GEMINI_API_KEY" ] || { echo "GEMINI_API_KEY secret is empty"; exit 1; }
+              printf '%s' "$GEMINI_API_KEY" | ssh -i ~/.ssh/id -o BatchMode=yes root@"$HOST" \
+                'k=$(cat); f=~/tsx-trader/.env; grep -v "^GEMINI_API_KEY=" "$f" > "$f.tmp"; printf "GEMINI_API_KEY=%s\n" "$k" >> "$f.tmp"; chmod 600 "$f.tmp"; mv "$f.tmp" "$f"; echo "GEMINI_API_KEY set ($(printf %s "$k" | wc -c) chars)"'
+              exit 0 ;;
           esac
           ssh -i ~/.ssh/id -o BatchMode=yes root@"$HOST" "$R"
