@@ -50,6 +50,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          rm -rf gemini-artifacts reply.sh   # created by the Gemini action itself, not by Gemini's work
           git add -A
           if git diff --cached --quiet; then echo "no file changes"; exit 0; fi
           if git diff --cached --name-only | grep -Ev '^(lab/|GEMINI_NOTES)'; then
