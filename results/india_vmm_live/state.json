@@ -3,105 +3,91 @@
     "INDSWFTLAB.NS": 2,
     "MBAPL.NS": 5,
     "NINSYS.NS": 1,
-    "TFCILTD.NS": 6
+    "TFCILTD.NS": 6,
+    "CUPID.NS": 3,
+    "SHREEJISPG.NS": 1,
+    "GCSL.NS": 1,
+    "SBC.NS": 18,
+    "NRL.NS": 7
   },
   "pending": {
-    "CUPID.NS": {
-      "units": 3,
-      "pre_units": 0,
-      "order_id": "2122182692245123072"
-    },
-    "SHREEJISPG.NS": {
-      "units": 1,
-      "pre_units": 0,
-      "order_id": "2122182692421279744"
-    },
-    "GCSL.NS": {
-      "units": 1,
-      "pre_units": 0,
-      "order_id": "2122182692610027520"
-    },
-    "SBC.NS": {
-      "units": 18,
-      "pre_units": 0,
-      "order_id": "2122182692828127232"
-    },
-    "NRL.NS": {
-      "units": 7,
-      "pre_units": 0,
-      "order_id": "2122182693037846528"
-    },
     "SGMART.NS": {
       "units": 1,
       "pre_units": 0,
       "order_id": "2122182693255946240"
+    },
+    "SHILPAMED.NS": {
+      "units": 1,
+      "pre_units": 0,
+      "order_id": "2122259578065297408"
     }
   },
-  "last_run": "2026-11-16T09:49:17",
+  "last_run": "2026-11-16T14:54:47",
   "run_slots": {
     "date": "2026-11-16",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "lines": {
-    "TFCILTD.NS": {
-      "sma200": 97.62,
-      "r12": 1.4269,
-      "close": 163.95
-    },
-    "MBAPL.NS": {
-      "sma200": 128.6,
-      "r12": 1.3458,
-      "close": 196.33
-    },
-    "NRL.NS": {
-      "sma200": 93.19,
-      "r12": 1.58,
-      "close": 172.5
+    "INDSWFTLAB.NS": {
+      "sma200": 226.57,
+      "r12": 2.5558,
+      "close": 361.3
     },
     "GCSL.NS": {
       "sma200": 477.58,
-      "r12": 2.3111,
+      "r12": 2.3918,
       "close": 822.95
-    },
-    "INDSWFTLAB.NS": {
-      "sma200": 226.57,
-      "r12": 2.5744,
-      "close": 361.3
-    },
-    "SHREEJISPG.NS": {
-      "sma200": 542.06,
-      "r12": 2.4007,
-      "close": 910.8
     },
     "NINSYS.NS": {
       "sma200": 632.58,
-      "r12": 1.1077,
+      "r12": 1.0911,
       "close": 901.8
     },
-    "SBC.NS": {
-      "sma200": 41.43,
-      "r12": 1.7986,
-      "close": 70.3
+    "SHILPAMED.NS": {
+      "sma200": 612.25,
+      "r12": 1.7752,
+      "close": 991.5
+    },
+    "MBAPL.NS": {
+      "sma200": 128.6,
+      "r12": 1.377,
+      "close": 196.33
     },
     "CUPID.NS": {
       "sma200": 189.18,
-      "r12": 6.6983,
+      "r12": 6.8346,
       "close": 377.8
     },
-    "SGMART.NS": {
-      "sma200": 622.19,
-      "r12": 1.71,
-      "close": 941.45
+    "NRL.NS": {
+      "sma200": 93.19,
+      "r12": 1.4921,
+      "close": 172.5
+    },
+    "SBC.NS": {
+      "sma200": 41.43,
+      "r12": 1.905,
+      "close": 70.3
+    },
+    "SHREEJISPG.NS": {
+      "sma200": 542.06,
+      "r12": 2.3812,
+      "close": 910.8
+    },
+    "TFCILTD.NS": {
+      "sma200": 97.62,
+      "r12": 1.3635,
+      "close": 163.95
     }
   },
-  "keep_cut": 0.05455413486017226,
+  "keep_cut": 0.04315601278950698,
   "market_ok": true,
-  "equity": 12982.83,
-  "cash": 9393.08,
+  "equity": 13000.14,
+  "cash": 3119.44,
   "equity_hist": {
     "2026-11-13": 2167.99,
-    "2026-11-16": 12982.83
+    "2026-11-16": 13000.14
   }
 }
