@@ -1,4 +1,6 @@
-"""Live monitor for the VMM TFSA during market hours. Plain rules, no AI, never trades.
+"""Live monitor for the VMM TFSA during market hours. Plain-rule alerts, plus the AI drop check
+(ai_judge): on a sudden stock-specific drop Claude and Gemini debate; if BOTH say it is real company bad news,
+it sells that holding (only when DRY_RUN=false and TRADING_ENABLED=true).
 
 Every check (every 5 min, 9:30-16:05 Toronto, one long job per day) it reads the account's holdings from the SnapTrade
 snapshot and pushes a phone alert (ntfy app, topic NTFY_TOPIC) when a holding:
@@ -29,6 +31,44 @@ def push(title, msg, priority="high", tags="warning"):
         print("pushed:", title, "|", msg)
     except Exception as e:  # never let a notification failure stop the other checks
         print("push failed:", title, "|", e)
+
+
+def ai_check(t, last, snap, seen, now):
+    """Sudden stock-specific drop -> Claude + Gemini debate -> sell only if both agree it's real bad news."""
+    try:
+        sys.path.insert(0, ROOT)
+        from ai_judge import judge
+        res = judge.check_holding(t, last, "XIU.TO", now.date(), seen, os.path.join(ROOT, "results", "vmm_bot"))
+    except Exception as e:
+        print("ai check failed", t, e); return
+    if not res:
+        return
+    det = res.get("detect", {})
+    head = f"{t} {det.get('stock_chg_pct')}% vs XIU {det.get('market_chg_pct')}% ({det.get('z')} sigma). {res['summary']}"
+    if res["decision"] != "SELL":
+        push(f"AI drop check: KEEP {t}", head + " No action: the bot keeps it under its normal rules.", "high", "mag"); return
+    judge.add_block(os.path.join(ROOT, "results", "vmm_bot", "ai_blocks.json"), t, now.date())
+    live = os.environ.get("DRY_RUN", "true").lower() == "false" and os.environ.get("TRADING_ENABLED", "").lower() == "true"
+    pos = [p for p in snap.get("positions", []) if to_yahoo(p.get("symbol")) == t and (p.get("units") or 0) > 0]
+    units = int(sum(float(p["units"]) for p in pos)) if pos else 0
+    if not live or units <= 0:
+        push(f"AI drop check: SELL {t} (not sent)", head + (" Trading is off." if not live else " No whole shares held."), "urgent", "rotating_light"); return
+    import subprocess, tempfile
+    plan = {"orders": [{"action": "SELL", "ticker": t, "broker_symbol": pos[0]["symbol"], "units": units,
+                        "limit": round(last * 0.97, 2), "reason": "AI drop check: both AIs agreed (company bad news)"}]}
+    f = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False); json.dump(plan, f); f.close()
+    r = subprocess.run(["node", os.path.join(ROOT, "vmm_bot", "broker.mjs"), "execute", f.name, f.name + ".out"],
+                       capture_output=True, text=True, timeout=300)
+    print(r.stdout, r.stderr)
+    try:
+        res_out = json.load(open(f.name + ".out")).get("results", [])
+    except Exception:
+        res_out = []
+    ok = r.returncode == 0 and any(x.get("action") == "SELL" and x.get("status") not in ("ERROR", "BLOCKED", "DRY_RUN")
+                                   for x in res_out)
+    push(f"AI drop check: SOLD {t}" if ok else f"AI drop check: SELL {t} FAILED", head + (
+        f" Sell {units} @ {plan['orders'][0]['limit']} sent; not bought back for {judge.BLOCK_DAYS} days." if ok
+        else f" Order problem: {(r.stdout + r.stderr)[-300:]} Check Wealthsimple."), "urgent", "rotating_light")
 
 
 def to_yahoo(s):
@@ -88,6 +128,7 @@ def main(snap_path, test=False):
         peak = peaks.get(t)
         trail_line = peak * (1 - TRAIL / 100) if peak else None
         slow = os.environ.get("VMM_MODE", "slow").strip().lower() == "slow"  # TFSA bot runs slow mode
+        ai_check(t, last, snap, seen, now)
         if chg <= -DROP and seen.get(t + ":drop") != today:
             if slow:
                 msg = f"Now {last:.2f} vs {prev:.2f} yesterday. Today the bot only sells if it closes below the 28% line" + (

@@ -1,4 +1,4 @@
-name: VMM live monitor (phone alerts, no trading)
+name: VMM live monitor (phone alerts + AI drop check)
 
 # One long job per trading day: checks the market and holdings every 5 minutes from the open to the
 # close, and acts as a watchdog that starts the VMM bot if its 9:40 (AM) or 2:45 (PM) run is missing.
@@ -35,6 +35,11 @@ jobs:
       VMM_ACCOUNT_ID: ${{ vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID }}
       VMM_PROTECTED: ${{ vars.VMM_PROTECTED || 'XIU.TO,AIQ.TO,SPCX.TO,SPCX' }}
       GH_TOKEN: ${{ github.token }}
+      # AI drop check (ai_judge): needs both keys; sells only when DRY_RUN=false and TRADING_ENABLED=true
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
+      TRADING_ENABLED: ${{ vars.TRADING_ENABLED || 'false' }}
       NTFY: https://ntfy.sh/tsx-dilip-fe7bc02c
     steps:
       - uses: actions/checkout@v4.2.2
@@ -66,7 +71,7 @@ jobs:
             fi
             if [ "$hm" -ge 930 ]; then
               node vmm_bot/broker.mjs snapshot /tmp/snap.json && python vmm_bot/live_watch.py /tmp/snap.json || echo "check failed, retrying next loop"
-              git add results/vmm_bot/alerts.json 2>/dev/null
+              git add results/vmm_bot/alerts.json results/vmm_bot/ai_blocks.json results/vmm_bot/ai_judge 2>/dev/null
               git diff --cached --quiet || { git commit -qm "VMM live monitor $(date -u +%F' '%H:%M)"; git pull -q --rebase --autostash origin main && git push -q || true; }
             fi
             # watchdog: start a missing bot run (bot's own guard prevents double trading)

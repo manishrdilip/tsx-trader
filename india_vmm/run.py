@@ -215,6 +215,14 @@ def main():
 
     orders, notes = rules.plan(sig, ledger, equity=equity, cash=cash, open_syms=open_syms,
                                protected=rules.PROTECTED)
+    try:  # stocks the AI drop judge sold recently are not bought back for a while
+        from ai_judge import judge as _judge
+        ai_blocked = _judge.blocked(os.path.join(OUT, "ai_blocks.json"), today)
+    except Exception as e:
+        print("ai block list unreadable:", e); ai_blocked = set()
+    for o in [o for o in orders if o["action"] == "BUY" and o["ticker"] in ai_blocked]:
+        orders.remove(o)
+        notes.append(f"{o['ticker']}: buy skipped, sold by the AI drop check (blocked {_judge.BLOCK_DAYS} days)")
     eq_hist = {d: v for d, v in state.get("equity_hist", {}).items()
                if (now.date() - dt.date.fromisoformat(d)).days <= 10}
     halted, peak = safety.loss_halt(eq_hist, equity, now.date())
