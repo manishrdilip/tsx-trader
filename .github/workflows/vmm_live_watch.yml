@@ -71,11 +71,12 @@ jobs:
             fi
             if [ "$hm" -ge 930 ]; then
               node vmm_bot/broker.mjs snapshot /tmp/snap.json && python vmm_bot/live_watch.py /tmp/snap.json || echo "check failed, retrying next loop"
-              git add results/vmm_bot/alerts.json results/vmm_bot/ai_blocks.json results/vmm_bot/ai_judge 2>/dev/null
-              git diff --cached --quiet || { git commit -qm "VMM live monitor $(date -u +%F' '%H:%M)"; git pull -q --rebase --autostash origin main && git push -q || true; }
+              git rebase --abort 2>/dev/null || true
+              git add results/vmm_bot/alerts.json results/vmm_bot/ai_blocks.json results/vmm_bot/ai_judge 2>/dev/null || true
+              git diff --cached --quiet || { git commit -qm "VMM live monitor $(date -u +%F' '%H:%M)" || echo "commit failed"; git pull -q --rebase --autostash origin main && git push -q || true; }
             fi
             # watchdog: start a missing bot run (bot's own guard prevents double trading)
-            git pull -q --rebase --autostash origin main || true
+            git pull -q --rebase --autostash origin main || { echo "pull failed, resetting to origin"; git rebase --abort 2>/dev/null; git fetch -q origin main && git reset -q --hard origin/main; } || true
             for slot in AM PM; do
               if [ $slot = AM ]; then from=945; to=1425; else from=1450; to=1540; fi
               [ "$hm" -lt "$from" ] || [ "$hm" -ge "$to" ] && continue
