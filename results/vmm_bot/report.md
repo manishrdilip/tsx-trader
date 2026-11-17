@@ -1,26 +1,27 @@
-# VMM bot — 2026-11-13 (LIVE)
-Signals from close of 2026-11-12. Account equity $2,707.16, cash $363.22.
+# VMM bot — 2026-11-17 (LIVE)
+Signals from close of 2026-11-16. Account equity $2,569.83, cash $363.23.
 XIU above 200-day: yes. Momentum share 100%.
 
 | Status | Action | Shares | Stock | Limit | Why |
 |---|---|---|---|---|---|
-| BLOCKED | - | 0 |  | 0 |  — VEQT.TO: BUY skipped, already sent to the broker today |
+| PENDING | BUY | 5 | VEQT.TO | 61.64 | park idle cash $343 long-term (no momentum slot/pick for it) |
 
 | Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
 |---|---|---|---|---|---|---|
-| MSA.TO | 8.83 | 6.96 | 26.8 | 67 | 9.73 | 7.01 |
-| LCFS.TO | 22.78 | 13.45 | 69.4 | 431 | 22.78 | 16.4 |
-| TWM.TO | 26.03 | 16.43 | 58.4 | 334 | 26.03 | 18.74 |
-| LGD.TO | 1.82 | 1.59 | 14.2 | 125 | 2.19 | 1.58 |
-| SOIL.TO | 8.61 | 6.03 | 42.7 | 242 | 8.61 | 6.2 |
-| CVVY.TO | 1.97 | 1.67 | 17.6 | 119 | 2.44 | 1.76 |
-| TLO.TO | 6.25 | 7.23 | -13.5 | 1388 | 7.54 | 5.43 |
-| ARG.TO | 8.27 | 6.6 | 25.3 | 180 | 8.56 | 6.16 |
-| FTG.TO | 34.23 | 22.7 | 50.8 | 209 | 34.46 | 24.81 |
-| NUAG.TO | 7.45 | 7.12 | 4.7 | 122 | 8.64 | 6.22 |
-| ORE.TO | 2.65 | 2.54 | 4.3 | 87 | 3.02 | 2.17 |
+| MSA.TO | 7.83 | 6.97 | 12.3 | 44 | 9.73 | 7.01 |
+| LCFS.TO | 22.96 | 13.64 | 68.4 | 474 | 23.47 | 16.9 |
+| TWM.TO | 26.38 | 16.64 | 58.5 | 369 | 26.63 | 19.17 |
+| LGD.TO | 1.72 | 1.6 | 7.5 | 107 | 2.19 | 1.58 |
+| SOIL.TO | 8.3 | 6.09 | 36.4 | 247 | 8.66 | 6.24 |
+| CVVY.TO | 1.82 | 1.68 | 8 | 109 | 2.44 | 1.76 |
+| TLO.TO | 5.72 | 7.22 | -20.8 | 1330 | 7.54 | 5.43 |
+| ARG.TO | 7.36 | 6.62 | 11.2 | 154 | 8.56 | 6.16 |
+| FTG.TO | 31.33 | 22.86 | 37.1 | 201 | 34.46 | 24.81 |
+| NUAG.TO | 6.52 | 7.13 | -8.6 | 90 | 8.64 | 6.22 |
+| ORE.TO | 2.36 | 2.54 | -7 | 65 | 3.02 | 2.17 |
 
-- GUARD MODE: LOSS HALT: account $2,707 is 22% below its 7-day high $3,449 -> no new buys, no VEQT selling (sell rules still active)
 - Slow mode: no review today (only the 28% emergency sell)
-- TLO.TO: sell signal (close 6.25 < 200d 7.23) waits: not a review day
-- Parking $313 of idle cash in VEQT.TO
+- TLO.TO: sell signal (close 5.72 < 200d 7.22) waits: not a review day
+- NUAG.TO: sell signal (close 6.52 < 200d 7.13) waits: not a review day
+- ORE.TO: sell signal (close 2.36 < 200d 2.54) waits: not a review day
+- Parking $308 of idle cash in VEQT.TO
