@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Download SEC bulk data
         run: |
-          UA="tsx-trader-lab research lab-bot@users.noreply.github.com"
+          UA="${{ vars.SEC_USER_AGENT }}"; [ -n "$UA" ] || { echo "Set repo variable SEC_USER_AGENT"; exit 1; }
           curl -sSfL -A "$UA" -o company_tickers.json https://www.sec.gov/files/company_tickers.json
           curl -sSfL -A "$UA" -o companyfacts.zip https://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip
           ls -la
