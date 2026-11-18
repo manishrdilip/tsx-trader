@@ -1,6 +1,6 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 1,
+  "mom_share": 1.0,
   "ledger": {
     "MSA.TO": 5,
     "LCFS.TO": 21,
@@ -18,7 +18,8 @@
   "run_slots": {
     "date": "2026-11-18",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "fund_date": "2026-11-17",
@@ -29,6 +30,7 @@
     "LGD.TO": 2.19,
     "SOIL.TO": 8.66,
     "CVVY.TO": 2.44,
+    "TLO.TO": 5.32,
     "ARG.TO": 8.56,
     "FTG.TO": 34.46,
     "NUAG.TO": 8.64,
@@ -51,6 +53,7 @@
     "LGD.TO": "2026-11-10",
     "SOIL.TO": "2026-11-10",
     "CVVY.TO": "2026-11-10",
+    "TLO.TO": "2026-11-18",
     "ARG.TO": "2026-11-10",
     "FTG.TO": "2026-11-10",
     "NUAG.TO": "2026-11-10",
