@@ -87,7 +87,8 @@ RUN_SLOT = os.environ.get("RUN_SLOT", "AM")
 # sell when the close is TRAIL_PCT below the highest close since the bot started tracking the stock;
 # after such a sale, buy it back only once it is REBUY_DROP_PCT below the sale price (normal buy rules still apply).
 TRAIL_PCT = float(os.environ.get("VMM_TRAIL_PCT", "28") or 0)
-REBUY_DROP = float(os.environ.get("VMM_REBUY_DROP_PCT", "10") or 0)
+# 100 = never buy back (tested 18 Nov 2026 on real delisted data: 25.6%/yr vs 21.7% with 10; claude/vmm-trail-timing-and-rebuy-test-2026-11-18.md)
+REBUY_DROP = float(os.environ.get("VMM_REBUY_DROP_PCT", "100") or 0)
 
 
 def market_guard():
