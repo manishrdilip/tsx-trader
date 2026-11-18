@@ -1,6 +1,6 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 1.0,
+  "mom_share": 1,
   "ledger": {
     "MSA.TO": 5,
     "LCFS.TO": 21,
@@ -14,34 +14,35 @@
     "NUAG.TO": 7,
     "ORE.TO": 1
   },
-  "last_run_date": "2026-11-17",
+  "last_run_date": "2026-11-18",
   "run_slots": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "slots": [
-      "AM",
-      "PM"
+      "AM"
     ]
   },
   "fund_date": "2026-11-17",
   "peaks": {
     "MSA.TO": 9.73,
-    "LCFS.TO": 23.47,
-    "TWM.TO": 26.63,
+    "LCFS.TO": 23.7,
+    "TWM.TO": 27.5,
     "LGD.TO": 2.19,
     "SOIL.TO": 8.66,
     "CVVY.TO": 2.44,
-    "TLO.TO": 7.54,
     "ARG.TO": 8.56,
     "FTG.TO": 34.46,
     "NUAG.TO": 8.64,
     "ORE.TO": 3.02
   },
-  "rebuy_blocks": {},
+  "rebuy_blocks": {
+    "TLO.TO": 5.32
+  },
   "equity_hist": {
     "2026-11-10": 3198.56,
     "2026-11-11": 3145.36,
     "2026-11-13": 2707.16,
-    "2026-11-17": 4340.65
+    "2026-11-17": 4340.65,
+    "2026-11-18": 4320.04
   },
   "entry": {
     "MSA.TO": "2026-11-10",
@@ -50,7 +51,6 @@
     "LGD.TO": "2026-11-10",
     "SOIL.TO": "2026-11-10",
     "CVVY.TO": "2026-11-10",
-    "TLO.TO": "2026-11-10",
     "ARG.TO": "2026-11-10",
     "FTG.TO": "2026-11-10",
     "NUAG.TO": "2026-11-10",
