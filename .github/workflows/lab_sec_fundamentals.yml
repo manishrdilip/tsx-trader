@@ -1,0 +1,25 @@
+name: lab SEC fundamentals extract
+on:
+  push:
+    branches: [lab/sec-fundamentals]
+    paths: [lab/sec/extract.py, .github/workflows/lab_sec_fundamentals.yml]
+permissions:
+  contents: write
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download SEC bulk data
+        run: |
+          UA="tsx-trader-lab research lab-bot@users.noreply.github.com"
+          curl -sSfL -A "$UA" -o company_tickers.json https://www.sec.gov/files/company_tickers.json
+          curl -sSfL -A "$UA" -o companyfacts.zip https://www.sec.gov/Archives/edgar/daily-index/xbrl/companyfacts.zip
+          ls -la
+      - run: python lab/sec/extract.py
+      - name: Commit result
+        run: |
+          git config user.name "lab-bot"; git config user.email "lab-bot@users.noreply.github.com"
+          git add lab/sec/sec_annual.csv.gz
+          git commit -m "lab: SEC annual fundamentals extract" && git push
