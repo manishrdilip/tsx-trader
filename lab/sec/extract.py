@@ -22,3 +22,4 @@ for name in z.namelist():
             if 'start' in r and not 330 <= (date.fromisoformat(r['end']) - date.fromisoformat(r['start'])).days <= 400: continue
             w.writerow([cik2t[cik], cik, f, r['end'], r['filed'], r['val']]); n += 1
 out.close(); print('rows', n)
+# run 1795015575
