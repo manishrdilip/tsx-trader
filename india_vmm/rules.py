@@ -96,8 +96,11 @@ def signals(closes, volumes):
                 if m in closes.columns and closes[m].notna().sum() >= 200), None)
     market_ok, mkt_close, mkt_sma = False, np.nan, np.nan
     if mkt is not None:
-        mkt_close = float(closes[mkt].iloc[-1])
-        mkt_sma = float(closes[mkt].rolling(200, min_periods=200).mean().iloc[-1])
+        # use the market line's own valid closes: a single missing bar in the last 200 rows
+        # (Yahoo gap for NIFTYBEES) must not turn the whole 200-day average into NaN
+        m = closes[mkt].dropna()
+        mkt_close = float(m.iloc[-1])
+        mkt_sma = float(m.rolling(200, min_periods=200).mean().iloc[-1])
         market_ok = bool(mkt_close > mkt_sma)
 
     r_el = r12[elig]
