@@ -1,13 +1,12 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 1,
+  "mom_share": 1.0,
   "ledger": {
     "MSA.TO": 5,
     "LCFS.TO": 21,
     "TWM.TO": 6,
     "LGD.TO": 7,
     "SOIL.TO": 38,
-    "CVVY.TO": 2,
     "TLO.TO": 60,
     "ARG.TO": 54,
     "FTG.TO": 13,
@@ -18,7 +17,8 @@
   "run_slots": {
     "date": "2026-11-19",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "fund_date": "2026-11-17",
