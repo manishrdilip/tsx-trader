@@ -1,13 +1,18 @@
 {
   "date": "2026-11-19",
   "sent": [
-    "broker-error"
+    "broker-error",
+    "watchdog:PM"
   ],
   "seen_orders": {},
   "log": [
     {
       "time": "14:45",
       "text": "India VMM watch: cannot reach Zerodha (HTTPSConnectionPool(host='api.kite.trade', port=443): Max retries exceeded with url: /portfolio/holdings (Caused by NewConnectionError(\"HTTPSConnection(host='api.kite.trade', port=443): Failed to establish a new connection: [Errno 101] Network is unreachable\"))). Token refresh or IP problem?"
+    },
+    {
+      "time": "15:05",
+      "text": "India VMM: PM run missing at 15:05; starting it now."
     }
   ],
   "ai_seen": {}
