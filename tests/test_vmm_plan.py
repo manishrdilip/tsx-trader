@@ -186,3 +186,23 @@ def test_unfilled_trail_sell_keeps_peak_and_retries(plan):
     assert ns["peaks"]["S29.TO"] == 1000.0 and ns["entry"]["S29.TO"] == "2026-01-02"
     _, run2 = plan(env={"VMM_MODE": "slow", "VMM_MAX_SLOTS": "8"}, state=ns)
     assert "S29.TO" in sells(run2({"S29.TO": 10}, 0))  # still held -> sell retried
+
+
+def _with_park(t="VFV.TO"):
+    C, V = make_prices()
+    C[t] = 150.0; V[t] = 1_000_000
+    return C, V
+
+
+def test_index_mode_fhsa_only_buys_park_etf(plan):
+    _, run = plan(env={"VMM_MODE": "index", "VMM_PARK_TICKER": "VFV.TO"}, prices=_with_park())
+    out = run({}, 600)
+    assert [o["ticker"] for o in out["orders"]] == ["VFV.TO"]
+    assert out["orders"][0]["units"] == 3
+
+
+def test_index_mode_never_sells(plan):
+    _, run = plan(env={"VMM_MODE": "index", "VMM_PARK_TICKER": "VFV.TO"},
+                  prices=_with_park(), state={"ledger": {"VFV.TO": 4}})
+    out = run({"VFV.TO": 4}, 0)
+    assert not sells(out) and "VFV.TO" not in out["bot_ledger"]
