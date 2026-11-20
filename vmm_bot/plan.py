@@ -30,6 +30,7 @@ SLOT_DOLLARS, MIN_SLOTS = 400.0, 5
 MAX_SLOTS = int(os.environ.get("VMM_MAX_SLOTS", "20"))
 # Mode: "daily" = sell rules every day (RRSP). "slow" = TFSA low-turnover: 200d/top-40% sells only at the first run
 # of each month and only after VMM_MIN_HOLD_DAYS held; 28% trail stays daily; buys at the monthly review or on a deposit.
+# "index" = FHSA: no stock trading at all; every deposit is simply bought into VMM_PARK_TICKER and held.
 MODE = os.environ.get("VMM_MODE", "daily").strip().lower()
 MIN_HOLD_DAYS = int(os.environ.get("VMM_MIN_HOLD_DAYS", "91"))
 DEPOSIT_BUY_CAD = float(os.environ.get("VMM_DEPOSIT_BUY_CAD", "300"))
@@ -179,7 +180,7 @@ def main(snap_path, out_path):
     for t in ADOPT:  # hand these manual holdings to the bot (sell rules apply)
         if actual.get(t, 0) > 0:
             ledger[t] = actual[t]
-    ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED and t != FUND_TICKER}
+    ledger = {t: u for t, u in ledger.items() if u > 0 and t not in PROTECTED and t != FUND_TICKER and t != PARK_TICKER}
     print("account holdings:", actual, "| bot manages:", ledger)
     held = ledger
     tick = sorted(set(universe()) | set(held) | {XIU} | ({FUND_TICKER} if FUND_TICKER else set()) | ({PARK_TICKER} if PARK_TICKER else set()))
@@ -251,7 +252,7 @@ def main(snap_path, out_path):
     if MODE == "slow":
         notes.append("Slow mode: " + ("MONTHLY REVIEW today" if review else "no review today (only the 28% emergency sell)"))
     # 1) sell rules for momentum holdings
-    for t, u in mom_held.items():
+    for t, u in (mom_held.items() if MODE != "index" else []):
         c, s, rr = close.get(t), sma.get(t), r12.get(t)
         if c is None or not np.isfinite(c):
             notes.append(f"{t}: no price data, left alone"); continue
@@ -314,7 +315,9 @@ def main(snap_path, out_path):
 
     # 4) momentum buys
     keep = [t for t in mom_held if t not in sells]
-    if guard:
+    if MODE == "index":
+        notes.append(f"Index mode (FHSA): no stock trading; new cash goes into {PARK_TICKER}")
+    elif guard:
         pass
     elif MODE == "slow" and not review and cash_avail < DEPOSIT_BUY_CAD:
         notes.append("Slow mode: buys wait for the monthly review or a deposit")

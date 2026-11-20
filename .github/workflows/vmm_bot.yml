@@ -29,25 +29,27 @@ concurrency:
 jobs:
   run:
     # One job per account, one after the other (they share the repo for state commits).
-    # TFSA = the original account. RRSP runs only once the VMM_RRSP_ACCOUNT_ID variable is set.
+    # TFSA = the original account. RRSP / FHSA run only once VMM_RRSP_ACCOUNT_ID / VMM_FHSA_ACCOUNT_ID are set.
+    # Plan (money plan 20 Nov 2026): RRSP = active daily bot; TFSA = long-term slow bot, spare cash in VFV;
+    # FHSA = no stock trading, every deposit bought into VFV and held.
     strategy:
       fail-fast: false
       max-parallel: 1
       matrix:
-        acct: [tfsa, rrsp]
+        acct: [tfsa, rrsp, fhsa]
     name: run (${{ matrix.acct }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       ACCT: ${{ matrix.acct }}
-      VMM_STATE_DIR: ${{ matrix.acct == 'rrsp' && 'results/vmm_bot_rrsp' || 'results/vmm_bot' }}
+      VMM_STATE_DIR: ${{ matrix.acct == 'rrsp' && 'results/vmm_bot_rrsp' || matrix.acct == 'fhsa' && 'results/vmm_bot_fhsa' || 'results/vmm_bot' }}
       # TFSA = slow mode (monthly review, 3-month min hold, max 8 stocks) to keep trading low; RRSP = daily bot.
-      VMM_MODE: ${{ matrix.acct == 'rrsp' && 'daily' || 'slow' }}
+      VMM_MODE: ${{ matrix.acct == 'rrsp' && 'daily' || matrix.acct == 'fhsa' && 'index' || 'slow' }}
       VMM_MAX_SLOTS: ${{ matrix.acct == 'rrsp' && '20' || '8' }}
       VMM_MIN_HOLD_DAYS: ${{ vars.VMM_MIN_HOLD_DAYS || '91' }}
       SNAPTRADE_CLIENT_ID: ${{ secrets.SNAPTRADE_CLIENT_ID }}
       SNAPTRADE_CONSUMER_KEY: ${{ secrets.SNAPTRADE_CONSUMER_KEY }}
-      VMM_ACCOUNT_ID: ${{ matrix.acct == 'rrsp' && vars.VMM_RRSP_ACCOUNT_ID || matrix.acct == 'tfsa' && (vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID) || '' }}
+      VMM_ACCOUNT_ID: ${{ matrix.acct == 'rrsp' && vars.VMM_RRSP_ACCOUNT_ID || matrix.acct == 'fhsa' && vars.VMM_FHSA_ACCOUNT_ID || matrix.acct == 'tfsa' && (vars.VMM_ACCOUNT_ID || secrets.VMM_ACCOUNT_ID) || '' }}
       # Safety switches (repo Settings -> Secrets and variables -> Actions -> Variables).
       # Orders are sent ONLY when DRY_RUN=false AND TRADING_ENABLED=true.
       DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
@@ -57,11 +59,12 @@ jobs:
       MAX_ORDERS_PER_RUN: ${{ vars.MAX_ORDERS_PER_RUN || '25' }}
       VMM_INDEX_LEG: ${{ vars.VMM_INDEX_LEG || 'false' }}
       VMM_MIN_BUDGET: ${{ vars.VMM_MIN_BUDGET || '0' }}
-      VMM_ADOPT: ${{ matrix.acct == 'rrsp' && 'none' || vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
+      VMM_ADOPT: ${{ matrix.acct != 'tfsa' && 'none' || vars.VMM_ADOPT || 'LCFS.TO,MSA.TO,TWM.TO' }}
       VMM_BUDGET_CAD: ${{ vars.VMM_BUDGET_CAD || '0' }}
       VMM_EXCLUDE: ${{ vars.VMM_EXCLUDE || 'LCFS.TO,TWM.TO' }}  # same exclusions in both accounts
       VMM_FUND_TICKER: ${{ vars.VMM_FUND_TICKER || 'VEQT.TO' }}
       VMM_FUND_MAX_CAD: '0'  # HOLD: VEQT selling paused (was vars.VMM_FUND_MAX_CAD || '3500')
+      VMM_PARK_TICKER: ${{ matrix.acct == 'rrsp' && 'VEQT.TO' || 'VFV.TO' }}  # TFSA + FHSA long-term holding = VFV
       VMM_FUND_KEEP_CAD: ${{ vars.VMM_FUND_KEEP_CAD || '0' }}
       VMM_TRAIL_PCT: ${{ vars.VMM_TRAIL_PCT || '28' }}
       VMM_REBUY_DROP_PCT: ${{ vars.VMM_REBUY_DROP_PCT || '100' }}  # 100 = never buy back a stock sold by the 28% rule (tested 18 Nov 2026)
@@ -82,7 +85,7 @@ jobs:
             echo "Outside 9:30-3:45 Toronto market window ($hm); no trading."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
           fi
           if [ -z "$VMM_ACCOUNT_ID" ]; then
-            echo "No account ID for $ACCT (set repo variable VMM_RRSP_ACCOUNT_ID); skipping."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
+            echo "No account ID for $ACCT (set repo variable VMM_RRSP_ACCOUNT_ID / VMM_FHSA_ACCOUNT_ID); skipping."; echo "skip=true" >> $GITHUB_OUTPUT; exit 0
           fi
           echo "RUN_SLOT=$slot" >> $GITHUB_ENV
           git pull -q --rebase origin "${GITHUB_REF_NAME}" || true   # pick up the other account's state commit
