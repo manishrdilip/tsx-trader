@@ -401,10 +401,14 @@ def main(snap_path, out_path):
                                         "slots": sorted(set((state.get("run_slots", {}).get("slots", [])
                                                              if state.get("run_slots", {}).get("date") == dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() else []) + [RUN_SLOT]))},
                           "fund_date": (dt.datetime.now(dt.timezone(dt.timedelta(hours=-5))).date().isoformat() if fund_sold > 0 else state.get("fund_date")),
-                          "peaks": {t: v for t, v in peaks.items() if t not in sells},
+                          # keep peak + entry for sells too: if the sell does not fill (limit gapped past),
+                          # the stock stays in the ledger and must keep its old high, so the 28% sell retries
+                          # next run instead of restarting as a "new" holding. Sold stocks drop out on their own
+                          # (peaks/entry are only built for tickers still in the ledger).
+                          "peaks": dict(peaks),
                           "rebuy_blocks": blocks,
                           "equity_hist": eq_hist,
-                          "entry": {**{t: d for t, d in entry.items() if t not in sells},
+                          "entry": {**entry,
                                     **{o["ticker"]: today_s.isoformat() for o in orders if o["action"] == "BUY"}},
                           "last_review_month": month_now if review else state.get("last_review_month"),
                           "funded_cad": round(float(state.get("funded_cad", 0.0)) + fund_sold, 2),

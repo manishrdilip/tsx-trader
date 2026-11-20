@@ -173,3 +173,16 @@ def test_momentum_buys_come_before_parking(plan):
     out = run({}, 2000)
     assert buys(out)[0]["ticker"] != "VEQT.TO"
     assert sum(o["units"] * o["limit"] for o in buys(out)) <= 2000 + 1
+
+
+def test_unfilled_trail_sell_keeps_peak_and_retries(plan):
+    """A 28% sell that does not fill (limit gapped past) must keep the old high and entry date, so the
+    next run sells again instead of treating the stock as a fresh buy with a lower high."""
+    st = {"ledger": {"S29.TO": 10}, "entry": {"S29.TO": "2026-01-02"}, "peaks": {"S29.TO": 1000.0}}
+    _, run = plan(env={"VMM_MODE": "slow", "VMM_MAX_SLOTS": "8"}, state=st)
+    out = run({"S29.TO": 10}, 0)
+    assert "S29.TO" in sells(out)
+    ns = out["new_state"]
+    assert ns["peaks"]["S29.TO"] == 1000.0 and ns["entry"]["S29.TO"] == "2026-01-02"
+    _, run2 = plan(env={"VMM_MODE": "slow", "VMM_MAX_SLOTS": "8"}, state=ns)
+    assert "S29.TO" in sells(run2({"S29.TO": 10}, 0))  # still held -> sell retried
