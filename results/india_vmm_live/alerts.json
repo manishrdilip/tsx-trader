@@ -1,7 +1,16 @@
 {
   "date": "2026-11-20",
-  "sent": [],
+  "sent": [
+    "ai:NRL.NS"
+  ],
   "seen_orders": {},
-  "log": [],
-  "ai_seen": {}
+  "log": [
+    {
+      "time": "10:50",
+      "text": "India VMM AI drop check: NRL -8.14% vs Nifty 0.17% (-3.3 sigma).\nKEEP - no agreement or AI error, so KEEP (bot's own rules stay in charge) Error: HTTPError: HTTP Error 402: Payment Required\nNo action: the bot keeps it under its normal rules."
+    }
+  ],
+  "ai_seen": {
+    "NRL.NS:ai": "2026-11-20"
+  }
 }
