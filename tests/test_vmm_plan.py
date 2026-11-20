@@ -159,7 +159,7 @@ def test_idle_cash_parked_in_veqt_when_slots_full(plan):
     C, V = make_prices()
     C["VEQT.TO"] = 40.0; V["VEQT.TO"] = 1_000_000
     held = {f"S{i:02d}.TO": 10 for i in range(29, 26, -1)}  # 3 held, slot limit 3 -> nothing free
-    _, run = plan(env={"VMM_MAX_SLOTS": "3"}, prices=(C, V), state={"ledger": held})
+    _, run = plan(env={"VMM_MAX_SLOTS": "3", "VMM_PARK_TICKER": "VEQT.TO"}, prices=(C, V), state={"ledger": held})
     out = run(held, 900)
     park = [o for o in buys(out) if o["ticker"] == "VEQT.TO"]
     assert len(park) == 1 and park[0]["units"] * park[0]["limit"] <= 900 - 20
