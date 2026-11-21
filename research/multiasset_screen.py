@@ -44,11 +44,12 @@ def test(d,method,cost,start,end):
     elif method=="momentum_60":
         signal=(d.Close>s200)&(d.Close/d.Close.shift(60)>1.12)&(d.Close>d.High.shift(1).rolling(10).max())
     else:raise ValueError(method)
-    cash=START; pos=None; trades=[];curve=[]
+    cash=START; pos=None; trades=[];curve=[]; last_i=None
     for i in range(1,len(d)):
         dt=d.index[i]
         if dt<pd.Timestamp(start) or dt>pd.Timestamp(end):continue
         r=d.iloc[i]
+        last_i=i
         if pos is not None:
             px=None;reason=None
             if r.Open<=pos["stop"]:px=float(r.Open);reason="gap_stop"
@@ -73,8 +74,10 @@ def test(d,method,cost,start,end):
         curve.append((dt,equity))
     if not curve:return None,[]
     if pos:
-        cash+=pos["qty"]*float(d.Close.iloc[-1])*(1-cost)
-        trades.append({"entry":str(d.index[pos["i"]].date()),"exit":str(d.index[-1].date()),"pnl":round(pos["qty"]*float(d.Close.iloc[-1])*(1-cost)-pos["spent"],2),"reason":"final_liquidation"})
+        # Liquidate at the actual END OF THE TEST SEGMENT, never at future full-history prices.
+        liquidation=float(d.Close.iloc[last_i]); cash+=pos["qty"]*liquidation*(1-cost)
+        trades.append({"entry":str(d.index[pos["i"]].date()),"exit":str(d.index[last_i].date()),"pnl":round(pos["qty"]*liquidation*(1-cost)-pos["spent"],2),"reason":"segment_end_liquidation"})
+    curve[-1]=(curve[-1][0],cash)
     s=pd.Series(dict(curve))
     return {"start":START,"final":round(cash,2),"return_pct":round((cash/START-1)*100,2),"max_dd_pct":round(float((s/s.cummax()-1).min())*100,2),"trades":len(trades),"win_rate":round(sum(t["pnl"]>0 for t in trades)/len(trades),3) if trades else None},trades
 def main():
