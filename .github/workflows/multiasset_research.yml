@@ -1,0 +1,26 @@
+name: Research multiasset professional screening
+on:
+  pull_request:
+    paths:
+      - "research/multiasset_screen.py"
+      - ".github/workflows/multiasset_research.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - run: python research/multiasset_screen.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: multiasset-screening-results
+          path: research/multiasset_results/
+          if-no-files-found: warn
