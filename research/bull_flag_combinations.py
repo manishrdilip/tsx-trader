@@ -64,18 +64,26 @@ def main():
         for t,d in data.items():
             f=core.signals(d,"bull_flag")
             days=pd.DatetimeIndex(pd.Index(d.index.date).unique())
-            stage=context[t]["stage"].reindex(days,method="ffill").fillna(False)
-            rs=rank[t].reindex(days,method="ffill").fillna(0)
-            mk=mkt.reindex(days,method="ffill").fillna(False)
-            gate=pd.Series(True,index=days)
-            if "stage2" in variant:gate=gate&stage
-            if "rs" in variant:gate=gate&(rs>=.8)
-            if "market_down_control" in variant:gate=gate&(~mk)
-            elif "market" in variant:gate=gate&mk
-            gates=pd.Series(d.index.date,index=d.index).map(gate.to_dict()).fillna(False).astype(bool)
+            stage=context[t]["stage"].reindex(days,method="ffill").fillna(False).to_numpy(dtype=bool)
+            rs=rank[t].reindex(days,method="ffill").fillna(0).to_numpy(dtype=float)
+            mk=mkt.reindex(days,method="ffill").fillna(False).to_numpy(dtype=bool)
+            gate=np.ones(len(days),dtype=bool)
+            if "stage2" in variant:gate &= stage
+            if "rs" in variant:gate &= rs>=.8
+            if "market_down_control" in variant:gate &= ~mk
+            elif "market" in variant:gate &= mk
+            # Convert each 5-minute bar to the index of its completed session.
+            # Avoid date/Timestamp map inference and pandas index alignment.
+            day_codes=pd.Index(days).get_indexer(pd.DatetimeIndex(d.index.normalize().tz_localize(None)))
+            if (day_codes<0).any():raise AssertionError("Intraday date missing from daily gate")
+            gates=gate[day_codes]
+            if "market_down_control" in variant and np.any(gates & mk[day_codes]):
+                raise AssertionError("Down-market filter admitted up-market bar")
+            if "market" in variant and "down_control" not in variant and np.any(gates & ~mk[day_codes]):
+                raise AssertionError("Up-market filter admitted down-market bar")
             signal_before+=int(f["signal"].sum())
-            signal_after+=int((f["signal"] & gates.values).sum())
-            market_allowed_days.update(str(x) for x in days[gate.values])
+            signal_after+=int((f["signal"] & gates).sum())
+            market_allowed_days.update(str(x) for x in days[gate])
             f["signal"]=f.signal & gates.values
             if "rvol2" in variant:f["signal"]=f["signal"] & (f["rvol"]>2.0)
             panel[t]=(d,f)
