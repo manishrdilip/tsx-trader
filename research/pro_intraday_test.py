@@ -76,6 +76,14 @@ def simulate(data,method):
         # candle's HIGH/LOW to finance an entry at this candle's OPEN.
         # Such funding would require knowing the future intrabar path.
         cash_at_open=cash
+        # Pre-open equity is the only permissible sizing basis for orders
+        # submitted at this timestamp. No current-bar high/low/close or
+        # proceeds from an intrabar exit may influence it.
+        equity_at_open=cash_at_open
+        for held_ticker,held in positions.items():
+            held_d,_=data[held_ticker]
+            prior=held_d.loc[held_d.index<ts,"Close"]
+            equity_at_open+=held["qty"]*float(prior.iloc[-1]) if len(prior) else held["spent"]
         # Always flatten at final available bar of day. This is an approximate close fill.
         for ticker,i in byday[ts]:
             d,f=data[ticker];row=d.iloc[i]
@@ -110,11 +118,7 @@ def simulate(data,method):
         opening_budget=cash_at_open
         for _,ticker,op,stop in sorted(picks,reverse=True):
             if len(positions)>=SLOTS:break
-            marked=cash
-            for t,p in positions.items():
-                d,_=data[t];hist=d.loc[d.index<ts,"Close"]
-                marked+=p["qty"]*float(hist.iloc[-1]) if len(hist) else p["spent"]
-            qty=int(min(opening_budget/(op*(1+COST)),marked/SLOTS/(op*(1+COST)),marked*RISK/(op-stop+2*op*COST)))
+            qty=int(min(opening_budget/(op*(1+COST)),equity_at_open/SLOTS/(op*(1+COST)),equity_at_open*RISK/(op-stop+2*op*COST)))
             if qty<1:continue
             spent=qty*op*(1+COST);cash-=spent;opening_budget-=spent
             positions[ticker]={"qty":qty,"stop":stop,"target":op+2*(op-stop),"spent":spent,"time":ts}
