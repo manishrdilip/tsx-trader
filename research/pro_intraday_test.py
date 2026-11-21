@@ -15,7 +15,7 @@ TZ="America/Toronto"
 OUT=Path("research/intraday_results")
 
 def get_data(ticker):
-    d=yf.download(ticker,period="30d",interval="5m",auto_adjust=True,progress=False,threads=False)
+    d=yf.download(ticker,period="60d",interval="5m",auto_adjust=True,progress=False,threads=False)
     if d.empty:return None
     if isinstance(d.columns,pd.MultiIndex):
         d.columns=d.columns.get_level_values(0)
@@ -139,7 +139,7 @@ def main():
         pd.DataFrame(trades).to_csv(OUT/f"{method}_trades.csv",index=False)
         pd.DataFrame(daily).to_csv(OUT/f"{method}_daily.csv",index=False)
     pd.DataFrame(results).to_csv(OUT/"summary.csv",index=False)
-    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"data_window":"Yahoo 5-minute bars, latest 30 days only","limitations":["survivorship bias","short sample","no spread/order-book/slippage model beyond 0.1% each side","same-bar stop-first assumption","no proof of executable prices"]},indent=2))
+    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"data_window":"Yahoo 5-minute bars, latest 60 days only","limitations":["survivorship bias","short sample","no spread/order-book/slippage model beyond 0.1% each side","same-bar stop-first assumption","no proof of executable prices"]},indent=2))
     print(pd.DataFrame(results).to_string(index=False))
     print("DATA AUDIT:",json.dumps(fail))
 if __name__=="__main__":main()
