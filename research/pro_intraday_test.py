@@ -76,6 +76,9 @@ def simulate(data,method):
         # candle's HIGH/LOW to finance an entry at this candle's OPEN.
         # Such funding would require knowing the future intrabar path.
         cash_at_open=cash
+        held_at_open=set(positions)
+        available_new_slots=max(0,SLOTS-len(held_at_open))
+        new_entries=0
         # Pre-open equity is the only permissible sizing basis for orders
         # submitted at this timestamp. No current-bar high/low/close or
         # proceeds from an intrabar exit may influence it.
@@ -103,7 +106,7 @@ def simulate(data,method):
         # A signal at bar i-1 CLOSE may enter at bar i OPEN, same ticker/session only.
         picks=[]
         for ticker,i in byday[ts]:
-            if ticker in positions or i==0:continue
+            if ticker in positions or ticker in held_at_open or i==0:continue
             d,f=data[ticker]
             if d.index[i-1].date()!=ts.date() or ts.strftime("%H:%M")>="14:05":continue
             if not bool(f["signal"].iloc[i-1]):continue
@@ -117,11 +120,12 @@ def simulate(data,method):
         # in the ledger but cannot fund entries until the next bar.
         opening_budget=cash_at_open
         for _,ticker,op,stop in sorted(picks,reverse=True):
-            if len(positions)>=SLOTS:break
+            if new_entries>=available_new_slots:break
             qty=int(min(opening_budget/(op*(1+COST)),equity_at_open/SLOTS/(op*(1+COST)),equity_at_open*RISK/(op-stop+2*op*COST)))
             if qty<1:continue
             spent=qty*op*(1+COST);cash-=spent;opening_budget-=spent
             positions[ticker]={"qty":qty,"stop":stop,"target":op+2*(op-stop),"spent":spent,"time":ts}
+            new_entries+=1
         # Entry occurs at the current five-minute bar OPEN. A stop or target
         # reached later in this same bar must be honored; otherwise fast losses
         # are omitted and backtest returns are artificially inflated.
