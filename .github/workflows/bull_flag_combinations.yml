@@ -9,10 +9,15 @@ permissions:
   contents: read
 jobs:
   combos:
+    strategy:
+      fail-fast: false
+      matrix:
+        cost: ['0.001', '0.0025', '0.005']
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
       MAX_TICKERS: "100"
+      RESEARCH_COST_PER_SIDE: ${{ matrix.cost }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,6 +28,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bull-flag-combination-results
+          name: bull-flag-combination-results-${{ matrix.cost }}
           path: research/intraday_combo_results/
           if-no-files-found: warn
