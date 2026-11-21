@@ -148,7 +148,16 @@ def simulate(data,method):
     if last_day:daily.append(dict(date=str(last_day),equity=round(final,2)))
     curve=pd.Series({r["date"]:r["equity"] for r in daily},dtype=float)
     mdd=float((curve/curve.cummax()-1).min()) if len(curve) else None
-    return dict(strategy=method,start=START_CASH,final=round(final,2),net=round(final-START_CASH,2),trades=len(trades),win_rate=round(sum(t["pnl"]>0 for t in trades)/len(trades),4) if trades else None,max_dd=mdd,days=len(curve),data_tickers=len(data)),trades,daily
+    # Descriptive diagnostics only: these 60 days have already influenced research,
+    # so the last 20 days are NOT an untouched out-of-sample holdout.
+    pnl=np.array([t["pnl"] for t in trades],dtype=float)
+    gross_win=float(pnl[pnl>0].sum()) if len(pnl) else 0.
+    gross_loss=float(-pnl[pnl<0].sum()) if len(pnl) else 0.
+    returns=curve.pct_change().dropna()
+    worst_day=float(returns.min()) if len(returns) else None
+    last20=curve.tail(20)
+    last20_return=float(last20.iloc[-1]/curve.iloc[-len(last20)-1]-1) if len(curve)>len(last20) and len(last20) else None
+    return dict(strategy=method,start=START_CASH,final=round(final,2),net=round(final-START_CASH,2),trades=len(trades),win_rate=round(sum(t["pnl"]>0 for t in trades)/len(trades),4) if trades else None,max_dd=mdd,days=len(curve),data_tickers=len(data),profit_factor=round(gross_win/gross_loss,3) if gross_loss else None,expectancy_cad=round(float(pnl.mean()),2) if len(pnl) else None,worst_day=round(worst_day,5) if worst_day is not None else None,last20_descriptive_return=round(last20_return,5) if last20_return is not None else None),trades,daily
 
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
@@ -167,7 +176,7 @@ def main():
         pd.DataFrame(trades).to_csv(OUT/f"{method}_trades.csv",index=False)
         pd.DataFrame(daily).to_csv(OUT/f"{method}_daily.csv",index=False)
     pd.DataFrame(results).to_csv(OUT/"summary.csv",index=False)
-    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"cost_per_side":COST,"data_window":"Yahoo 5-minute bars, latest 60 days only","limitations":["survivorship bias","short sample","no spread/order-book/slippage model beyond 0.1% each side","same-bar stop-first assumption","no proof of executable prices"]},indent=2))
+    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"cost_per_side":COST,"data_window":"Yahoo 5-minute bars, latest 60 days only","limitations":["survivorship bias","short sample","fixed per-side cost is a proxy, not observed spread or slippage","same-bar stop-first assumption","no proof of executable prices","last20_descriptive_return is NOT untouched holdout; all 60 days have been researched"]},indent=2))
     print(pd.DataFrame(results).to_string(index=False))
     print("DATA AUDIT:",json.dumps(fail))
 if __name__=="__main__":main()
