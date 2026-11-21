@@ -72,6 +72,10 @@ def simulate(data,method):
     cash=START_CASH;positions={};trades=[];daily=[];all_ts=sorted(byday)
     last_day=None; last_equity=START_CASH
     for ts in all_ts:
+        # Do not recycle proceeds from a stop/target determined using this
+        # candle's HIGH/LOW to finance an entry at this candle's OPEN.
+        # Such funding would require knowing the future intrabar path.
+        cash_at_open=cash
         # Always flatten at final available bar of day. This is an approximate close fill.
         for ticker,i in byday[ts]:
             d,f=data[ticker];row=d.iloc[i]
@@ -100,15 +104,19 @@ def simulate(data,method):
             # Reject extreme gap between signal close and next open.
             if abs(op/float(d.Close.iloc[i-1])-1)>.01:continue
             picks.append((float(f["rvol"].iloc[i-1]),ticker,op,stop))
+        # Only cash present before observing this bar's high/low is
+        # available for opening-price orders. Existing exit proceeds remain
+        # in the ledger but cannot fund entries until the next bar.
+        opening_budget=cash_at_open
         for _,ticker,op,stop in sorted(picks,reverse=True):
             if len(positions)>=SLOTS:break
             marked=cash
             for t,p in positions.items():
                 d,_=data[t];hist=d.loc[d.index<ts,"Close"]
                 marked+=p["qty"]*float(hist.iloc[-1]) if len(hist) else p["spent"]
-            qty=int(min(cash/(op*(1+COST)),marked/SLOTS/(op*(1+COST)),marked*RISK/(op-stop+2*op*COST)))
+            qty=int(min(opening_budget/(op*(1+COST)),marked/SLOTS/(op*(1+COST)),marked*RISK/(op-stop+2*op*COST)))
             if qty<1:continue
-            spent=qty*op*(1+COST);cash-=spent
+            spent=qty*op*(1+COST);cash-=spent;opening_budget-=spent
             positions[ticker]={"qty":qty,"stop":stop,"target":op+2*(op-stop),"spent":spent,"time":ts}
         # Entry occurs at the current five-minute bar OPEN. A stop or target
         # reached later in this same bar must be honored; otherwise fast losses
