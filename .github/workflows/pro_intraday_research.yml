@@ -9,8 +9,14 @@ permissions:
   contents: read
 jobs:
   intraday:
+    strategy:
+      fail-fast: false
+      matrix:
+        cost: ['0.001', '0.0025', '0.005']
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      RESEARCH_COST_PER_SIDE: ${{ matrix.cost }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -21,6 +27,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: intraday-research-results
+          name: intraday-research-results-${{ matrix.cost }}
           path: research/intraday_results/
           if-no-files-found: warn
