@@ -70,7 +70,7 @@ def simulate(data,method):
             byday.setdefault(ts,[]).append((ticker,i))
         data[ticker]=(d,f)
     cash=START_CASH;positions={};trades=[];daily=[];all_ts=sorted(byday)
-    last_day=None
+    last_day=None; last_equity=START_CASH
     for ts in all_ts:
         # Always flatten at final available bar of day. This is an approximate close fill.
         for ticker,i in byday[ts]:
@@ -110,8 +110,14 @@ def simulate(data,method):
             if qty<1:continue
             spent=qty*op*(1+COST);cash-=spent
             positions[ticker]={"qty":qty,"stop":stop,"target":op+2*(op-stop),"spent":spent,"time":ts}
+        # Mark open positions to market, not merely uninvested cash.
+        equity=cash
+        for t,p in positions.items():
+            d,_=data[t];hist=d.loc[d.index<=ts,"Close"]
+            equity+=p["qty"]*float(hist.iloc[-1])*(1-COST) if len(hist) else p["spent"]
         if last_day is not None and ts.date()!=last_day:
-            daily.append(dict(date=str(last_day),equity=round(cash,2)))
+            daily.append(dict(date=str(last_day),equity=round(last_equity,2)))
+        last_equity=equity
         last_day=ts.date()
     # Any unclosed holdings are valued at last available close, minus sell costs.
     final=cash
