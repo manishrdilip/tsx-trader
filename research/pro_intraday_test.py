@@ -10,9 +10,9 @@ import pandas as pd
 import yfinance as yf
 
 TICKERS="RY.TO TD.TO BNS.TO BMO.TO ENB.TO CNQ.TO SU.TO CVE.TO SHOP.TO AEM.TO ABX.TO CCO.TO TECK-B.TO WPM.TO AC.TO".split()
-START_CASH=5000.; COST=.001; RISK=.005; SLOTS=3
+START_CASH=5000.; COST=float(os.getenv('RESEARCH_COST_PER_SIDE','0.001')); RISK=.005; SLOTS=3
 TZ="America/Toronto"
-OUT=Path("research/intraday_results")
+OUT=Path("research/intraday_results") / ("cost_"+str(COST).replace(".","p"))
 
 def get_data(ticker):
     d=yf.download(ticker,period="60d",interval="5m",auto_adjust=True,progress=False,threads=False)
@@ -104,7 +104,7 @@ def simulate(data,method):
             if len(positions)>=SLOTS:break
             marked=cash
             for t,p in positions.items():
-                d,_=data[t];hist=d.loc[d.index<=ts,"Close"]
+                d,_=data[t];hist=d.loc[d.index<ts,"Close"]
                 marked+=p["qty"]*float(hist.iloc[-1]) if len(hist) else p["spent"]
             qty=int(min(cash/(op*(1+COST)),marked/SLOTS/(op*(1+COST)),marked*RISK/(op-stop+2*op*COST)))
             if qty<1:continue
@@ -167,7 +167,7 @@ def main():
         pd.DataFrame(trades).to_csv(OUT/f"{method}_trades.csv",index=False)
         pd.DataFrame(daily).to_csv(OUT/f"{method}_daily.csv",index=False)
     pd.DataFrame(results).to_csv(OUT/"summary.csv",index=False)
-    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"data_window":"Yahoo 5-minute bars, latest 60 days only","limitations":["survivorship bias","short sample","no spread/order-book/slippage model beyond 0.1% each side","same-bar stop-first assumption","no proof of executable prices"]},indent=2))
+    (OUT/"data_audit.json").write_text(json.dumps({"downloaded":list(downloaded),"failures":fail,"cost_per_side":COST,"data_window":"Yahoo 5-minute bars, latest 60 days only","limitations":["survivorship bias","short sample","no spread/order-book/slippage model beyond 0.1% each side","same-bar stop-first assumption","no proof of executable prices"]},indent=2))
     print(pd.DataFrame(results).to_string(index=False))
     print("DATA AUDIT:",json.dumps(fail))
 if __name__=="__main__":main()
