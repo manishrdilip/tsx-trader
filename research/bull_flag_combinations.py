@@ -85,13 +85,16 @@ def main():
             signal_after+=int((f["signal"] & gates).sum())
             market_allowed_days.update(str(x) for x in days[gate])
             f["signal"]=f["signal"].to_numpy(dtype=bool) & gates
-            if "rvol2" in variant:f["signal"]=f["signal"] & (f["rvol"]>2.0)
+            if "rvol2" in variant:
+                f["signal"]=f["signal"] & (f["rvol"]>2.0)
+            # Count the final signals, including relative-volume confirmation,
+            # rather than only the daily regime/stage gates.
             panel[t]=(d,f)
         combos[variant]=panel
-        gate_audit[variant]={"signals_before":signal_before,"signals_after_gate":signal_after,"allowed_days":len(market_allowed_days)}
+        gate_audit[variant]={"signals_before":signal_before,"signals_after_daily_gate":signal_after,"signals_after_all_filters":sum(int(f["signal"].sum()) for _,f in panel.values()),"allowed_days":len(market_allowed_days)}
     print("FILTER AUDIT",json.dumps(gate_audit,sort_keys=True),flush=True)
     # Positive and negative controls must partition identical raw signals.
-    if gate_audit["flag_market"]["signals_after_gate"] + gate_audit["flag_market_down_control"]["signals_after_gate"] != gate_audit["bull_flag"]["signals_before"]:
+    if gate_audit["flag_market"]["signals_after_all_filters"] + gate_audit["flag_market_down_control"]["signals_after_gate"] != gate_audit["bull_flag"]["signals_before"]:
         raise AssertionError("Market regime filters do not partition raw Bull Flag signals")
     # A down-market control is a negative control: if it selects exactly the
     # same number of signals as the up-market filter, flag a regime issue.
