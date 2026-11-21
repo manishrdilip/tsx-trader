@@ -12,7 +12,7 @@ import pro_intraday_test as core
 
 MAX_TICKERS=int(os.getenv("MAX_TICKERS","100"))
 OUT=Path("research/intraday_combo_results")
-VARIANTS=("bull_flag","flag_market","flag_stage2","flag_rs","flag_stage2_market","flag_rs_market","flag_stage2_rs_market")
+VARIANTS=("bull_flag","flag_market","flag_stage2","flag_rs","flag_stage2_market","flag_rs_market","flag_stage2_rs_market","flag_market_down_control","flag_rvol2","flag_rvol2_stage2")
 def get_universe():
     p=Path("universe_tickers.json")
     tickers=json.loads(p.read_text())
@@ -53,6 +53,7 @@ def main():
     data={t:d for t,d in data.items() if t in context}
     # Each signal uses PREVIOUS completed daily bar context, never today's close.
     # Map the preceding trading day to today's 5m bars; daily indicators are shifted by one.
+    print("MARKET FILTER AUDIT",{"market_up_days":int(mkt.sum()),"total_days":len(mkt),"market_up_last_60":int(mkt.tail(60).sum())},flush=True)
     combos={}
     for variant in VARIANTS:
         panel={}
@@ -65,9 +66,11 @@ def main():
             gate=pd.Series(True,index=days)
             if "stage2" in variant:gate=gate&stage
             if "rs" in variant:gate=gate&(rs>=.8)
-            if "market" in variant:gate=gate&mk
+            if "market_down_control" in variant:gate=gate&(~mk)
+            elif "market" in variant:gate=gate&mk
             gates=pd.Series(d.index.date,index=d.index).map(gate.to_dict()).fillna(False).astype(bool)
             f["signal"]=f.signal & gates.values
+            if "rvol2" in variant:f["signal"]=f["signal"] & (f["rvol"]>2.0)
             panel[t]=(d,f)
         combos[variant]=panel
     # Adapt core simulator to precomputed filtered signal frames without modifying live bot.
