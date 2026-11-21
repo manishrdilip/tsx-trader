@@ -55,8 +55,12 @@ def main():
     # Map the preceding trading day to today's 5m bars; daily indicators are shifted by one.
     print("MARKET FILTER AUDIT",{"market_up_days":int(mkt.sum()),"total_days":len(mkt),"market_up_last_60":int(mkt.tail(60).sum())},flush=True)
     combos={}
+    gate_audit={}
     for variant in VARIANTS:
         panel={}
+        signal_before=0
+        signal_after=0
+        market_allowed_days=set()
         for t,d in data.items():
             f=core.signals(d,"bull_flag")
             days=pd.DatetimeIndex(pd.Index(d.index.date).unique())
@@ -69,10 +73,19 @@ def main():
             if "market_down_control" in variant:gate=gate&(~mk)
             elif "market" in variant:gate=gate&mk
             gates=pd.Series(d.index.date,index=d.index).map(gate.to_dict()).fillna(False).astype(bool)
+            signal_before+=int(f["signal"].sum())
+            signal_after+=int((f["signal"] & gates.values).sum())
+            market_allowed_days.update(str(x) for x in days[gate.values])
             f["signal"]=f.signal & gates.values
             if "rvol2" in variant:f["signal"]=f["signal"] & (f["rvol"]>2.0)
             panel[t]=(d,f)
         combos[variant]=panel
+        gate_audit[variant]={"signals_before":signal_before,"signals_after_gate":signal_after,"allowed_days":len(market_allowed_days)}
+    print("FILTER AUDIT",json.dumps(gate_audit,sort_keys=True),flush=True)
+    # A down-market control is a negative control: if it selects exactly the
+    # same number of signals as the up-market filter, flag a regime issue.
+    if gate_audit["flag_market"]["signals_after_gate"]==gate_audit["flag_market_down_control"]["signals_after_gate"]:
+        print("WARNING: up/down regime controls admit identical signal counts; investigate XIU regime and date alignment",flush=True)
     # Adapt core simulator to precomputed filtered signal frames without modifying live bot.
     # Pass precomputed filters through a temporary override of the research module's signal function.
     orig=core.signals
@@ -90,6 +103,6 @@ def main():
             pd.DataFrame(daily).to_csv(OUT/(variant+"_daily.csv"),index=False)
     finally:core.signals=orig
     pd.DataFrame(results).to_csv(OUT/"summary.csv",index=False)
-    (OUT/"audit.json").write_text(json.dumps({"requested_tickers":len(names),"usable_tickers":len(data),"failures":failed,"limitations":["currently listed universe only: survivorship bias","Yahoo 5-minute limited history; NOT full historical intraday TSX","daily filters based on preceding completed daily session","RS rank computed across available current survivors","no true spread/order book","same-bar OHLC stop-first approximation","multiple-testing: winning combination requires independent forward validation"]},indent=2))
+    (OUT/"audit.json").write_text(json.dumps({"requested_tickers":len(names),"usable_tickers":len(data),"failures":failed,"filter_audit":gate_audit,"limitations":["currently listed universe only: survivorship bias","Yahoo 5-minute limited history; NOT full historical intraday TSX","daily filters based on preceding completed daily session","RS rank computed across available current survivors","no true spread/order book","same-bar OHLC stop-first approximation","multiple-testing: winning combination requires independent forward validation"]},indent=2))
     print(pd.DataFrame(results).to_string(index=False))
 if __name__=="__main__":main()
