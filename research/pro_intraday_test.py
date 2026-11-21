@@ -110,6 +110,28 @@ def simulate(data,method):
             if qty<1:continue
             spent=qty*op*(1+COST);cash-=spent
             positions[ticker]={"qty":qty,"stop":stop,"target":op+2*(op-stop),"spent":spent,"time":ts}
+        # Entry occurs at the current five-minute bar OPEN. A stop or target
+        # reached later in this same bar must be honored; otherwise fast losses
+        # are omitted and backtest returns are artificially inflated.
+        # OHLC cannot establish intrabar ordering: conservatively check stop
+        # before target when both are touched.
+        for ticker in list(positions):
+            p=positions[ticker]
+            if p["time"]!=ts:continue
+            d,_=data[ticker]
+            row=d.loc[ts]
+            px=None;reason=None
+            if float(row.Low)<=p["stop"]:
+                px=p["stop"];reason="entry_bar_stop"
+            elif float(row.High)>=p["target"]:
+                px=p["target"];reason="entry_bar_target"
+            elif ts.strftime("%H:%M")>="15:50":
+                px=float(row.Close);reason="entry_bar_eod"
+            if px is not None:
+                proceeds=p["qty"]*px*(1-COST)
+                cash+=proceeds
+                trades.append(dict(strategy=method,ticker=ticker,entry=str(p["time"]),exit=str(ts),reason=reason,pnl=round(proceeds-p["spent"],2),return_pct=round(100*(proceeds/p["spent"]-1),3)))
+                del positions[ticker]
         # Mark open positions to market, not merely uninvested cash.
         equity=cash
         for t,p in positions.items():
