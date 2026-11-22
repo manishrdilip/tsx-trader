@@ -21,6 +21,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install pandas numpy yfinance
+      - name: Verify deterministic execution accounting before downloading data
+        run: python -m unittest research.test_execution_accounting -v
       - name: Run sequential cost stress tests (stop on failure)
         shell: bash
         run: |
