@@ -37,4 +37,37 @@ class ExecutionAccountingTests(unittest.TestCase):
         self.assertEqual(trades[0]["reason"],"entry_bar_stop")
         self.assertLess(trades[0]["pnl"],0)
 
+
+    def test_overnight_like_intraday_gap_stop_fills_at_open_not_stop(self):
+        # A discontinuous intraday open below the stop must realize the worse
+        # executable open, not an optimistic stop-price fill.
+        ts=pd.date_range("2026-11-20 09:30",periods=4,freq="5min",tz="America/Toronto")
+        d=pd.DataFrame({"Open":[100,100,90,90],
+          "High":[100,101,91,91],"Low":[100,99,89,89],
+          "Close":[100,100,90,90],"Volume":[100]*4},index=ts)
+        def fake_signals(d,method):
+            return pd.DataFrame({"signal":[True,False,False,False],
+              "stop":[95]*4,"rvol":[2]*4},index=d.index)
+        with patch.object(bt,"signals",side_effect=fake_signals):
+            summary,trades,_=bt.simulate({"A":d},"bull_flag")
+        self.assertEqual(len(trades),1)
+        self.assertEqual(trades[0]["reason"],"gap_stop")
+        self.assertLess(trades[0]["return_pct"],-9.9)
+        self.assertLess(summary["final"],summary["start"])
+
+    def test_stop_precedes_target_when_both_touched_same_bar(self):
+        # Five-minute OHLC does not reveal whether stop or target came first.
+        # Conservatively charge the stop rather than selecting the winner.
+        ts=pd.date_range("2026-11-20 09:30",periods=3,freq="5min",tz="America/Toronto")
+        d=pd.DataFrame({"Open":[100]*3,"High":[100,115,100],
+          "Low":[100,90,100],"Close":[100]*3,"Volume":[100]*3},index=ts)
+        def fake_signals(d,method):
+            return pd.DataFrame({"signal":[True,False,False],
+              "stop":[95]*3,"rvol":[2]*3},index=d.index)
+        with patch.object(bt,"signals",side_effect=fake_signals):
+            summary,trades,_=bt.simulate({"A":d},"bull_flag")
+        self.assertEqual(len(trades),1)
+        self.assertEqual(trades[0]["reason"],"entry_bar_stop")
+        self.assertLess(trades[0]["pnl"],0)
+
 if __name__=="__main__":unittest.main()
