@@ -1,7 +1,9 @@
 """Research-only chronological split contract; synthetic data, no broker access."""
 import unittest
 from unittest.mock import patch
-import pandas as pd
+import sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent))
 from research import temporal_stability as ts
 
 class TemporalSplitContract(unittest.TestCase):
