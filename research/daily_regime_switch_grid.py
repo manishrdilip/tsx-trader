@@ -43,7 +43,7 @@ def main():
   eligible=(momentum[m].notna()&vol[v].notna()&(c>0))
   rank=score.where(eligible).rank(axis=1,ascending=False,method="first")
   # Defensive market regime: invest only when XIU above historical trend.
-  signal=(rank<=slots).astype(float).mul((market>market_ma[trend]).fillna(False),axis=0)
+  risk_ok=(~high) if style!="switch" else pd.Series(True,index=ix)\n  signal=(rank<=slots).astype(float).mul(((market>market_ma[trend])&risk_ok).fillna(False),axis=0)
   # Signal at t close, allocation at t+1 open. No same-day signal execution.
   pos=signal.shift(1).fillna(0)
   pos=pos.div(pos.sum(axis=1).replace(0,np.nan),axis=0).fillna(0)
