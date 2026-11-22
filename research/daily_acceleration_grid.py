@@ -36,7 +36,7 @@ def main():
  for k,(s,l,minimum,rvol,slots,ma) in enumerate(configs):
   # acceleration: recent daily momentum exceeds longer-horizon daily momentum
   score=short[s]/s-long[l]/l
-  eligible=(score>minimum/s)&(short[s]>0)&(vol>=rvol)&(market>trend[ma])
+  eligible=((score>minimum/s)&(short[s]>0)&(vol>=rvol)).mul((market>trend[ma]).fillna(False),axis=0).astype(bool)
   rank=score.where(eligible).rank(axis=1,ascending=False,method="first")
   signal=(rank<=slots).astype(float)
   pos=signal.shift(1).fillna(0)
