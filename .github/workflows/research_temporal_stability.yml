@@ -8,6 +8,7 @@ on:
       - "research/temporal_stability.py"
       - "research/temporal_robustness_screen.py"
       - "research/temporal_frontier.py"
+      - "research/test_signal_causality.py"
       - ".github/workflows/research_temporal_stability.yml"
 permissions:
   contents: read
@@ -23,6 +24,8 @@ jobs:
       - run: pip install pandas numpy yfinance
       - name: Verify research execution regression suite
         run: python -m unittest research.test_execution_accounting -v
+      - name: Audit five strategy signals for future-bar leakage
+        run: python -m unittest research.test_signal_causality -v
       - name: Chronological block stability across five strategies and three costs
         run: python research/temporal_stability.py
       - name: Screen chronological and transaction-cost robustness
