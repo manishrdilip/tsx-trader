@@ -33,10 +33,10 @@ def main():
     data=load(); ix,c,v,ret=features(data)
     # 4*4*4*4*4*3=3072 genuinely distinct parameter sets
     configs=list(itertools.product((10,20,40,80),(50,100,150,200),(.02,.05,.10,.20),
-                                   (1.,1.5,2.,3.),(0.,.02,.05,.10),(1,3,5)))
+                                   (1.,1.5,2.,3.),(0.,.02,.05,.10),(20,60,120)))
     mom={n:c/c.shift(n)-1 for n in (10,20,40,80)}
     trend={n:c.rolling(n,min_periods=n).mean() for n in (50,100,150,200)}
-    highs={n:c.rolling(60,min_periods=60).max() for n in (1,3,5)}
+    highs={n:c.rolling(n,min_periods=n).max() for n in (20,60,120)}
     volratio=v/v.shift(1).rolling(20,min_periods=20).mean()
     dates=ix
     # 2016-2021 discovery, 2022-2023 validation, 2024 onward diagnostic only
@@ -46,7 +46,7 @@ def main():
     for i,(momentum,ma,pullback,rvol,minimum,hold) in enumerate(configs):
         sig=(mom[momentum]>minimum)&(c>trend[ma])&(c>=highs[hold]*(1-pullback))&(volratio>=rvol)
         # Shift by 1 session per ticker: no same-close fill; no future bars in signal.
-        # Hold=1/3/5 is a rolling-high LOOKBACK parameter, NOT position holding duration.
+        # High-lookback=20/60/120 is a rolling-high LOOKBACK parameter, NOT position holding duration.
         # Equal weight among active names, max five simultaneous, deterministic alphabetical order.
         active=sig.shift(1).fillna(False)
         active=active.astype(int).cumsum(axis=1).le(5)&active
