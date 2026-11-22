@@ -7,6 +7,7 @@ on:
     paths:
       - "research/temporal_stability.py"
       - "research/temporal_robustness_screen.py"
+      - "research/temporal_frontier.py"
       - ".github/workflows/research_temporal_stability.yml"
 permissions:
   contents: read
@@ -26,6 +27,8 @@ jobs:
         run: python research/temporal_stability.py
       - name: Screen chronological and transaction-cost robustness
         run: python research/temporal_robustness_screen.py
+      - name: Compare same-period return-risk frontiers
+        run: python research/temporal_frontier.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
