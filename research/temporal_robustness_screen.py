@@ -11,9 +11,9 @@ def main():
     p=ROOT/"block_comparison.csv"
     if not p.exists(): raise FileNotFoundError("Run temporal_stability.py first")
     d=pd.read_csv(p)
-    required={"block","cost_per_side","return_pct","net","method"}
+    required={"block","cost_per_side","return_pct","net","strategy"}
     if missing:=required-set(d.columns): raise ValueError(f"Missing columns: {sorted(missing)}")
-    if d.duplicated(["method","block","cost_per_side"]).any(): raise ValueError("Duplicate test cells")
+    if d.duplicated(["strategy","block","cost_per_side"]).any(): raise ValueError("Duplicate test cells")
     # Optional metrics may be undefined when no trades or losses occur.
     # Only required experiment fields must be complete and finite.
     if d[list(required)].isna().any().any():
@@ -23,13 +23,13 @@ def main():
     if len(d)!=45:
         raise ValueError(f"Expected 45 experiment cells, got {len(d)}")
     out=[]
-    for method,g in d.groupby("method"):
-        if len(g)!=9 or set(g.block)!=set((1,2,3)) or len(g.cost_per_side.unique())!=3:
-            raise ValueError(f"Incomplete 3 x 3 cost/block grid: {method}")
+    for strategy,g in d.groupby("strategy"):
+        if len(g)!=9 or set(g.block)!=set((1,2,3)) or set(g.cost_per_side)!=set((0.001,0.0025,0.005)) or len(g[["block","cost_per_side"]].drop_duplicates())!=9:
+            raise ValueError(f"Incomplete 3 x 3 cost/block grid: {strategy}")
         high=g[g.cost_per_side==max(g.cost_per_side)]
         low=g[g.cost_per_side==min(g.cost_per_side)]
         # Consistency across time and adverse costs is mandatory even for preliminary screening.
-        out.append(dict(method=method,positive_blocks_high_cost=int((high.net>0).sum()),
+        out.append(dict(strategy=strategy,positive_blocks_high_cost=int((high.net>0).sum()),
             worst_block_return_pct=float(high.return_pct.min()),
             median_high_cost_return_pct=float(high.return_pct.median()),
             mean_high_cost_return_pct=float(high.return_pct.mean()),
