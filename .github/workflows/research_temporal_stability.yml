@@ -8,6 +8,7 @@ on:
       - "research/temporal_stability.py"
       - "research/temporal_robustness_screen.py"
       - "research/temporal_frontier.py"
+      - "research/test_execution_accounting.py"
       - "research/test_signal_causality.py"
       - "research/test_temporal_frontier_contract.py"
       - ".github/workflows/research_temporal_stability.yml"
