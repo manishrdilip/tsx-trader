@@ -14,7 +14,14 @@ def main():
     required={"block","cost_per_side","return_pct","net","method"}
     if missing:=required-set(d.columns): raise ValueError(f"Missing columns: {sorted(missing)}")
     if d.duplicated(["method","block","cost_per_side"]).any(): raise ValueError("Duplicate test cells")
-    if d.isna().any().any(): raise ValueError("Incomplete experiment cells")
+    # Optional metrics may be undefined when no trades or losses occur.
+    # Only required experiment fields must be complete and finite.
+    if d[list(required)].isna().any().any():
+        raise ValueError("Missing required experiment cell values")
+    if not np.isfinite(d[["cost_per_side","return_pct","net"]].to_numpy(dtype=float)).all():
+        raise ValueError("Non-finite required financial results")
+    if len(d)!=45:
+        raise ValueError(f"Expected 45 experiment cells, got {len(d)}")
     out=[]
     for method,g in d.groupby("method"):
         if len(g)!=9 or set(g.block)!=set((1,2,3)) or len(g.cost_per_side.unique())!=3:
