@@ -9,6 +9,7 @@ on:
       - "research/temporal_robustness_screen.py"
       - "research/temporal_frontier.py"
       - "research/test_execution_accounting.py"
+      - "research/test_cash_invariants.py"
       - "research/test_signal_causality.py"
       - "research/test_temporal_frontier_contract.py"
       - ".github/workflows/research_temporal_stability.yml"
@@ -26,6 +27,8 @@ jobs:
       - run: pip install pandas numpy yfinance
       - name: Verify research execution regression suite
         run: python -m unittest research.test_execution_accounting -v
+      - name: Verify cash and session invariants
+        run: python -m unittest research.test_cash_invariants -v
       - name: Audit five strategy signals for future-bar leakage
         run: python -m unittest research.test_signal_causality -v
       - name: Validate return-risk frontier contract
