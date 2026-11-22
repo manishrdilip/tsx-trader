@@ -27,13 +27,19 @@ def main():
     if len(sessions)<30:raise RuntimeError("Insufficient trading sessions for three chronological blocks")
     n=len(sessions)
     boundaries=[0,n//3,2*n//3,n]
+    # Hold the same eligible ticker universe fixed across all three blocks.
+    # Otherwise block-to-block changes can be mistaken for strategy stability.
+    block_days=[set(sessions[boundaries[b]:boundaries[b+1]]) for b in range(3)]
+    def block_bars(d, days):
+        return d.loc[[str(ts.date()) in days for ts in d.index]].copy()
+    common_tickers=[t for t,d in downloaded.items()
+                    if all(len(block_bars(d,days))>150 for days in block_days)]
+    if len(common_tickers)<5:
+        raise RuntimeError("Fewer than five tickers have sufficient bars in every block")
     rows=[]
     for block in range(3):
-        days=set(sessions[boundaries[block]:boundaries[block+1]])
-        subset={t:d.loc[[str(ts.date()) in days for ts in d.index]].copy()
-                for t,d in downloaded.items()}
-        subset={t:d for t,d in subset.items() if len(d)>150}
-        if len(subset)<5:raise RuntimeError("Insufficient tickers in block "+str(block))
+        days=block_days[block]
+        subset={t:block_bars(downloaded[t],days) for t in common_tickers}
         for cost in COSTS:
             core.COST=cost
             for method in METHODS:
@@ -43,13 +49,15 @@ def main():
                 rows.append(z)
     pd.DataFrame(rows).to_csv(OUT/"block_comparison.csv",index=False)
     (OUT/"audit.json").write_text(json.dumps({
-        "sessions":n,"usable_tickers":list(downloaded),"failures":failures,
+        "sessions":n,"downloaded_tickers":list(downloaded),
+        "fixed_comparable_tickers":common_tickers,"failures":failures,
         "limitations":["All blocks from previously explored 60d Yahoo five-minute data",
                        "NOT untouched out-of-sample","NOT forward paper trading",
                        "Currently listed universe: survivorship bias",
                        "No observed spreads, liquidity, queue priority or market impact",
                        "Fixed per-side cost proxy and stop-first OHLC approximation",
                        "Each block independently resets capital to CAD 5000",
+                       "Same eligible ticker universe used across all blocks; missing-session exposure may still vary",
                        "Not comparable to VMM until identical periods and accounting verified"]
     },indent=2))
     print(pd.DataFrame(rows).to_string(index=False))
