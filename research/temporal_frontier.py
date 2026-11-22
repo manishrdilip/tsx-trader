@@ -13,8 +13,11 @@ def main():
     needed = {"strategy", "block", "cost_per_side", "net", "max_dd", "trades", "profit_factor", "expectancy_cad"}
     if missing := needed - set(d):
         raise ValueError(f"Missing columns: {sorted(missing)}")
-    if len(d) != 45 or d.duplicated(["strategy", "block", "cost_per_side"]).any():
-        raise ValueError("Expected 45 unique experiment cells")
+    expected = {(m, b, c) for m in ("orb", "vwap", "bull_flag", "resistance", "mean_reversion")
+                for b in (1, 2, 3) for c in (0.001, 0.0025, 0.005)}
+    actual = set(zip(d["strategy"], d["block"], d["cost_per_side"]))
+    if len(d) != 45 or actual != expected:
+        raise ValueError("Expected complete 5-strategy x 3-block x 3-cost grid, without duplicates or substitutions")
     for field in ("net", "max_dd", "trades"):
         if not np.isfinite(pd.to_numeric(d[field], errors="coerce")).all():
             raise ValueError(f"Missing/nonfinite required metric: {field}")
