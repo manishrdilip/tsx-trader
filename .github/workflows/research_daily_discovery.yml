@@ -7,6 +7,7 @@ on:
     paths:
       - "research/daily_grid_discovery.py"
       - ".github/workflows/research_daily_discovery.yml"
+      - "research/daily_rotation_grid.py"
 permissions:
   contents: read
 jobs:
@@ -21,9 +22,13 @@ jobs:
       - run: pip install pandas numpy yfinance
       - name: Screen 3072 distinct configurations across 3 cost scenarios
         run: python research/daily_grid_discovery.py
+      - name: Run independent cross-sectional rotation grid
+        run: python research/daily_rotation_grid.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: daily-3072-discovery-results
-          path: research/daily_discovery_results/
+          path: |
+            research/daily_discovery_results/
+            research/rotation_results/
           if-no-files-found: error
