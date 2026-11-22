@@ -1,5 +1,6 @@
 """Research-only chronological split contract; synthetic data, no broker access."""
 import unittest
+import pandas as pd
 from unittest.mock import patch
 import sys
 from pathlib import Path
