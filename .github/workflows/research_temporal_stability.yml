@@ -1,0 +1,31 @@
+name: Research intraday chronological stability
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/temporal_stability.py"
+      - ".github/workflows/research_temporal_stability.yml"
+permissions:
+  contents: read
+jobs:
+  stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Verify research execution regression suite
+        run: python -m unittest research.test_execution_accounting -v
+      - name: Chronological block stability across five strategies and three costs
+        run: python research/temporal_stability.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: temporal-stability-diagnostics
+          path: research/temporal_stability_results/
+          if-no-files-found: warn
