@@ -6,6 +6,7 @@ on:
       - research/intraday-professional-setups-20261121
     paths:
       - "research/temporal_stability.py"
+      - "research/temporal_robustness_screen.py"
       - ".github/workflows/research_temporal_stability.yml"
 permissions:
   contents: read
@@ -23,6 +24,8 @@ jobs:
         run: python -m unittest research.test_execution_accounting -v
       - name: Chronological block stability across five strategies and three costs
         run: python research/temporal_stability.py
+      - name: Screen chronological and transaction-cost robustness
+        run: python research/temporal_robustness_screen.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
