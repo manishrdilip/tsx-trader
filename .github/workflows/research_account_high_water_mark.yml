@@ -1,0 +1,18 @@
+name: Research account high-water mark audit
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths:
+      - 'research/test_account_high_water_mark.py'
+      - '.github/workflows/research_account_high_water_mark.yml'
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pandas numpy
+      - run: python -m unittest research.test_account_high_water_mark -v
