@@ -1,23 +1,24 @@
-# VMM bot — 2026-11-20 (LIVE)
-Signals from close of 2026-11-19. Account equity $2,084.53, cash $344.12.
-XIU above 200-day: yes. Momentum share 100%.
+# VMM bot — 2026-11-23 (LIVE)
+Signals from close of 2026-11-20. Account equity $1,817.19, cash $167.34.
+XIU above 200-day: NO (new buys paused). Momentum share 100%.
 
 | Status | Action | Shares | Stock | Limit | Why |
 |---|---|---|---|---|---|
-| PENDING | BUY | 1 | VFV.TO | 184.78 | park idle cash $324 long-term (no momentum slot/pick for it) |
+| PENDING | SELL | 7 | NUAG.TO | 5.81 | close 5.99 is 28%+ below its high 8.64; close 5.99 < 200d 7.17 |
+| PENDING | SELL | 54 | ARG.TO | 5.92 | close 6.10 is 28%+ below its high 8.56; close 6.10 < 200d 6.65 |
+| PENDING | SELL | 7 | LGD.TO | 1.48 | close 1.53 is 28%+ below its high 2.19; close 1.53 < 200d 1.61 |
+| PENDING | SELL | 5 | MSA.TO | 6.72 | close 6.93 is 28%+ below its high 9.73; close 6.93 < 200d 6.99 |
 
 | Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
 |---|---|---|---|---|---|---|
-| MSA.TO | 7.6 | 6.99 | 8.7 | 40 | 9.73 | 7.01 |
-| LCFS.TO | 20.8 | 13.91 | 49.6 | 396 | 23.7 | 17.06 |
-| TWM.TO | 24.2 | 16.94 | 42.8 | 349 | 27.5 | 19.8 |
-| LGD.TO | 1.72 | 1.61 | 6.9 | 121 | 2.19 | 1.58 |
-| SOIL.TO | 7.98 | 6.16 | 29.5 | 223 | 8.66 | 6.24 |
-| ARG.TO | 6.69 | 6.64 | 0.7 | 132 | 8.56 | 6.16 |
-| FTG.TO | 30.59 | 23.09 | 32.5 | 197 | 34.46 | 24.81 |
-| NUAG.TO | 6.6 | 7.16 | -7.9 | 101 | 8.64 | 6.22 |
+| MSA.TO | 6.93 | 6.99 | -0.9 | 26 | 9.73 | 7.01 |
+| LCFS.TO | 20.33 | 13.99 | 45.3 | 382 | 23.7 | 17.06 |
+| TWM.TO | 23.6 | 17.03 | 38.6 | 341 | 27.5 | 19.8 |
+| LGD.TO | 1.53 | 1.61 | -5 | 96 | 2.19 | 1.58 |
+| SOIL.TO | 7.86 | 6.18 | 27.1 | 218 | 8.66 | 6.24 |
+| ARG.TO | 6.1 | 6.65 | -8.2 | 109 | 8.56 | 6.16 |
+| FTG.TO | 28.15 | 23.15 | 21.6 | 171 | 34.46 | 24.81 |
+| NUAG.TO | 5.99 | 7.17 | -16.5 | 82 | 8.64 | 6.22 |
 
-- GUARD MODE: VIX 34.6 (fear high); VIX jumped 22% -> no new buys, no VEQT selling (sell rules still active)
 - Slow mode: no review today (only the 28% emergency sell)
-- NUAG.TO: sell signal (close 6.60 < 200d 7.16) waits: not a review day
-- Parking $185 of idle cash in VFV.TO
+- Slow mode: buys wait for the monthly review or a deposit
