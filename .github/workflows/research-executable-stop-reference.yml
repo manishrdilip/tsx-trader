@@ -1,0 +1,21 @@
+name: Research executable stop reference audit
+on:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - 'research/executable_stop_reference_audit.py'
+      - '.github/workflows/research-executable-stop-reference.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Synthetic executable stop and gap audit
+        run: python research/executable_stop_reference_audit.py
