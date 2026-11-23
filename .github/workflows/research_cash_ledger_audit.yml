@@ -8,6 +8,7 @@ on:
       - "research/daily_cash_ledger_audit.py"
       - "research/test_cash_ledger_boundary.py"
       - "research/daily_risk_gate_audit.py"
+      - "research/daily_frontier_integrity_audit.py"
       - ".github/workflows/research_cash_ledger_audit.yml"
 permissions:
   contents: read
@@ -27,6 +28,8 @@ jobs:
         run: python research/daily_cash_ledger_audit.py
       - name: Audit independent parameter counts and drawdown gate
         run: python research/daily_risk_gate_audit.py
+      - name: Check matched-cost Pareto frontier and independent parameter counts
+        run: python research/daily_frontier_integrity_audit.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
