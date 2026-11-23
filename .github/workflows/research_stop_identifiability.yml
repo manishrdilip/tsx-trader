@@ -1,0 +1,32 @@
+name: Research stop execution identifiability audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/stop_identifiability_audit.py"
+      - ".github/workflows/research_stop_identifiability.yml"
+permissions:
+  contents: read
+jobs:
+  stop-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Verify existing execution and cash invariants
+        run: |
+          python -m unittest research.test_execution_accounting research.test_cash_invariants -v
+      - name: Test whether stop thresholds change real fills
+        run: python -m research.stop_identifiability_audit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stop-identifiability-audit
+          path: research/stop_identifiability_results/
+          if-no-files-found: warn
