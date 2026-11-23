@@ -1,0 +1,29 @@
+name: Research TSX overnight reversal grid
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/daily_overnight_reversal_grid.py"
+      - ".github/workflows/research_overnight_reversal.yml"
+permissions:
+  contents: read
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Run 1296 overnight reversal setups x 3 costs
+        run: python research/daily_overnight_reversal_grid.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: overnight-reversal-results
+          path: research/overnight_reversal_results/
+          if-no-files-found: error
