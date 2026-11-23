@@ -16,8 +16,10 @@ def scenario(name, gap, cost):
     op=pd.DataFrame({"AAA.TO":base.copy(),"BBB.TO":base*.81},index=dates,dtype=float)
     cl=op.copy()
     # An unanticipated gap at an exit open. No stop can guarantee a stop-price fill.
-    op.iloc[235,0]*=(1+gap)
-    cl.iloc[235,0]=op.iloc[235,0]
+    # Persistent repricing: a one-bar-only shock would rebound at the next open
+    # and can produce a net gain, invalidating the intended adverse-gap test.
+    op.iloc[235:,0]*=(1+gap)
+    cl.iloc[235:,0]*=(1+gap)
     trades,curve=ledger(op,cl,cost,2,20,.05)
     if (curve<0).any():raise AssertionError("Negative equity")
     if not np.isfinite(curve).all():raise AssertionError("Nonfinite equity")
