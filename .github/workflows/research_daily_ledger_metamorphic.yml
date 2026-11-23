@@ -1,0 +1,28 @@
+name: Research daily ledger metamorphic audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/test_daily_ledger_metamorphic.py"
+      - ".github/workflows/research_daily_ledger_metamorphic.yml"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install numpy pandas yfinance
+      - name: Chain cash-ledger and execution invariants
+        run: |
+          set -euo pipefail
+          python -m unittest research.test_daily_ledger_metamorphic research.test_cash_invariants research.test_execution_accounting -v
+          python -m research.stop_identifiability_audit
+          python -m research.execution_stress_audit
+          python -m research.adversarial_ledger_audit
