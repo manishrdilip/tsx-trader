@@ -76,11 +76,13 @@ def main():
       # Split returns start from previous close-to-close equity to avoid resetting cash to 5000.
       start=curve.iloc[curve.index.get_loc(c.index[0])-1] if curve.index.get_loc(c.index[0])>0 else 5000.
       total=float(c.iloc[-1]/start)
-      dd=float((c/c.cummax()-1).min())
+      boundary=curve.index.get_loc(c.index[0])
+      path_equity=pd.concat([curve.iloc[[boundary-1]],c]) if boundary>0 else pd.concat([pd.Series([5000.],index=[c.index[0]-pd.Timedelta(days=1)]),c])
+      dd=float((path_equity/path_equity.cummax()-1).min())
       tr=trades[(pd.to_datetime(trades.exit_date)>=c.index[0])&(pd.to_datetime(trades.exit_date)<=c.index[-1])]
       pnl=tr.pnl.to_numpy(dtype=float)
       gp=pnl[pnl>0].sum();gl=-pnl[pnl<0].sum()
-      daily=c.pct_change().dropna()
+      daily=path_equity.pct_change().dropna()
       rows.append(dict(lookback=lookback,slots=slots,cost=cost,stop_audit_threshold=stop,
        split=split,cagr=total**(252/len(c))-1,max_dd=dd,
        net_profit_cad=float(c.iloc[-1]-start),trades=len(tr),
