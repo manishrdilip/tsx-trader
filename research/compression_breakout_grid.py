@@ -4,7 +4,7 @@ Not a matched VMM test or proof of an executable edge.
 """
 import itertools,json,pathlib
 import numpy as np,pandas as pd
-from research.daily_cash_ledger_audit import fetch
+from daily_cash_ledger_audit import fetch
 OUT=pathlib.Path("research/compression_breakout_results")
 def evaluate(op,cl,hi,lo,vol,params,cost):
     window,ratio,breakout,volume,trend,slots=params
