@@ -6,6 +6,7 @@ on:
       - research/intraday-professional-setups-20261121
     paths:
       - "research/daily_cash_ledger_audit.py"
+      - "research/test_cash_ledger_boundary.py"
       - ".github/workflows/research_cash_ledger_audit.yml"
 permissions:
   contents: read
@@ -19,6 +20,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install pandas numpy yfinance
+      - name: Check segment boundary risk accounting
+        run: python research/test_cash_ledger_boundary.py
       - name: Run independent cash ledger and gap diagnostics
         run: python research/daily_cash_ledger_audit.py
       - uses: actions/upload-artifact@v4
