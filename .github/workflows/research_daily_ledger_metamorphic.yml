@@ -6,6 +6,7 @@ on:
       - research/intraday-professional-setups-20261121
     paths:
       - "research/test_daily_ledger_metamorphic.py"
+      - "research/execution_stress_audit.py"
       - ".github/workflows/research_daily_ledger_metamorphic.yml"
 permissions:
   contents: read
