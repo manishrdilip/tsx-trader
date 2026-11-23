@@ -1,0 +1,29 @@
+name: Research TSX cash ledger audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/daily_cash_ledger_audit.py"
+      - ".github/workflows/research_cash_ledger_audit.yml"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Run independent cash ledger and gap diagnostics
+        run: python research/daily_cash_ledger_audit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tsx-cash-ledger-audit
+          path: research/cash_ledger_audit_results/
+          if-no-files-found: error
