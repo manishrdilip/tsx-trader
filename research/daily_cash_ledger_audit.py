@@ -78,7 +78,11 @@ def main():
       total=float(c.iloc[-1]/start)
       boundary=curve.index.get_loc(c.index[0])
       path_equity=pd.concat([curve.iloc[[boundary-1]],c]) if boundary>0 else pd.concat([pd.Series([5000.],index=[c.index[0]-pd.Timedelta(days=1)]),c])
-      dd=float((path_equity/path_equity.cummax()-1).min())
+      # Continuous-account drawdown uses the peak from ALL preceding dates,
+      # not just the preceding session (which can conceal an old drawdown).
+      running_peak=curve.loc[:c.index[-1]].cummax().reindex(c.index)
+      running_peak=running_peak.clip(lower=5000.)
+      dd=float((c/running_peak-1).min())
       tr=trades[(pd.to_datetime(trades.exit_date)>=c.index[0])&(pd.to_datetime(trades.exit_date)<=c.index[-1])]
       pnl=tr.pnl.to_numpy(dtype=float)
       gp=pnl[pnl>0].sum();gl=-pnl[pnl<0].sum()
