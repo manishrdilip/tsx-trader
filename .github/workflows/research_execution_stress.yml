@@ -1,0 +1,35 @@
+name: Research execution gap and cash stress
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/execution_stress_audit.py"
+      - ".github/workflows/research_execution_stress.yml"
+permissions:
+  contents: read
+jobs:
+  stress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Execution accounting regressions
+        run: python -m unittest research.test_execution_accounting research.test_cash_invariants -v
+      - name: Verify stop identifiability
+        run: python -m research.stop_identifiability_audit
+      - name: Gap and fee stress with cash reconciliation
+        run: python -m research.execution_stress_audit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: execution-stress-audit
+          path: |
+            research/execution_stress_results/
+            research/stop_identifiability_results/
+          if-no-files-found: warn
