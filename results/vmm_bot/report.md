@@ -1,12 +1,8 @@
 # VMM bot — 2026-11-24 (LIVE)
-Signals from close of 2026-11-23. Account equity $1,828.46, cash $613.38.
+Signals from close of 2026-11-23. Account equity $1,836.22, cash $15.71.
 XIU above 200-day: yes. Momentum share 100%.
 
-| Status | Action | Shares | Stock | Limit | Why |
-|---|---|---|---|---|---|
-| PENDING | BUY | 15 | DRX.TO | 24.14 | rank 3, 12m 239%, sell line 13.45 |
-| PENDING | BUY | 3 | BDT.TO | 73.24 | rank 5, 12m 192%, sell line 59.39 |
-| PENDING | BUY | 14 | QTRH.TO | 2.12 | rank 9, 12m 126%, sell line 2.06 |
+No orders today.
 
 | Holding | Close | Sell line (200d) | % above | 12m % | High | 28% line |
 |---|---|---|---|---|---|---|
@@ -14,5 +10,10 @@ XIU above 200-day: yes. Momentum share 100%.
 | TWM.TO | 23.31 | 17.12 | 36.2 | 366 | 27.5 | 19.8 |
 | SOIL.TO | 7.06 | 6.2 | 13.8 | 185 | 8.66 | 6.24 |
 | FTG.TO | 30.12 | 23.23 | 29.6 | 198 | 34.46 | 24.81 |
+| DRX.TO | 23.9 | 13.45 | 77.7 | 239 | 23.9 | 17.21 |
+| BDT.TO | 72.51 | 59.39 | 22.1 | 192 | 72.51 | 52.21 |
+| QTRH.TO | 2.1 | 2.06 | 1.9 | 126 | 2.1 | 1.51 |
 
+- Open orders already waiting: ['VEQT.TO'] (no duplicates placed)
 - Slow mode: no review today (only the 28% emergency sell)
+- Slow mode: buys wait for the monthly review or a deposit

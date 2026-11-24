@@ -1,17 +1,21 @@
 {
   "last_rebalance_month": "2026-11",
-  "mom_share": 1,
+  "mom_share": 1.0,
   "ledger": {
     "LCFS.TO": 21,
     "TWM.TO": 6,
     "SOIL.TO": 38,
-    "FTG.TO": 13
+    "FTG.TO": 13,
+    "DRX.TO": 15,
+    "BDT.TO": 3,
+    "QTRH.TO": 14
   },
   "last_run_date": "2026-11-24",
   "run_slots": {
     "date": "2026-11-24",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "fund_date": "2026-11-17",
@@ -19,7 +23,10 @@
     "LCFS.TO": 23.7,
     "TWM.TO": 27.5,
     "SOIL.TO": 8.66,
-    "FTG.TO": 34.46
+    "FTG.TO": 34.46,
+    "DRX.TO": 23.9,
+    "BDT.TO": 72.51,
+    "QTRH.TO": 2.1
   },
   "rebuy_blocks": {
     "TLO.TO": 4.57,
@@ -36,7 +43,7 @@
     "2026-11-19": 4174.59,
     "2026-11-20": 4084.41,
     "2026-11-23": 3960.83,
-    "2026-11-24": 4026.32
+    "2026-11-24": 4034.08
   },
   "entry": {
     "LCFS.TO": "2026-11-10",
@@ -49,18 +56,5 @@
   },
   "last_review_month": "2026-11",
   "funded_cad": 4597.23,
-  "pending": {
-    "DRX.TO": {
-      "units": 15,
-      "pre_units": 0
-    },
-    "BDT.TO": {
-      "units": 3,
-      "pre_units": 0
-    },
-    "QTRH.TO": {
-      "units": 14,
-      "pre_units": 0
-    }
-  }
+  "pending": {}
 }
