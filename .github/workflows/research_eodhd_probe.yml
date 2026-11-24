@@ -1,0 +1,43 @@
+name: Research EODHD coverage
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths: ['.github/workflows/research_eodhd_probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe coverage without exposing credentials
+        env:
+          EODHD_API_KEY: ${{ secrets.EODHD_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os, urllib.request, urllib.parse, urllib.error, json
+          key=os.environ.get('EODHD_API_KEY')
+          if not key:
+              print('BLOCKER: EODHD_API_KEY repository Actions secret missing or empty')
+              raise SystemExit(1)
+          for path, params in [
+              ('exchange-symbol-list/TO', {}),
+              ('exchange-symbol-list/TO', {'delisted':'1'}),
+              ('eod/RY.TO', {'from':'2007-01-01','to':'2026-11-20'}),
+              ('eod/XIU.TO', {'from':'2007-01-01','to':'2026-11-20'}),
+              ('splits/RY.TO', {}),
+              ('div/RY.TO', {})]:
+              try:
+                  q=urllib.parse.urlencode(dict(params,api_token=key,fmt='json'))
+                  with urllib.request.urlopen('https://eodhd.com/api/'+path+'?'+q,timeout=45) as response:
+                      data=json.load(response)
+                  if isinstance(data,list):
+                      dates=[x.get('date') for x in data if isinstance(x,dict) and x.get('date')]
+                      print(path, params, 'rows',len(data),'first',min(dates,default=None),'last',max(dates,default=None))
+                  else:
+                      print(path,'unexpected response schema')
+              except urllib.error.HTTPError as e:
+                  print(path,'HTTP',e.code)
+              except Exception as e:
+                  print(path,'error',type(e).__name__)
+          PY
