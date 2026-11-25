@@ -127,3 +127,16 @@ def winner_rule(pre, v60, d200, slots=10):
         if pre.c[i, k] >= p["px"] * 1.5: return "target +50%"
         if i - p["ent"] >= 60: return "60 days"
     return dict(scores=scores, exit=exit_, slots=lambda eq: slots, max_hold=slots, buy_day=lambda i: True, trail=25)
+
+
+def gap_drift(pre, P, slots=10):
+    """Batch 7D: earnings-gap proxy. Open >= +5% vs prior close, volume >= 3x 50d avg, close >= open, above 200d.
+    Hold 40 trading days or 20% trail (engine)."""
+    C, O, V = P.C, P.O, P.V
+    sig = ((O >= C.shift(1) * 1.05) & (V >= 3 * V.rolling(50).mean().shift(1)) & (C >= O) & (C > P.sma200)).values
+    gap = (O / C.shift(1) - 1).values
+    def scores(i):
+        return _rank(pre, i, gap[i], pre.e[i] & sig[i])
+    def exit_(i, t, p):
+        if i - p["ent"] >= 40: return "40 days"
+    return dict(scores=scores, exit=exit_, slots=lambda eq: slots, max_hold=slots, buy_day=lambda i: True, trail=20)
