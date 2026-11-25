@@ -114,3 +114,16 @@ def asym(pre, a, q, mult, b, slots=10):
 
 def gp_tree(pre, score_arr, slots=20):
     return _vmm_like(pre, score_arr, slots)
+
+
+def winner_rule(pre, v60, d200, slots=10):
+    """Batch 3 rule from the dev decision tree: v60 > 0.0371 and close <= 200d x (1 - 0.4266).
+    Rank by v60. Exit: +50% target, 25% trail (engine), 60 trading days."""
+    col = {t: k for k, t in enumerate(pre.tk)}
+    def scores(i):
+        return _rank(pre, i, v60[i], pre.e[i] & (v60[i] > 0.0371476) & (d200[i] <= -0.426586))
+    def exit_(i, t, p):
+        k = col[t]
+        if pre.c[i, k] >= p["px"] * 1.5: return "target +50%"
+        if i - p["ent"] >= 60: return "60 days"
+    return dict(scores=scores, exit=exit_, slots=lambda eq: slots, max_hold=slots, buy_day=lambda i: True, trail=25)
