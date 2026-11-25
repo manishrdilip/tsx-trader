@@ -1,0 +1,13 @@
+{
+ "selected": "T_mom252",
+ "dev": {
+  "name": "T_mom252",
+  "cost": 0.0002,
+  "dev_cagr": 1.89,
+  "dev_sharpe": 0.38,
+  "dev_dd": -15.7,
+  "sh_1990_06": 0.56,
+  "sh_2007_22": 0.22
+ },
+ "deflated_sharpe": 0.147
+}
