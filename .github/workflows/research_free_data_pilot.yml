@@ -1,0 +1,51 @@
+name: Free data research pilot
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths: ['.github/workflows/research_free_data_pilot.yml']
+permissions:
+  contents: read
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: pip install pandas pyarrow requests
+      - name: Acquire audit and backtest US ETF minute data
+        run: |
+          python - <<'PY'
+          import pandas as pd, numpy as np, requests, io
+          base='https://huggingface.co/datasets/syncster-data/historical-market-data/resolve/main/data/stocks/1m/'
+          for sym in ['SPY','QQQ','IWM']:
+              try:
+                  r=requests.get(base+sym[0]+'/'+sym+'.parquet',timeout=120)
+                  r.raise_for_status()
+                  d=pd.read_parquet(io.BytesIO(r.content))
+                  d.columns=d.columns.str.lower()
+                  t=next(c for c in ['ts','timestamp','datetime'] if c in d)
+                  d[t]=pd.to_datetime(d[t],utc=True).dt.tz_convert('America/New_York')
+                  d=d.sort_values(t)
+                  print(sym,'rows',len(d),'dates',d[t].min(),d[t].max(),'duplicates',d[t].duplicated().sum(),'missing',d[['open','high','low','close','volume']].isna().sum().to_dict())
+                  bad=(d.low>d[['open','close']].min(axis=1))|(d.high<d[['open','close']].max(axis=1))|(d.low<=0)
+                  print('invalid OHLC',bad.sum())
+                  d=d.loc[~bad].drop_duplicates(t,keep=False).dropna(subset=['open','high','low','close','volume']).set_index(t).between_time('09:30','15:59')
+                  d=d.loc['2021':'2026']
+                  for cost in [.001,.005]:
+                      cash=5000.; peak=cash; dd=0.; pnl=[]; days=0
+                      for date,g in d.groupby(d.index.date):
+                          if len(g)!=390 or g.index.to_series().diff().dropna().ne(pd.Timedelta(minutes=1)).any(): continue
+                          days+=1
+                          high=g.high.iloc[:15].max()
+                          hits=np.flatnonzero(g.close.iloc[15:180].to_numpy()>high)
+                          if not len(hits): continue
+                          i=int(hits[0])+16
+                          entry=g.open.iloc[i]*(1+cost)
+                          shares=int(cash/entry)
+                          if not shares: continue
+                          exit=g.open.iloc[-1]*(1-cost)
+                          profit=shares*(exit-entry)
+                          cash+=profit; pnl.append(profit); peak=max(peak,cash); dd=min(dd,cash/peak-1)
+                      print(sym,'USD standalone ORB pilot','cost',cost,'sessions',days,'trades',len(pnl),'net',round(cash-5000,2),'close-only DD',dd,'expectancy',np.mean(pnl) if pnl else None)
+              except Exception as e:
+                  print(sym,'FAILED',type(e).__name__,str(e)[:200])
+          PY
