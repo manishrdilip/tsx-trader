@@ -1,0 +1,16 @@
+{
+ "evaluated": 4038,
+ "best_tree": "('+', ('min', ('-', 'r60', 'ldv'), ('+', 'd200', 'relvol20')), 'r250')",
+ "best_dev": {
+  "tree": "('+', ('min', ('-', 'r60', 'ldv'), ('+', 'd200', 'relvol20')), 'r250')",
+  "fit": 1.0519,
+  "dev_sharpe": 1.3,
+  "dev_cagr": 42.8,
+  "dev_dd": -31.9,
+  "turn": 8.41,
+  "nodes": 9
+ },
+ "deflated_sharpe_prob": 0.575,
+ "expected_max_monthly_sr_by_luck": 0.36,
+ "best_monthly_sr": 0.375
+}
