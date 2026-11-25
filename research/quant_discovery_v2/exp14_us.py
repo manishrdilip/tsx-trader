@@ -35,25 +35,35 @@ if not os.path.exists(cache):
               open(os.path.join(OUT, "us_manifest.json"), "w"), indent=1)
 z = np.load(cache, allow_pickle=True)
 dates = pd.DatetimeIndex(z["days"]); tk = list(z["tk"])
-Cdf = pd.DataFrame(z["C"], dates, tk); Odf = pd.DataFrame(z["O"], dates, tk); Vdf = pd.DataFrame(z["V"], dates, tk)
+Cdf = pd.DataFrame(z["C"], dates, tk); Odf = pd.DataFrame(z["O"], dates, tk)
 print(json.load(open(os.path.join(OUT, "us_manifest.json"))), flush=True)
-# signals (float32 where possible)
-s200 = Cdf.rolling(200).mean(); above = (Cdf > s200).values
-r12 = (Cdf / Cdf.shift(252) - 1)
-dv = (Cdf * Vdf).rolling(20).median()
-hist = Cdf.notna().cumsum()
-base = (Cdf >= 5) & (Cdf <= 500) & (hist >= 253) & (dv >= 2e6)
-dvq = dv.where(base)
-lo, hi = dvq.quantile(0.2, axis=1), dvq.quantile(0.8, axis=1)
-elig = (base & dv.ge(lo, axis=0) & dv.le(hi, axis=0)).values
+# signals, computed in column chunks to stay within memory (float32)
+Cv = z["C"]; Ov = z["O"]; Vv = z["V"]; n, m = Cv.shape
+s200v = np.full((n, m), np.nan, "float32"); r12v = np.full((n, m), np.nan, "float32"); dvv = np.full((n, m), np.nan, "float32")
+histv = np.zeros((n, m), "int32"); v50 = np.full((n, m), np.nan, "float32")
+for j0 in range(0, m, 1500):
+    sl = slice(j0, min(m, j0 + 1500))
+    c = pd.DataFrame(Cv[:, sl]); v = pd.DataFrame(Vv[:, sl])
+    s200v[:, sl] = c.rolling(200).mean().values; r12v[:, sl] = (c / c.shift(252) - 1).values
+    dvv[:, sl] = (c * v).rolling(20).median().values; histv[:, sl] = c.notna().cumsum().values
+    v50[:, sl] = v.rolling(50).mean().shift(1).values
+    del c, v
+above = Cv > s200v
+base = (Cv >= 5) & (Cv <= 500) & (histv >= 253) & (dvv >= 2e6)
+dvq = np.where(base, dvv, np.nan)
+lo = np.nanquantile(dvq, 0.2, axis=1); hi = np.nanquantile(dvq, 0.8, axis=1); del dvq
+elig = base & (dvv >= lo[:, None]) & (dvv <= hi[:, None]); del base, histv
 elig[:, tk.index("SPY")] = False
-r12v = r12.values
-q90 = np.nanquantile(np.where(elig, r12v, np.nan), 0.9, axis=1); q60 = np.nanquantile(np.where(elig, r12v, np.nan), 0.6, axis=1)
-spy = Cdf["SPY"]; spy_ok = (spy > spy.rolling(200).mean()).values
+rq = np.where(elig, r12v, np.nan)
+q90 = np.nanquantile(rq, 0.9, axis=1); q60 = np.nanquantile(rq, 0.6, axis=1); del rq
+spy = Cdf["SPY"].astype(float); spy_ok = (spy > spy.rolling(200).mean()).values
 lv = Cdf.apply(lambda s: s.last_valid_index())
 last_i = np.array([dates.get_loc(d) if d is not None else -1 for d in lv])
+class S200:
+    values = s200v
+s200 = S200
 P = types.SimpleNamespace(dates=dates, tk=tk, C=Cdf, O=Odf, last_i=last_i, xiu=spy)
-cv = Cdf.values; tka = np.array(tk); col = {t: k for k, t in enumerate(tk)}
+cv = Cv; tka = np.array(tk); col = {t: k for k, t in enumerate(tk)}
 def rank(i, score, mask):
     s = np.where(mask & np.isfinite(score), score, np.nan); ok = np.isfinite(s)
     if not ok.any(): return None
@@ -68,8 +78,9 @@ def vmm_us():
         if np.isfinite(r12v[i, k]) and r12v[i, k] < q60[i]: return "out of top 40%"
     return dict(scores=scores, exit=exit_, slots=lambda eq: int(min(20, max(5, eq // 400))), max_hold=20,
                 buy_day=lambda i: True, trail=28, never_rebuy_trail=True)
-gsig = ((Odf >= Cdf.shift(1) * 1.05) & (Vdf >= 3 * Vdf.rolling(50).mean().shift(1)) & (Cdf >= Odf)).values & above
-gap = (Odf / Cdf.shift(1) - 1).values
+prevc = np.vstack([np.full((1, m), np.nan, "float32"), Cv[:-1]])
+gsig = (Ov >= prevc * 1.05) & (Vv >= 3 * v50) & (Cv >= Ov) & above
+gap = Ov / prevc - 1
 def gap_us():
     return dict(scores=lambda i: rank(i, gap[i], elig[i] & gsig[i]), exit=lambda i, t, p: "40 days" if i - p["ent"] >= 40 else None,
                 slots=lambda eq: 10, max_hold=10, buy_day=lambda i: True, trail=20)

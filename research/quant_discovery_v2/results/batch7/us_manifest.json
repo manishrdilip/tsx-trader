@@ -1,0 +1,10 @@
+{
+ "tickers": 11112,
+ "dropped": {
+  "short": 3854,
+  "never_liquid": 6959,
+  "spike": 646
+ },
+ "first": "1999-01-04",
+ "last": "2026-11-25"
+}
