@@ -1,0 +1,15 @@
+{
+ "selected": "B",
+ "eval": {
+  "cagr": 23.7,
+  "dd": -31.1,
+  "sharpe": 0.87,
+  "switches": 6
+ },
+ "vmm_nopark_eval": {
+  "cagr": 30.6,
+  "dd": -31.1,
+  "sharpe": 1.04,
+  "switches": 0
+ }
+}
