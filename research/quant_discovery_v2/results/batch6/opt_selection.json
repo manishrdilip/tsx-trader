@@ -1,0 +1,18 @@
+{
+ "selected": "cc_monthly",
+ "spy_dev": {
+  "name": "SPY_total_return",
+  "cagr": 9.2,
+  "dd": -46.3,
+  "sharpe": 0.63,
+  "trades": 179
+ },
+ "best_dev": {
+  "name": "cc_monthly",
+  "cagr": 9.0,
+  "dd": -37.7,
+  "sharpe": 0.65,
+  "trades": 150
+ },
+ "deflated_sharpe": 0.6528345931163646
+}
