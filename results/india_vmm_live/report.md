@@ -1,4 +1,4 @@
-# India VMM bot - 2026-11-24 PM (LIVE)
+# India VMM bot - 2026-11-25 AM (LIVE)
 Signals from close of 2026-11-23. Equity Rs 12,907, cash Rs 3,111.
 Market NIFTYBEES.NS above 200-day. Ranking: riskadj.
 
