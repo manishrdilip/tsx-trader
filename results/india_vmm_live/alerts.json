@@ -1,14 +1,6 @@
 {
-  "date": "2026-11-24",
-  "sent": [
-    "broker-error"
-  ],
+  "date": "2026-11-25",
+  "sent": [],
   "seen_orders": {},
-  "log": [
-    {
-      "time": "13:25",
-      "text": "India VMM watch: cannot reach Zerodha (('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))). Token refresh or IP problem?"
-    }
-  ],
-  "ai_seen": {}
+  "log": []
 }
