@@ -1,0 +1,39 @@
+{
+ "schemes": {
+  "A": {
+   "pick": {
+    "bull": "VMM_nopark",
+    "fear": "XIU",
+    "pullback": "VMM_nopark",
+    "weak": "G"
+   },
+   "dev": {
+    "cagr": 23.6,
+    "dd": -25.4,
+    "sharpe": 1.08,
+    "switches": 29
+   }
+  },
+  "B": {
+   "pick": {
+    "fddn_above": "VMM_nopark",
+    "fddn_below": "XIU",
+    "fdup_above": "VMM_nopark",
+    "fdup_below": "F"
+   },
+   "dev": {
+    "cagr": 22.9,
+    "dd": -19.3,
+    "sharpe": 1.1,
+    "switches": 39
+   }
+  }
+ },
+ "selected": "B",
+ "vmm_nopark_dev": {
+  "cagr": 20.6,
+  "dd": -27.5,
+  "sharpe": 0.97,
+  "switches": 0
+ }
+}
