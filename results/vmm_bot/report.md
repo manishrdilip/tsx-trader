@@ -14,6 +14,6 @@ No orders today.
 | BDT.TO | 73.74 | 59.6 | 23.7 | 200 | 73.74 | 53.09 |
 | QTRH.TO | 2.04 | 2.07 | -1.3 | 122 | 2.18 | 1.57 |
 
-- GUARD MODE: XIU -2.5% today; VIX 33.1 (fear high); VIX jumped 26% -> no new buys, no VEQT selling (sell rules still active)
 - Slow mode: no review today (only the 28% emergency sell)
 - QTRH.TO: sell signal (close 2.04 < 200d 2.07) waits: not a review day
+- Slow mode: buys wait for the monthly review or a deposit
