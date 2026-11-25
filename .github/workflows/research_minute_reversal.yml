@@ -1,0 +1,49 @@
+name: Research free minute reversal screen
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths: ['.github/workflows/research_minute_reversal.yml']
+permissions:
+  contents: read
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - run: pip install pandas pyarrow requests numpy
+      - run: |
+          python - <<'PY'
+          import pandas as pd,numpy as np,requests,io
+          base='https://huggingface.co/datasets/syncster-data/historical-market-data/resolve/main/data/stocks/1m/'
+          for sym in ['SPY','QQQ','IWM']:
+              r=requests.get(base+sym[0]+'/'+sym+'.parquet',timeout=120);r.raise_for_status()
+              d=pd.read_parquet(io.BytesIO(r.content));d.columns=d.columns.str.lower()
+              t=next(c for c in ['ts','timestamp','datetime'] if c in d)
+              d[t]=pd.to_datetime(d[t],utc=True).dt.tz_convert('America/New_York')
+              d=d.sort_values(t).drop_duplicates(t,keep=False).dropna(subset=['open','high','low','close','volume']).set_index(t).between_time('09:30','15:59')
+              days=[]
+              for date,g in d.groupby(d.index.date):
+                  if len(g)!=390 or g.index.to_series().diff().dropna().ne(pd.Timedelta(minutes=1)).any():continue
+                  if (g.low<=0).any() or (g.high<g[['open','close']].max(axis=1)).any() or (g.low>g[['open','close']].min(axis=1)).any():continue
+                  days.append((date,g.open.to_numpy(),g.close.to_numpy(),g.volume.to_numpy()))
+              for mode in ['morning_reversal','vwap_reclaim','first_hour_trend']:
+                  for cost in [.001,.005]:
+                      for start,end in [(2016,2020),(2021,2026)]:
+                          cash=5000.;peak=cash;dd=0.;p=[];dates=[]
+                          for date,o,c,v in days:
+                              if not start<=date.year<=end:continue
+                              dates.append(date)
+                              vw=np.cumsum(c*v)/np.maximum(np.cumsum(v),1)
+                              if mode=='morning_reversal': idx=np.array([60]) if c[59]/o[0]-1<-.005 and c[59]>c[44] else np.array([])
+                              elif mode=='first_hour_trend':idx=np.array([60]) if c[59]/o[0]-1>.005 else np.array([])
+                              else:idx=np.flatnonzero((c[60:180]>vw[60:180])&(c[59:179]<=vw[59:179])&(c[60:180]<o[0]))+61
+                              if not len(idx):continue
+                              i=int(idx[0]);entry=o[i]*(1+cost);n=int(cash/entry)
+                              if not n:continue
+                              # mark to market at every minute open, including liquidation cost
+                              for price in o[i:]:
+                                  equity=cash-n*entry+n*price*(1-cost);peak=max(peak,equity);dd=min(dd,equity/peak-1)
+                              profit=n*(o[-1]*(1-cost)-entry);cash+=profit;p.append(profit)
+                          a=np.array(p);years=(dates[-1]-dates[0]).days/365.25
+                          print(sym,mode,cost,start,end,'USD','net',round(cash-5000,2),'CAGR',round((cash/5000)**(1/years)-1,5),'open_mark_DD',round(dd,5),'trades',len(p),'PF',round(a[a>0].sum()/max(1e-9,-a[a<0].sum()),4),'expectancy',round(a.mean(),4) if len(a) else None)
+          PY
