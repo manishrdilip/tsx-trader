@@ -14,7 +14,8 @@
   "run_slots": {
     "date": "2026-11-26",
     "slots": [
-      "AM"
+      "AM",
+      "PM"
     ]
   },
   "fund_date": "2026-11-17",
