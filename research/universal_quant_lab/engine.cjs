@@ -66,7 +66,9 @@ function evaluate(bars,space,{offset=0n,limit=100,hold=3,sideCost=.0005,directio
  // Only the first 80% are used. Do not calculate features on the holdout.
  const visible=bars.slice(0,dev),cache=new Map(),out=[];
  for(let id=offset;id<space.total&&id<offset+BigInt(limit);id++){
-  const rules=space.at(id),arrays=rules.map(r=>{let key=JSON.stringify(r);if(!cache.has(key)){if(cache.size>=512)cache.delete(cache.keys().next().value);cache.set(key,testRule(visible,r))}return cache.get(key)});
+  const rules=space.at(id);
+  if(rules.some(r=>["VWAP","RVOL"].includes(r.family))&&visible.some(b=>b.volume===null)){out.push({id:String(id),rules,status:"unsupported_missing_volume"});continue}
+  const arrays=rules.map(r=>{let key=JSON.stringify(r);if(!cache.has(key)){if(cache.size>=512)cache.delete(cache.keys().next().value);cache.set(key,testRule(visible,r))}return cache.get(key)});
   let signal=visible.map((_,i)=>arrays.every(x=>x[i]));
   const cfg={hold,sideCost,direction,cash};
   out.push({id:String(id),rules,train:simulate(visible,signal,{...cfg,end:train}),validation:simulate(visible,signal,{...cfg,start:train,end:dev})});
