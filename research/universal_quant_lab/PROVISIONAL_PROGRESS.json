@@ -1,9 +1,19 @@
 {
-    "run":  "development-turnover-3m",
-    "observed_status":  "paused",
-    "heartbeat":  "2026-11-26T22:54:15.574128+00:00",
-    "resume_monitor_pid":  28728,
-    "completed":  75000,
-    "official":  0,
-    "rate":  12988.815677247583
+  "status": "paused",
+  "engineering_completed": 431000,
+  "engineering_target": 3000000,
+  "official_completed": 0,
+  "updated_utc": "2026-11-26T22:56:56.627814+00:00",
+  "session_evaluations_per_second": 9571.008625278379,
+  "run": "development-turnover-3m",
+  "last_memory_benchmark": {
+    "peak_working_set_mib": 262.56640625,
+    "elapsed_seconds": 26.811999999918044,
+    "new_rows": 256000,
+    "rows_per_second": 9547.963598417966,
+    "threads": 2,
+    "duckdb_threads": 1,
+    "duckdb_limit_mb": 192,
+    "max_new_lease": 2000
+  }
 }
