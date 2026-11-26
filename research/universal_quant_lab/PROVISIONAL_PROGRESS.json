@@ -1,0 +1,9 @@
+{
+    "run":  "development-turnover-3m",
+    "observed_status":  "paused",
+    "heartbeat":  "2026-11-26T22:54:15.574128+00:00",
+    "resume_monitor_pid":  28728,
+    "completed":  75000,
+    "official":  0,
+    "rate":  12988.815677247583
+}
