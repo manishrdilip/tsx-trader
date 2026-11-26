@@ -1,4 +1,4 @@
-﻿"""Multi-job profit-first engineering runner. Official admission remains sealed."""
+"""Multi-job profit-first engineering runner. Official admission remains sealed."""
 import argparse
 from datetime import datetime, timezone
 from importlib.metadata import version
@@ -19,7 +19,8 @@ import pyarrow.parquet as pq
 from campaign_plan import hashed
 from campaign_watchdog import guard, health
 from daily_campaign import digest, exclusive
-from daily_engine import feature_rules, space
+from execution_actions import actions
+from profit_features import signals, space
 from eodhd import atomic_json
 from profit_engine import METRICS, evaluate
 from profit_ledger import Ledger
@@ -45,6 +46,8 @@ def load(root, job, dates):
         """, [[f.as_posix() for f in files], dates[2]]).df()
     if any(digest(f) != hashes[f.parent.name] for f in files):
         raise ValueError("Development input changed while loading")
+    initial_session = int(pd.Index(bars.session).searchsorted(dates[0]))
+    bars = bars.iloc[max(0, initial_session - 120):].reset_index(drop=True)
     sessions = pd.Index(bars.session)
     if sessions.has_duplicates or not sessions.is_monotonic_increasing:
         raise ValueError("Invalid daily session sequence")
@@ -54,7 +57,13 @@ def load(root, job, dates):
     prices = np.ascontiguousarray(bars[["open", "low", "close"]], dtype=np.float64)
     if not np.isfinite(prices).all() or not (prices > 0).all():
         raise ValueError("Invalid execution prices")
-    return hashes, prices, feature_rules(bars), splits
+    last_dev = (pd.Timestamp(dates[2]) - pd.Timedelta(days=1)).date().isoformat()
+    corporate = actions(root, job, sessions, last_dev)
+    scaled = bars.copy()
+    scaled[["open", "high", "low", "close"]] = scaled[["open", "high", "low", "close"]].mul(
+        np.cumprod(corporate[0]), axis=0
+    )
+    return hashes, prices, signals(scaled), splits, corporate
 
 
 def prepare(root, config):
@@ -87,16 +96,17 @@ def prepare(root, config):
         if scope in scopes:
             raise ValueError("Duplicate dataset/depth scope, including alternate seeds and cost aliases")
         scopes.add(scope)
-        hashes, prices, rules, splits = load(root, job, dates)
-        identity = hashed([scope, spread, slip, fee])
+        hashes, prices, rules, splits, corporate = load(root, job, dates)
+        identity = hashed([scope, spread, slip, fee, job.get("action_snapshot_sha256"), "daily-actions-10"])
         jobs.append({**job, "id": identity, "capacity": capacity, "development_hashes": hashes})
-        datasets[identity] = (groups, prices, rules, splits)
+        datasets[identity] = (groups, prices, rules, splits, corporate)
     if sum(job["quota"] for job in jobs) != config["target"]:
         raise ValueError("Campaign allocations do not sum to the exact target")
     lab = Path(__file__).parent
     code = {name: digest(lab / name) for name in (
         "profit_campaign.py", "profit_engine.py", "profit_ledger.py", "daily_engine.py",
         "daily_campaign.py", "features.py", "campaign_watchdog.py",
+        "execution_actions.py", "profit_features.py",
     )}
     versions = {name: version(name) for name in ("numpy", "pandas", "numba", "duckdb", "pyarrow")}
     return {**config, "jobs": jobs, "runtime": versions, "code": code, "mode": "engineering"}, datasets
@@ -178,14 +188,14 @@ def run(root, config, out):
                     active = True
                     first, size = lease
                     try:
-                        groups, prices, rules, splits = datasets[identity]
+                        groups, prices, rules, splits, corporate = datasets[identity]
                         friction = (job["half_spread_bps"] + job["slippage_bps"]) / 10_000
                         fee = job["fee_per_order"]
                         if not evaluate.signatures:
-                            evaluate(np.array([0], np.int64), groups, prices, rules, splits, 5000., friction, fee)
+                            evaluate(np.array([0], np.int64), groups, prices, rules, splits, 5000., friction, fee, corporate)
                         ids = ledger.ids(identity, first, size)
                         begin = time.perf_counter()
-                        metrics = evaluate(ids, groups, prices, rules, splits, 5000., friction, fee)
+                        metrics = evaluate(ids, groups, prices, rules, splits, 5000., friction, fee, corporate)
                         compute = time.perf_counter() - begin
                         write_batch(ledger.file(identity, first), ids, metrics)
                         ledger.commit(identity, first, compute)

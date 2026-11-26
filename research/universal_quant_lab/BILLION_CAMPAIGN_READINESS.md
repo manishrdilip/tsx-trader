@@ -26,3 +26,7 @@ Status: **not started**. The official ledger target is 1,000,000,000 and the off
 The isolated venv contains NumPy, Numba, pandas, DuckDB and PyArrow. With the configured daily revision manifest under `D:\UniversalQuantLab\config`, use `daily_campaign.py --help` for direct execution, `campaign_watchdog.py ROOT JOB_JSON` for a standalone process, and `campaign_dashboard.py RUN_DIRECTORY --port 8765` for loopback monitoring. Create a `PAUSE` marker inside the run directory to stop at a checkpoint. Clear the marker after reviewing the resource or operator pause and rerun with the same manifest.
 
 `campaign_progress.py` checks completed ledger rows, hashes, and unique strategy IDs before writing a small engineering summary. Its optional `--publish` uses an authenticated local GitHub CLI and updates only the designated progress JSON path. It never sends Parquet or licensed market data.
+
+## Profit-first objective update
+
+The cross-job ledger, profit-first leaderboards and local action-aware tests are documented in [profit-first readiness](PROFIT_FIRST_READINESS.md). [Machine-readable launch acceptance](BILLION_CAMPAIGN_ACCEPTANCE.json) records the open production gates and official count.

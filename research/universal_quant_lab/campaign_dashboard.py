@@ -22,6 +22,9 @@ const fields = {
  distinct_strategies: "Distinct strategies", dataset_count: "Datasets",
  failed_attempts: "Failed attempts", evaluations_per_second: "Evaluations per second",
  parquet_bytes: "Parquet bytes", batch_seconds: "Batch seconds", free_gib: "Free GiB",
+ compute_seconds: "Compute seconds", session_wall_seconds: "Session wall seconds",
+ compute_evaluations_per_second: "Compute evaluations per second",
+ session_evaluations_per_second: "End-to-end evaluations per second",
  updated_utc: "Latest checkpoint (UTC)", memory_available_bytes: "Available RAM bytes",
  max_gpu_celsius: "GPU temperature (C)", cpu_celsius: "CPU temperature (C)"
 };

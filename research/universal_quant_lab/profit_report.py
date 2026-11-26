@@ -1,4 +1,4 @@
-﻿"""Export local profit-first risk and family leaderboards from verified batches."""
+"""Export local profit-first risk and family leaderboards from verified batches."""
 import argparse
 import json
 from collections import defaultdict
@@ -43,16 +43,20 @@ def export(run, limit):
                 ("job_id", "depth", "family_width", "symbol"), zip(*metadata),
             ))))
             db.execute("DROP TABLE IF EXISTS ranked")
-            db.execute("""
+            columns = {row[0] for row in db.execute("DESCRIBE SELECT * FROM read_parquet(?)", [files]).fetchall()}
+            insolvency = "validation_insolvency <> 0" if "validation_insolvency" in columns else "NULL::BOOLEAN"
+            db.execute(f"""
                 CREATE TEMP TABLE ranked AS
                 SELECT j.job_id,j.symbol,j.depth,strategy_id,strategy_id // family_width AS family,
                        validation_net_profit AS net_profit,validation_mtm_drawdown AS mtm_drawdown,
                        validation_tail_loss AS tail_loss,validation_stability AS stability,
-                       validation_capital_loss AS capital_loss,validation_trades::BIGINT AS trades,
+                       validation_capital_loss AS capital_loss, {insolvency} AS insolvency,
+                       validation_trades::BIGINT AS trades,
                        validation_wins/nullif(validation_trades,0) AS win_rate,
                        validation_gross_wins/nullif(validation_wins,0) AS average_win,
                        validation_gross_losses/nullif(validation_losses,0) AS average_loss,
                        validation_gross_wins/nullif(validation_gross_losses,0) AS profit_factor,
+                       average_win/nullif(average_loss,0) AS payoff_ratio,
                        validation_net_profit/nullif(validation_trades,0) AS expectancy,
                        power(greatest(0,1+validation_net_profit/5000),1/?) - 1 AS cagr
                 FROM read_parquet(?, filename=true) r

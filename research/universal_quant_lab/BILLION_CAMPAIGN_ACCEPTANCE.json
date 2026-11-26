@@ -1,0 +1,20 @@
+{
+  "official_status": "not_started",
+  "official_target": 1000000000,
+  "official_completed": 0,
+  "checks": {
+    "win_rate_ignored": "engineering_verified",
+    "risk_bands_and_pareto": "engineering_verified",
+    "ten_causal_families": "engineering_verified",
+    "exact_cross_job_quota_and_deduplication": "engineering_verified",
+    "cross_job_crash_recovery": "engineering_verified",
+    "daily_split_and_dividend_handling": "verified_for_sample_scope",
+    "eligible_frozen_universe_and_costs": "open",
+    "sealed_independent_holdout": "open",
+    "matched_vmm_or_frozen_alternative_protocol": "open",
+    "sustained_production_resource_guardrails": "open",
+    "scheduled_unattended_execution": "open",
+    "production_admission_and_exact_billion_freeze": "open",
+    "final_validation_and_evidence_workflow": "open"
+  }
+}
