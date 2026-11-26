@@ -1,0 +1,35 @@
+{
+  "dates": [
+    "2016-01-01",
+    "2022-01-01",
+    "2025-01-01"
+  ],
+  "development_universe": [
+    {
+      "symbol": "SHOP.TO",
+      "market": "TSX",
+      "currency": "CAD",
+      "data_sha256": "55dc2e2a082577239fe07aa64125b8aa531c5b2567356bff916c58ae726badb3",
+      "action_snapshot_sha256": "4de5a9bfe059a10121e3491e47ef2956921fadb2025a6b6da239521b0e64f0fb"
+    },
+    {
+      "symbol": "AAPL.US",
+      "market": "US",
+      "currency": "USD",
+      "data_sha256": "2b93596eb71382bffe1f8b6ff45a634d5e7736a87d0202723177111fb06d98fd",
+      "action_snapshot_sha256": "3955b522fe69186f0101c26e7651d3b02102e410544516efc5ba9c0661d5c0be"
+    },
+    {
+      "symbol": "XEG.TO",
+      "market": "TSX",
+      "currency": "CAD",
+      "data_sha256": "548b3ca06550f7059e1417301d7e43f431463f9dce898b4254238a0347c61ed1",
+      "action_snapshot_sha256": "252f9dfaba3b18985f59c3f19da0dc096ce71c5952e81e42690268174eaed5df"
+    }
+  ],
+  "benchmark": "Same-instrument cash and passive next-open entry, last-open exit, same capital and costs",
+  "benchmark_artifact_sha256": "9f46e3e63759eb46b16428ba113b3ec8223327c34b79df2374858b221fefa825",
+  "holdout_protocol": "Use only observations after the later of this preregistration and the final timestamped shortlist freeze. Exclude all previously acquired observations. Collect and seal before one-time independent validation.",
+  "holdout_dataset_status": "prospective; observations pending",
+  "execution_cost_status": "engineering sensitivity only; historical executable spreads and slippage unverified"
+}
