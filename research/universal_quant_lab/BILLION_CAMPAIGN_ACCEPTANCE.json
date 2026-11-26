@@ -14,7 +14,9 @@
     "matched_vmm_or_frozen_alternative_protocol": "open",
     "sustained_production_resource_guardrails": "open",
     "scheduled_unattended_execution": "open",
-    "production_admission_and_exact_billion_freeze": "open",
-    "final_validation_and_evidence_workflow": "open"
+    "production_admission_and_exact_billion_freeze": "wired_negative_and_small_run_tests_passed",
+    "final_validation_and_evidence_workflow": "open",
+    "action_aware_sustained_1m": "engineering_verified",
+    "cash_passive_and_cost_stress": "engineering_verified"
   }
 }

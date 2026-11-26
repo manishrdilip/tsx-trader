@@ -22,6 +22,7 @@ from daily_campaign import digest, exclusive
 from execution_actions import actions
 from profit_features import signals, space
 from eodhd import atomic_json
+from profit_admission import admit, cpu_guard
 from profit_engine import METRICS, evaluate
 from profit_ledger import Ledger
 
@@ -74,8 +75,14 @@ def prepare(root, config):
         raise ValueError("Dates must be common ordered ISO session labels")
     if not 1 <= config["batch"] <= 50_000 or not 1 <= config["threads"] <= numba.config.NUMBA_NUM_THREADS:
         raise ValueError("Invalid batch or CPU thread count")
-    if not config["jobs"] or not 0 < config["target"] <= 10_000_000:
-        raise ValueError("Engineering programs alone are admitted by this runner")
+    mode = config.get("mode", "engineering")
+    if mode not in ("engineering", "official") or not config["jobs"]:
+        raise ValueError("Invalid campaign mode or empty allocation")
+    acceptance = None
+    if mode == "official":
+        acceptance = admit(root, config)
+    elif type(config["target"]) is not int or not 0 < config["target"] <= 10_000_000:
+        raise ValueError("Engineering target is out of bounds")
     datasets = {}
     jobs = []
     scopes = set()
@@ -106,10 +113,11 @@ def prepare(root, config):
     code = {name: digest(lab / name) for name in (
         "profit_campaign.py", "profit_engine.py", "profit_ledger.py", "daily_engine.py",
         "daily_campaign.py", "features.py", "campaign_watchdog.py",
-        "execution_actions.py", "profit_features.py",
+        "execution_actions.py", "profit_features.py", "profit_admission.py",
     )}
     versions = {name: version(name) for name in ("numpy", "pandas", "numba", "duckdb", "pyarrow")}
-    return {**config, "jobs": jobs, "runtime": versions, "code": code, "mode": "engineering"}, datasets
+    return {**config, "jobs": jobs, "runtime": versions, "code": code, "mode": mode,
+            "acceptance_sha256": acceptance}, datasets
 
 
 def write_batch(path, ids, metrics):
@@ -144,6 +152,7 @@ def run(root, config, out):
         ledger = Ledger(out, manifest)
         try:
             ledger.reconcile()
+            official = manifest["mode"] == "official"
             baseline = sum(ledger.counts().values())
             last_sample = 0.
             resources = {}
@@ -156,8 +165,9 @@ def run(root, config, out):
                 """).fetchone()
                 wall = time.perf_counter() - started
                 atomic_json(out / "progress.json", {
-                    "status": status, "engineering_completed": rows, "engineering_target": ledger.target,
-                    "official_completed": 0, "official_target": 1_000_000_000,
+                    "status": status, "engineering_completed": 0 if official else rows,
+                    "engineering_target": 0 if official else ledger.target,
+                    "official_completed": rows if official else 0, "official_target": 1_000_000_000,
                     "dataset_count": len({job["data_sha256"] for job in manifest["jobs"]}),
                     "failed_attempts": ledger.db.execute("SELECT count(*) FROM errors").fetchone()[0],
                     "compute_seconds": elapsed, "session_wall_seconds": wall,
@@ -169,23 +179,24 @@ def run(root, config, out):
                 })
 
             progress("running")
-            while True:
-                active = False
+            while sum(ledger.counts().values()) < ledger.target:
                 for job in manifest["jobs"]:
+                    if sum(ledger.counts().values()) == ledger.target:
+                        break
                     if time.monotonic() - last_sample >= 5:
                         resources = health(root)
                         atomic_json(out / "resources.json", resources)
                         last_sample = time.monotonic()
                     # Disk is checked at every batch even when other metrics are cached.
                     resources["free_bytes"] = shutil.disk_usage(root).free
-                    if (out / "PAUSE").exists() or guard(resources):
+                    thermal = cpu_guard(root, config.get("max_cpu_celsius")) if official else None
+                    if (out / "PAUSE").exists() or guard(resources) or thermal:
                         progress("paused")
                         return
                     identity = job["id"]
                     lease = ledger.reserve(identity, manifest["batch"])
                     if not lease:
                         continue
-                    active = True
                     first, size = lease
                     try:
                         groups, prices, rules, splits, corporate = datasets[identity]
@@ -204,9 +215,19 @@ def run(root, config, out):
                         ledger.failure(identity, first, error)
                         progress("failed")
                         raise
-                if not active:
-                    progress("complete")
-                    return
+            if sum(ledger.counts().values()) != ledger.target:
+                raise ValueError("Completed ledger does not equal campaign target")
+            if official:
+                freeze = {
+                    "mode": "official", "completed": ledger.target,
+                    "manifest_sha256": digest(path), "holdout_unlocked": False,
+                }
+                freeze_path = out / "freeze.json"
+                if freeze_path.exists() and json.loads(freeze_path.read_bytes()) != freeze:
+                    raise ValueError("Campaign freeze does not match the ledger")
+                if not freeze_path.exists():
+                    atomic_json(freeze_path, freeze)
+            progress("complete")
         finally:
             ledger.close()
 

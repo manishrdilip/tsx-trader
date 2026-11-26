@@ -1,6 +1,6 @@
 # Profit-first implementation and launch audit
 
-The official campaign remains at zero of one billion. The local global coordinator currently admits engineering evaluations only.
+The official campaign remains at zero of one billion. The global coordinator has a guarded official path. The current local evidence fails admission and all counted work remains engineering.
 
 ## Objective, risk and acquisition
 
@@ -14,8 +14,9 @@ The official campaign remains at zero of one billion. The local global coordinat
 
 - One DuckDB engineering ledger reserves disjoint ranges across jobs, validates exact Parquet IDs and checksums, accepts repeated identical commits idempotently, and stops at the configured quota. An uneven 13-evaluation test covered exact stop, invalid IDs and repeated commits. A 1.2M run recovered through the watchdog after forced termination at 50,000 across two jobs. All 48 Parquet batches matched the uninterrupted run, and 1.2M distinct job/strategy pairs reconciled.
 - The detached 10M profit-first run on the earlier seven-family engine took 147.29 s end to end (67,892/s) with 58.95 s evaluator time (169,630/s) and wrote 829,161,337 bytes. These rates do not apply to the expanded action-aware model. The older 111,124/s and 153,197.5/s figures were from separate uninterrupted and restarted one-million pilots and both used batch timings.
+- The ten-family action-aware 1M run completed in 108.76 s end to end (9,194/s), including 42.37 s in the evaluator (23,604/s), and wrote 76,141,685 bytes. A separate stress replay reproduced five fixed development candidates and reran them at 1.5x and 2x costs across chronological validation slices.
 - Standalone process execution and recovery are verified. The interactive scheduled task remains queued. The tested runtime did not expose a CPU thermal reading or CUDA acceleration.
 
 ## Open launch gates
 
-Production admission and exact-billion freeze still need wiring beyond the engineering coordinator. Freeze and validate an eligible scope with actual costs, liquidity limits, calendar and corporate-action reconciliation. Seal the independent holdout and freeze the VMM or alternative comparator protocol. Verify unattended Windows recovery and production resource guardrails, and complete the final validation and evidence workflow. The approved specification permits an eligible subset with unsupported markets in separate manifests.
+Official admission now requires a one-billion allocation, hashed launch evidence bound to the frozen configuration, pinned action snapshots and a fresh CPU temperature sample. The exact-target path writes a freeze record without accessing holdout. Missing proof and inexact targets were rejected, and a three-job smoke run stopped exactly at 161. The full official path remains unverified at production scale. Freeze and validate an eligible scope with actual costs, liquidity limits, calendar and corporate-action reconciliation. Seal the independent holdout and freeze the VMM or alternative comparator protocol. Verify unattended Windows recovery and production resource guardrails, and complete the final validation and evidence workflow. The approved specification permits an eligible subset with unsupported markets in separate manifests.
