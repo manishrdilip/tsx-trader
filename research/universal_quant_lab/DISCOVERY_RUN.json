@@ -1,0 +1,10 @@
+{
+    "observed_alive":  true,
+    "run":  "development-20261126T225048Z",
+    "official":  0,
+    "heartbeat":  "2026-11-26T22:51:05.018046+00:00",
+    "rate":  20382.745794877093,
+    "status":  "running",
+    "completed":  290000,
+    "worker_pid":  43988
+}

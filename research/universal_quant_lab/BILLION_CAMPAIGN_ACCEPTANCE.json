@@ -10,15 +10,26 @@
     "cross_job_crash_recovery": "engineering_verified",
     "daily_split_and_dividend_handling": "verified_for_sample_scope",
     "eligible_frozen_universe_and_costs": "open",
-    "sealed_independent_holdout": "open",
     "matched_vmm_or_frozen_alternative_protocol": "open",
     "sustained_production_resource_guardrails": "open",
     "scheduled_unattended_execution": "open",
     "production_admission_and_exact_billion_freeze": "wired_negative_and_small_run_tests_passed",
-    "final_validation_and_evidence_workflow": "open",
     "action_aware_sustained_1m": "engineering_verified",
     "cash_passive_and_cost_stress": "engineering_verified",
     "rolling_top100_transaction_and_reference": "engineering_verified",
     "multiplicity_and_safe_cleanup": "open"
+  },
+  "discovery_required_evidence": [
+    "eligible_universe",
+    "cost_and_liquidity",
+    "prospective_holdout_protocol",
+    "comparison_protocol",
+    "resource_guardrails",
+    "unattended_recovery",
+    "statistical_retention"
+  ],
+  "later_phase_checks": {
+    "sealed_independent_holdout": "open",
+    "final_validation_and_evidence_workflow": "open"
   }
 }

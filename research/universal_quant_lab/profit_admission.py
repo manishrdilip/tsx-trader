@@ -6,14 +6,16 @@ from campaign_plan import TARGET, hashed, require_sha
 from daily_campaign import digest
 
 REQUIRED = (
-    "eligible_universe", "cost_and_liquidity", "independent_holdout", "comparison_protocol",
-    "resource_guardrails", "unattended_recovery", "validation_workflow",
+    "eligible_universe", "cost_and_liquidity", "prospective_holdout_protocol", "comparison_protocol",
+    "resource_guardrails", "unattended_recovery", "statistical_retention",
 )
 
 
 def admit(root, config):
     if config.get("mode") != "official" or type(config.get("target")) is not int or config["target"] != TARGET:
         raise ValueError("Official allocation must be exactly one billion")
+    if config.get("phase") != "discovery" or config.get("allow_holdout_access") is not False:
+        raise ValueError("Discovery requires explicit holdout exclusion")
     proof_root = root / "reports" / "launch"
     proof_file = proof_root / "acceptance.json"
     if not proof_file.is_file():
