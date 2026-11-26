@@ -40,3 +40,7 @@ The local daily engineering engine passed 10k, 100k and 1M milestones. The milli
 ## Profit-first work and launch readiness
 
 The official campaign remains at zero. The action-aware evaluator, cross-job recovery, transactional rolling top 100, new Coinbase and EODHD data, and outstanding launch gates are tracked in [profit-first readiness](PROFIT_FIRST_READINESS.md) and [machine-readable acceptance](BILLION_CAMPAIGN_ACCEPTANCE.json).
+
+## Official launch check on November 26
+
+Windows Task Scheduler returned success at 17:39 local time and produced a matching local runner log. Its three previously completed intraday pilot jobs resumed with zero new rows. This verifies scheduled invocation of the pilot entry point. The official results directory inventory contains zero official manifests, and the official worker process inventory is empty. The frozen official configuration, sealed launch evidence index and CPU telemetry sample are absent.
