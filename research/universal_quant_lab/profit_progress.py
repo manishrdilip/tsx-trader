@@ -48,7 +48,8 @@ if __name__ == "__main__":
     for run in args.runs:
         # Publish allowlisted report labels instead of names supplied by a caller.
         if run.name not in {"profit-10m", "profit-cross-job-restart", "profit-actions-pilot",
-                            "profit-actions-1m-final"}:
+                            "profit-actions-1m-final", "profit-retention-60k", "profit-retention-1m",
+                            "profit-action-sustained-stress"}:
             parser.error("Use a known engineering report directory")
         items[run.name] = reconcile(run)
     atomic_json(args.summary, report)
