@@ -27,3 +27,23 @@ The 60/20/20 chronological bar split is for initial screening; final 20% is not 
 4. Build chart UI (Lightweight Charts or equivalent) showing actual candles, entry/exit and indicators with causal availability timestamps. Chart layer must use the exact same features as tests.
 5. Validate surviving strategies with event-driven simulator (multi-position cash ledger, actual spreads, fees, slippage, session gaps, conservative stop ordering, liquidity/size limits, currency conversions, option exercise/assignment/greeks and futures funding/margin as appropriate). Test separate CAD/USD accounts and instrument availability on Wealthsimple; no live order submission. 
 6. Multiple testing control, walk-forward development, block bootstrap, parameter stability, out-of-sample independent lockbox, identical VMM benchmark dates/capital/costs, report net profit/CAGR, drawdown, expectancy, profit factor, turnover, trade count and confidence intervals. Promotion requires the agreed 3x VMM gate and robust evidence, then paper trading. No target or profitability is guaranteed. Never extrapolate leveraged/crypto returns to the TSX or TFSA.
+
+## Windows warehouse and campaign tools
+
+With the Windows setup complete, run these from the research directory. Use the isolated Python at `D:\UniversalQuantLab\venv\Scripts\python.exe`.
+
+```powershell
+$root = 'D:\UniversalQuantLab'
+$py = "$root\venv\Scripts\python.exe"
+& $py warehouse.py $root "$root\database\TSX\RY_5m.json" yahoo_micro_test TSX RY.TO 5m
+& $py parallel_campaign.py "$root\config\pilot.json" "$root\results\parallel-pilot" --workers 2
+```
+
+Warehouse ingestion expects JSON and the matching audit from `import_bars.py`. The DuckDB catalog's `datasets` table records Parquet glob paths and audits by source, market, symbol, interval and content hash. Query a specific revision when multiple revisions cover the same period. Feature calculations in `features.py` expect chronologically indexed OHLC bars and become available at bar close.
+
+For a scheduled campaign, copy `config/pilot.json` to `config/scheduled-research.json` for the sample or supply a separately bounded research campaign. The scheduler entry point logs to `logs` and resumes output in `results/scheduled-research`. Use a new output directory for a changed campaign. A registration example for the default workspace and an interactive daily run at 19:00 local time is:
+
+```powershell
+$script = "$root\repository\research\universal_quant_lab\run_scheduled_research.py"
+schtasks.exe /Create /TN UniversalQuantLab-Research /TR "$py -B $script" /SC DAILY /ST 19:00 /IT
+```

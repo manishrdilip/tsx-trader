@@ -1,55 +1,26 @@
-# Universal Quant Lab — Research Status
+# Universal Quant Lab Research Status
 
-Last updated: 2026-11-26 (cloud session, no laptop attached)
+Last updated 2026-11-26 (Windows laptop).
 
-## Infrastructure status
-- Laptop (D:\UniversalQuantLab\ layout, GPU, EODHD config): **NOT CONNECTED.** No Windows machine is attached to the cloud session, so nothing has been created on D: and no hardware benchmark has been run.
-- Directory layout: **not created** (blocked on laptop access).
-- Repository: cloned (shallow, depth 1 on `main`; research branch fetched at depth 50) into the cloud container only. The laptop checkout does not exist yet.
-- Live VMM bot: not touched.
+## Infrastructure and pilot
 
-## Installed software
-- Cloud container: Python 3.13.18, Node v22.23.5. `pandas`, `numpy`, `pyarrow` are **not installed** in the container.
-- Laptop software stack (Python/Node versions, NumPy, Pandas, Polars, DuckDB, PyArrow, TA-Lib, pandas-ta-classic, Numba, VectorBT, Optuna, SciPy, scikit-learn, XGBoost, LightGBM, NautilusTrader, CUDA/CuPy, Lightweight Charts): **not installed.**
+- Dedicated workspace at `D:\UniversalQuantLab`. The checkout is on `research/universal-quant-lab`. The setup script ran with `--pilot` at `42c5359a8b06cd887e2d046e4f650efe23fe391d`.
+- Hardware verified on Windows: Core i7-13700H (20 logical processors visible), RTX 4060 Laptop GPU (8,188 MiB, driver 566.24), and 1,275.42 GiB free on D: at setup. The pilot used the CPU.
+- Git 2.55.0, Node v26.12.1, Python 3.12.10, and an isolated venv. Installed DuckDB 2.0.1, NumPy 2.5.5, pandas 3.1.1, Polars 2.2.0, and PyArrow 26.0.1. The full version list is in the local `reports/requirements-installed.txt`.
+- Engine and campaign self-tests passed. The RY.TO 5-minute pilot screened 600 candidates across depths 1–3 in 0.52 seconds of campaign wall time. Zero were unsupported in this sample. Evidence is in local `reports/setup.json` and `results/pilot-20261126-163711`. The sample was previously researched and is unsuitable as an independent holdout.
+- Credential discovery checked the EODHD environment-variable names in process, user and machine scope and checked candidate configuration locations around the existing checkout. The historical downloader expects `EODHD_API_KEY`, but no usable credential was located. Subscription entitlements and rate limits are unverified.
+- No purchases or live trades. The live VMM checkout was used only for read-only configuration discovery and local dataset inventory.
 
-## Available datasets
-- None on the laptop (D: drive not reachable).
-- The research branch does not contain market data. GPT's README refers to `lab/micro/data/bars_5m.parquet` and `bars_1m.parquet` on another branch (`research/quant-discovery-v2`). These are previously researched Yahoo Finance samples, not fresh holdouts. They were not fetched in this session.
-- EODHD subscription: **not investigated** (credentials and entitlements are on the laptop).
+## Warehouse and features
 
-## Data coverage and limitations
-- Not assessed yet. Required before any result is trusted: session calendars, missing bars, duplicate timestamps, splits and corporate actions, listings/delistings, options quotes (no underlying-only proxies).
+- Partitioned Parquet and a DuckDB dataset catalog are initialized under `database/warehouse`. Verified count and timestamp uniqueness after reading from Parquet.
+- Yahoo Finance samples from `origin/micro-test`: RY.TO 5-minute, 3,141 bars across 41 session dates (2026-09-24 to 2026-11-20); RY.TO 1-minute, 7,588 bars across 20 session dates (2026-10-26 to 2026-11-20). The catalog retains importer audits and SHA-256 provenance.
+- The existing checkout contains six additional TSX CSV files. Their provider, timestamp semantics, and adjustment policy need verification before ingestion.
+- The screener retains 10 rule families and 19,822 parameterized rules. The new research feature module computes seven columns and passed a prefix-invariance check on both warehouse samples. These Python features are currently separate from the screener's Node registry.
+- Remaining data work includes exchange-calendar and missing-bar audits, corporate actions, point-in-time listings/delistings, broader market coverage, and licensed historical options chain and quote data.
 
-## Indicator count
-- Engine V0.1 (`research/universal_quant_lab/engine.cjs`): **10 indicator families, 19,822 rule variants** (RSI 4,992; EMA 784; SMA 784; MACD 11,000; VWAP 4; RVOL 120; BOS 38; ROC 1,180; ATR 460; BB 460). Target of 1,000 distinct indicators/patterns/features is far from met.
+## Parallel screening and Windows scheduling
 
-## Actual completed backtests
-- None on real market data in this session.
-
-## Measured testing speed
-- `selftest`: PASS, 0.13 s wall (synthetic inputs only; not market evidence).
-- Combinatorial space (engine `plan`, computed counts only, not executed tests):
-  - depth 1–3: 307,690,228,702 candidates
-  - depth 1–10: ~2.0 × 10^26 candidates
-- Execution throughput on real data: **not measured** (needs a benchmark on the laptop).
-
-## Research results
-- None. No strategy has been evaluated. No result is comparable to the VMM benchmark yet.
-
-## Bugs and unresolved issues
-- Engine V0.1 uses one rule per family with AND logic only. OR/NOT, sequences, multi-timeframe confirmation, exit variants, short mode and position sizing are not implemented.
-- Screener is single-instrument, fixed-holding-period, closed-trade drawdown only (not true portfolio drawdown). No options, futures multipliers, funding, FX conversion, or capital allocation.
-- BOS is an approximation of the HeatCharting definition, not a reproduction.
-- The 60/20/20 split in the README is for screening; the final 20% is only "untouched" if it was never used in earlier research.
-- Importer (`import_bars.py`) requires pandas/pyarrow; not yet run.
-
-## Questions requiring GPT's independent review
-1. Is the causal BOS approximation acceptable, or should it be replaced before any BOS-based result is reported?
-2. Should the 10,000-candidate batch cap and the 60/20/20 split be fixed per instrument, or aligned across instruments by market date with embargo?
-3. Is the closed-trade drawdown metric acceptable for screening, given that the portfolio simulator is not built yet?
-
-## Next development priorities
-1. Attach the Windows laptop (or confirm the D: path and access method) so the directory layout, EODHD inventory and software install can be done.
-2. Inventory EODHD entitlements and rate limits; record results here (no credentials in the repo).
-3. Install the pinned software stack in isolated virtual environments and record exact versions.
-4. Ingest and audit TSX/TSXV data, then benchmark the screening loop on real bars before any multi-day campaign.
+- The parallel launcher runs independent jobs in separate Node processes with per-job manifests and batch checkpoints. Two-worker runs reproduced the 600 serial results exactly apart from measured timing. A rerun skipped completed batches. Within-job parallel sharding, stale lock recovery, feature caching, Parquet results, and benchmarks on larger inputs are still pending.
+- The Windows entry point ran manually and produced a logged 600-candidate run matching the pilot. Its local config uses the pilot jobs with two workers and up to 15 minutes per job. Task Scheduler registration for a daily 19:00 local run failed with `The network address is invalid`. The task is unregistered.
+- No independent strategy validation or VMM comparison has been completed. The portfolio simulator, constrained search expansion, and independent holdout remain open. Use the README acceptance gates before interpreting or promoting results.
