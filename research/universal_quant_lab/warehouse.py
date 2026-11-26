@@ -31,8 +31,12 @@ def ingest(root, bars, source, market, symbol, interval):
         partition /= f"{key}={value}"
     partition /= f"revision={digest}"
     partition.mkdir(parents=True, exist_ok=True)
-    for session, group in frame.groupby("session"):
-        target = partition / f"date={session}" / "bars.parquet"
+    if interval == "1d":
+        grouping, partition_key = frame.session.str.slice(0, 4), "year"
+    else:
+        grouping, partition_key = frame.session, "date"
+    for period, group in frame.groupby(grouping):
+        target = partition / f"{partition_key}={period}" / "bars.parquet"
         target.parent.mkdir(exist_ok=True)
         if not target.exists():
             temp = target.with_suffix(f".{uuid4().hex}.tmp")
@@ -41,7 +45,7 @@ def ingest(root, bars, source, market, symbol, interval):
                 temp.replace(target)
             finally:
                 temp.unlink(missing_ok=True)
-    pattern = (partition / "date=*" / "bars.parquet").as_posix()
+    pattern = (partition / f"{partition_key}=*" / "bars.parquet").as_posix()
     with duckdb.connect(str(warehouse / "catalog.duckdb")) as db:
         db.execute("""CREATE TABLE IF NOT EXISTS datasets (
             source VARCHAR, market VARCHAR, symbol VARCHAR, bar_interval VARCHAR,

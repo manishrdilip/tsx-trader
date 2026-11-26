@@ -47,3 +47,18 @@ For a scheduled campaign, copy `config/pilot.json` to `config/scheduled-research
 $script = "$root\repository\research\universal_quant_lab\run_scheduled_research.py"
 schtasks.exe /Create /TN UniversalQuantLab-Research /TR "$py -B $script" /SC DAILY /ST 19:00 /IT
 ```
+## EODHD acquisition and daily calendar audit
+
+The downloader reads `EODHD_API_KEY` from the Windows user environment setting or the process environment. It performs read-only HTTPS requests to EODHD and logs only request status and dataset metadata. Use a completed UTC date as the upper bound.
+
+```powershell
+$root = 'D:\UniversalQuantLab'
+$py = "$root\venv\Scripts\python.exe"
+& $py -B eodhd.py $root --to 2026-11-25 TSX:RY.TO TSX:XIU.TO TSXV:CNC.V
+& $py -m pip install 'exchange-calendars==4.13.3'
+& $py -B audit_daily.py $root "$root\reports\eodhd-daily-audit.json" --from 2000-01-01 --to 2026-11-25
+```
+
+Daily datasets are partitioned by calendar year within each immutable revision. The warehouse preserves provider OHLC and the separate `adjusted_close` field. Daily timestamps encode the provider's date label at UTC midnight. A strategy must establish its own close availability and execution timestamps before using these data. The existing intraday screener assumes positions cannot cross session boundaries.
+
+The calendar audit compares dates inside each symbol's observed range with the selected calendar. The library resolves TSXV to TSX and Nasdaq to NYSE; NYSE is also used as a proxy for SPY's NYSE Arca listing. Review anomalies against provider and venue records. The audit does not infer listing dates or fill gaps.
