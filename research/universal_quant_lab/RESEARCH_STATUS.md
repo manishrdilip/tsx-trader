@@ -36,3 +36,7 @@ Last updated 2026-11-26 (Windows laptop).
 ## Billion campaign readiness
 
 The local daily engineering engine passed 10k, 100k and 1M milestones. The million-run restart test produced identical Parquet outputs after process termination. The official campaign remains at zero pending data eligibility, global coordinator, VMM comparator and unattended-run gates. See [launch readiness](BILLION_CAMPAIGN_READINESS.md) and [reconciled progress](BILLION_CAMPAIGN_PROGRESS.json).
+
+## Profit-first work and launch readiness
+
+The official campaign remains at zero. The action-aware evaluator, cross-job recovery, transactional rolling top 100, new Coinbase and EODHD data, and outstanding launch gates are tracked in [profit-first readiness](PROFIT_FIRST_READINESS.md) and [machine-readable acceptance](BILLION_CAMPAIGN_ACCEPTANCE.json).

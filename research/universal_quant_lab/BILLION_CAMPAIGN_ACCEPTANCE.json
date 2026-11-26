@@ -17,6 +17,8 @@
     "production_admission_and_exact_billion_freeze": "wired_negative_and_small_run_tests_passed",
     "final_validation_and_evidence_workflow": "open",
     "action_aware_sustained_1m": "engineering_verified",
-    "cash_passive_and_cost_stress": "engineering_verified"
+    "cash_passive_and_cost_stress": "engineering_verified",
+    "rolling_top100_transaction_and_reference": "engineering_verified",
+    "multiplicity_and_safe_cleanup": "open"
   }
 }

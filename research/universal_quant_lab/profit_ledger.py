@@ -1,4 +1,4 @@
-﻿"""Cross-job range ledger. The campaign manifest defines disjoint ID domains."""
+"""Cross-job range ledger. The campaign manifest defines disjoint ID domains."""
 import json
 from pathlib import Path
 
@@ -8,12 +8,15 @@ import pyarrow.parquet as pq
 
 from daily_campaign import digest, sampled_ids
 from campaign_plan import hashed
+from profit_retention import initialize, merge
 
 
 class Ledger:
     def __init__(self, directory, manifest):
         self.root = Path(directory)
         self.target = manifest["target"]
+        self.retention = manifest.get("retention", False)
+        self.dates = manifest.get("dates")
         jobs = manifest["jobs"]
         self.jobs = {job["id"]: job for job in jobs}
         if len(self.jobs) != len(jobs) or sum(job["quota"] for job in jobs) != self.target:
@@ -33,6 +36,8 @@ class Ledger:
                     job VARCHAR, first_index BIGINT, error_type VARCHAR, occurred TIMESTAMP
                 )
             """)
+            if self.retention:
+                initialize(self.db)
             fingerprint = hashed(manifest)
             self.db.execute("INSERT INTO run SELECT ? WHERE NOT EXISTS (SELECT 1 FROM run)", [fingerprint])
             if self.db.execute("SELECT fingerprint FROM run").fetchall() != [(fingerprint,)]:
@@ -78,6 +83,15 @@ class Ledger:
                     raise ValueError("Committed output checksum mismatch")
                 self.verify_ids(path, job, first, size)
                 offset += size
+        if self.retention:
+            unmatched = self.db.execute("""
+                SELECT count(*) FROM
+                  (SELECT job,first_index,size FROM ranges WHERE state='complete') committed
+                FULL JOIN batch_distribution USING (job,first_index)
+                WHERE committed.size IS DISTINCT FROM batch_distribution.rows
+            """).fetchone()[0]
+            if unmatched:
+                raise ValueError("Batch audit and committed ranges differ")
         if sum(self.counts().values()) > self.target:
             raise ValueError("Ledger exceeds campaign target")
 
@@ -121,10 +135,18 @@ class Ledger:
             return
         if self.counts().get(job, 0) != first:
             raise ValueError("Commit would leave a gap")
-        self.db.execute("""
-            UPDATE ranges SET state='complete', sha256=?, bytes=?, compute_seconds=?
-            WHERE job=? AND first_index=? AND state='leased'
-        """, [checksum, file.stat().st_size, compute_seconds, job, first])
+        self.db.begin()
+        try:
+            if self.retention:
+                merge(self.db, self.jobs[job], first, file, self.dates)
+            self.db.execute("""
+                UPDATE ranges SET state='complete', sha256=?, bytes=?, compute_seconds=?
+                WHERE job=? AND first_index=? AND state='leased'
+            """, [checksum, file.stat().st_size, compute_seconds, job, first])
+            self.db.commit()
+        except Exception:
+            self.db.rollback()
+            raise
 
     def failure(self, job, first, error):
         self.db.execute("INSERT INTO errors VALUES (?, ?, ?, current_timestamp)", [job, first, type(error).__name__])

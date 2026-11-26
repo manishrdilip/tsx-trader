@@ -113,11 +113,11 @@ def prepare(root, config):
     code = {name: digest(lab / name) for name in (
         "profit_campaign.py", "profit_engine.py", "profit_ledger.py", "daily_engine.py",
         "daily_campaign.py", "features.py", "campaign_watchdog.py",
-        "execution_actions.py", "profit_features.py", "profit_admission.py",
+        "execution_actions.py", "profit_features.py", "profit_admission.py", "profit_retention.py",
     )}
     versions = {name: version(name) for name in ("numpy", "pandas", "numba", "duckdb", "pyarrow")}
     return {**config, "jobs": jobs, "runtime": versions, "code": code, "mode": mode,
-            "acceptance_sha256": acceptance}, datasets
+            "acceptance_sha256": acceptance, "retention": True}, datasets
 
 
 def write_batch(path, ids, metrics):
