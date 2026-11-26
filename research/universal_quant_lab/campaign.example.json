@@ -1,0 +1,36 @@
+{
+  "jobs": [
+    {
+      "id": "tsx_ry_5m_depth2",
+      "market": "TSX",
+      "symbol": "RY.TO",
+      "interval": "5m",
+      "currency": "CAD",
+      "source": "Existing micro-test Yahoo Finance historical sample (previously researched)",
+      "file": "data/RY_5m.json",
+      "depth": 2,
+      "budget": "10000",
+      "batch": "100",
+      "hold": 3,
+      "cash": 5000,
+      "sideCost": 0.0005,
+      "direction": 1
+    },
+    {
+      "id": "tsx_ry_5m_depth3",
+      "market": "TSX",
+      "symbol": "RY.TO",
+      "interval": "5m",
+      "currency": "CAD",
+      "source": "Existing micro-test Yahoo Finance historical sample (previously researched)",
+      "file": "data/RY_5m.json",
+      "depth": 3,
+      "budget": "10000",
+      "batch": "100",
+      "hold": 6,
+      "cash": 5000,
+      "sideCost": 0.0005,
+      "direction": 1
+    }
+  ]
+}
