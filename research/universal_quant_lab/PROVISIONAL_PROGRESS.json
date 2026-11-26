@@ -1,10 +1,10 @@
 {
-  "status": "running",
-  "engineering_completed": 1109000,
+  "status": "failed",
+  "engineering_completed": 1211000,
   "engineering_target": 3000000,
   "official_completed": 0,
-  "updated_utc": "2026-11-26T22:59:29.500129+00:00",
-  "session_evaluations_per_second": 6383.344747105716,
+  "updated_utc": "2026-11-26T22:59:51.469451+00:00",
+  "session_evaluations_per_second": 6085.179566538892,
   "run": "development-turnover-3m",
   "last_memory_benchmark": {
     "peak_working_set_mib": 262.56640625,
