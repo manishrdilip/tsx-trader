@@ -42,7 +42,7 @@ def load(root, job, dates):
             raise ValueError("No development partitions")
         hashes = {f.parent.name: digest(f) for f in files}
         bars = db.execute("""
-            SELECT session,open,high,low,close FROM read_parquet(?)
+            SELECT session,open,high,low,close,volume,adjusted_close FROM read_parquet(?)
             WHERE session < ? ORDER BY session
         """, [[f.as_posix() for f in files], dates[2]]).df()
     if any(digest(f) != hashes[f.parent.name] for f in files):
@@ -58,6 +58,14 @@ def load(root, job, dates):
     prices = np.ascontiguousarray(bars[["open", "low", "close"]], dtype=np.float64)
     if not np.isfinite(prices).all() or not (prices > 0).all():
         raise ValueError("Invalid execution prices")
+    participation = job.get("prior_turnover_fraction")
+    if participation is not None:
+        if not 0 < participation <= .001:
+            raise ValueError("Invalid prior turnover participation limit")
+        # Conservative dollar-turnover proxy; exclude the current session.
+        turnover = bars.volume * bars.adjusted_close
+        cap = turnover.where(turnover > 0).rolling(20).min().shift(1).fillna(0) * participation
+        prices = np.column_stack((prices, cap.to_numpy(dtype=np.float64)))
     last_dev = (pd.Timestamp(dates[2]) - pd.Timedelta(days=1)).date().isoformat()
     corporate = actions(root, job, sessions, last_dev)
     scaled = bars.copy()

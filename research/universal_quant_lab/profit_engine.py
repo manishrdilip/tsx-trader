@@ -29,7 +29,7 @@ def simulate(prices, rules, family, variants, start, end, hold, initial, frictio
     insolvent = 0.
     before = cash
     for day in range(start, end):
-        opening, low, close = prices[day]
+        opening, low, close = prices[day, 0], prices[day, 1], prices[day, 2]
         if payment[day] >= 0:
             credit = due[payment[day]]
             cash += credit
@@ -43,6 +43,8 @@ def simulate(prices, rules, family, variants, start, end, hold, initial, frictio
         if day == enter:
             paid = opening * (1 + friction)
             units = max(0, int(np.floor((cash - fee) / paid)))
+            if prices.shape[1] == 4:
+                units = min(units, int(prices[day, 3] / paid))
             if units:
                 before = cash + receivable
                 cash -= units * paid + fee

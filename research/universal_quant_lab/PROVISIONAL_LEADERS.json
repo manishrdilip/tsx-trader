@@ -1,0 +1,37 @@
+{
+  "run": "development-20261126T225048Z",
+  "validation": "2022 through 2024",
+  "initial_capital": 5000,
+  "completed": 300000,
+  "rate_per_second": 20350.15,
+  "selection": "highest modeled validation profit per instrument among searched candidates; subject to selection bias",
+  "leaders": [
+    {
+      "symbol": "SHOP.TO",
+      "currency": "CAD",
+      "strategy_id": 2311894943,
+      "net_profit": 10426.37,
+      "drawdown_pct": 29.45,
+      "trades": 37,
+      "holding_sessions": 10
+    },
+    {
+      "symbol": "AAPL.US",
+      "currency": "USD",
+      "strategy_id": 3898742324,
+      "net_profit": 3213.51,
+      "drawdown_pct": 9.2,
+      "trades": 20,
+      "holding_sessions": 10
+    },
+    {
+      "symbol": "XEG.TO",
+      "currency": "CAD",
+      "strategy_id": 5333806013,
+      "net_profit": 3137.56,
+      "drawdown_pct": 14.01,
+      "trades": 21,
+      "holding_sessions": 10
+    }
+  ]
+}
