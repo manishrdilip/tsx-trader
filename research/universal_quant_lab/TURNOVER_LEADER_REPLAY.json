@@ -1,0 +1,32 @@
+[
+  {
+    "symbol": "SHOP.TO",
+    "currency": "CAD",
+    "strategy_id": 2311894943,
+    "hold": 10,
+    "net": 12163.55,
+    "drawdown_pct": 24.78,
+    "passive_net": -29.67,
+    "vmm": null
+  },
+  {
+    "symbol": "AAPL.US",
+    "currency": "USD",
+    "strategy_id": 3898742324,
+    "hold": 10,
+    "net": 3213.51,
+    "drawdown_pct": 9.2,
+    "passive_net": 1922.58,
+    "vmm": null
+  },
+  {
+    "symbol": "XEG.TO",
+    "currency": "CAD",
+    "strategy_id": 5333806013,
+    "hold": 10,
+    "net": 309.83,
+    "drawdown_pct": 5.01,
+    "passive_net": 85.84,
+    "vmm": null
+  }
+]
