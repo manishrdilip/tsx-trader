@@ -32,3 +32,7 @@ Last updated 2026-11-26 (Windows laptop).
 - Recent and November 2020 intraday probes returned 403 for the tested symbols and intervals. The AAPL historical options EOD probe also returned 403. Historical options NBBO, additional intraday coverage, and commodities beyond the spot-metal samples remain open. No subscription changes or purchases.
 - Verified Parquet counts and timestamp uniqueness at ingestion. A first-pass calendar audit across the 17 downloaded equity and ETF series flags extra dates for RY.TO, XIU.TO and other TSX series, and substantial gaps in CNC.V and HIVE.V. The TSXV calendar is a TSX proxy. Use these findings to investigate coverage before using the series in point-in-time research. Full audit is in local `reports/eodhd-daily-audit.json`.
 - The isolated venv now includes exchange-calendars 4.13.3. The downloader and audit are reusable, and all provider data and acquisition reports remain on D:.
+
+## Billion campaign readiness
+
+The local daily engineering engine passed 10k, 100k and 1M milestones. The million-run restart test produced identical Parquet outputs after process termination. The official campaign remains at zero pending data eligibility, global coordinator, VMM comparator and unattended-run gates. See [launch readiness](BILLION_CAMPAIGN_READINESS.md) and [reconciled progress](BILLION_CAMPAIGN_PROGRESS.json).
