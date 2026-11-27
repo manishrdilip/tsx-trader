@@ -1,6 +1,17 @@
 """Causal oscillator grids for the V2 development feature cache."""
 import numpy as np
 import pandas as pd
+from numba import njit
+
+
+@njit
+def mean_deviation(series, window):
+    values = np.full(len(series), np.nan)
+    for i in range(window-1, len(series)):
+        sample = series[i-window+1:i+1]
+        center = np.mean(sample)
+        values[i] = np.mean(np.abs(sample-center))
+    return values
 
 
 def oscillator_grid(bars, periods=range(5, 51), volume_eligible=None):
@@ -34,8 +45,7 @@ def oscillator_grid(bars, periods=range(5, 51), volume_eligible=None):
         peak, trough = high.rolling(n).max(), low.rolling(n).min()
         denominator = (peak - trough).replace(0, np.nan)
         typical_rolling = typical.rolling(n)
-        absolute_deviation = typical_rolling.apply(
-            lambda window: np.mean(np.abs(window - np.mean(window))), raw=True)
+        absolute_deviation = pd.Series(mean_deviation(typical.to_numpy(), n), index=bars.index)
         positive, negative = positive_flow.rolling(n).sum(), negative_flow.rolling(n).sum()
         values.update({
             f"rsi_{n}": rsi,

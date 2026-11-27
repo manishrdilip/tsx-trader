@@ -23,3 +23,9 @@ The capped coordinator adopted the new SPEC.md and RUN_SEQUENCE.md hashes. The f
 All 9,207 capped daily targets have been checked. Intraday backfill resumed with existing checkpoints. Requests now skip windows outside each symbol's recorded daily lifespan. A Windows file-sharing error was recovered with retry around atomic Parquet publication. No Phase 1 marker was written during this update.
 
 Engineering tests verified 276 causal oscillator values per complete bar, exclusion of volume gaps, the full trial-count penalty, consecutive exchange-session validation, the 60-session minimum, rejection of pre-freeze records and rejection of a benchmark tie. The feature-cache orchestration, full discovery executor and live paper executor remain unfinished. The final renderer accepts completed prospective paper evidence only. No new candidate count, shortlist or paper result exists yet.
+
+## Acquisition and feature-cache foundation
+
+The downloader now groups up to four adjacent 5-minute windows or twelve adjacent hourly windows into one request. It preserves existing checkpoint names and commits and verifies each window separately. Longer AAPL responses were sampled successfully on both intervals, and engineering checks verified that resume requests only the missing window. The capped worker resumed under PID 26864.
+
+Phase 2 now has a resumable technical cache for admitted daily, weekly and intraday inputs. A local engineering check on 729 actual pre-cutoff SHOP.TO bars produced 546 feature columns and verified causal prefixes, exclusion of masked volume, complete-week aggregation and checkpoint reuse. The order-block feature is an explicitly coded proxy. This check did not simulate trades. The cache refuses the full Phase 2 marker while point-in-time fundamental integration is missing. The full discovery and paper execution stages remain pending.

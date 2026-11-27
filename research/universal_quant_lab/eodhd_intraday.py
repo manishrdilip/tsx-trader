@@ -62,6 +62,40 @@ def normalize(rows, exchange, start, end):
     return frame[["timestamp", "session", *FIELDS]].sort_values("timestamp").reset_index(drop=True)
 
 
+def commit_window(checkpoint, symbol, interval, exchange, first, until, rows):
+    frame = normalize(rows, exchange, first, until) if rows else None
+    record = {"symbol": symbol, "interval": interval, "from_utc": str(first),
+              "until_utc_exclusive": str(until), "http_status": 200,
+              "acquired_utc": datetime.now(timezone.utc).isoformat(), "rows": 0,
+              "provider_rows": len(rows),
+              "rejected_rows": len(rows) - len(frame) if frame is not None else 0,
+              "missing_volume": int(frame.volume.isna().sum()) if frame is not None else 0}
+    if frame is not None and not frame.empty:
+        bars = checkpoint.with_suffix(".parquet")
+        checkpoint.parent.mkdir(parents=True, exist_ok=True)
+        temp = bars.with_suffix(f".{uuid4().hex}.tmp")
+        try:
+            frame.to_parquet(temp, index=False, compression="zstd")
+            if not pd.read_parquet(temp).equals(frame):
+                raise ValueError("Parquet round-trip mismatch")
+            with temp.open("rb") as source:
+                digest = hashlib.file_digest(source, "sha256").hexdigest()
+            replace_parquet(temp, bars)
+        finally:
+            try:
+                temp.unlink(missing_ok=True)
+            except PermissionError:
+                pass
+        record.update(status="saved", rows=len(frame), sha256=digest,
+                      first_bar=frame.timestamp.iloc[0].isoformat(),
+                      last_bar=frame.timestamp.iloc[-1].isoformat(),
+                      timestamp_semantics="Provider UTC bar start. Unadjusted OHLCV.")
+    else:
+        record["status"] = "no_valid_bars" if rows else "empty"
+    atomic_json(checkpoint, record)
+    print(json.dumps(record), flush=True)
+
+
 def backfill(root, symbols, intervals, start, end, max_requests, active_dates=None):
     if not start < end <= DEVELOPMENT_END:
         raise ValueError(f"Expected a nonempty UTC date range ending by {DEVELOPMENT_END}")
@@ -72,21 +106,23 @@ def backfill(root, symbols, intervals, start, end, max_requests, active_dates=No
 
     calls = 0
     base = root / STORAGE
+    step = timedelta(days=28)
     for symbol in dict.fromkeys(symbols):
         exchange = symbol.rsplit(".", 1)[-1]
         for interval in dict.fromkeys(intervals):
             current = start
+            folder = base / f"market={exchange}" / f"symbol={symbol}" / f"interval={interval}"
+            group_size = {"5m": 4, "1h": 12}.get(interval, 1)
             while current < end:
-                following = min(current + timedelta(days=28), end)
+                following = min(current + step, end)
                 if active_dates and (following <= active_dates[0] or current > active_dates[1]):
                     current = following
                     continue
-                folder = base / f"market={exchange}" / f"symbol={symbol}" / f"interval={interval}"
                 checkpoint = folder / f"{current}_{following}.json"
-                bars = checkpoint.with_suffix(".parquet")
                 if checkpoint.exists():
                     record = json.loads(checkpoint.read_bytes())
                     if record["status"] == "saved":
+                        bars = checkpoint.with_suffix(".parquet")
                         with bars.open("rb") as source:
                             if hashlib.file_digest(source, "sha256").hexdigest() != record["sha256"]:
                                 raise ValueError(f"Checkpoint integrity error: {bars.name}")
@@ -99,42 +135,32 @@ def backfill(root, symbols, intervals, start, end, max_requests, active_dates=No
                 protection = guard(health(root))
                 if protection or cpu_guard(root, 85) == "cpu_temperature":
                     return protection or "cpu_temperature", calls
+
+                windows = [(current, following, checkpoint)]
+                while len(windows) < group_size and following < end:
+                    next_end = min(following + step, end)
+                    next_marker = folder / f"{following}_{next_end}.json"
+                    if next_marker.exists() or (active_dates and following > active_dates[1]):
+                        break
+                    windows.append((following, next_end, next_marker))
+                    following = next_end
+
+                lower, upper = day_epoch(current), day_epoch(following)
                 status, rows = query(f"intraday/{symbol}", interval=interval,
-                                     **{"from": day_epoch(current), "to": day_epoch(following) - 1})
+                                     **{"from": lower, "to": upper - 1})
                 calls += 1
-                record = {"symbol": symbol, "interval": interval, "from_utc": str(current),
-                          "until_utc_exclusive": str(following), "http_status": status,
-                          "acquired_utc": datetime.now(timezone.utc).isoformat(), "rows": 0}
                 if status != 200 or not isinstance(rows, list):
-                    print(json.dumps(record), flush=True)
+                    print(json.dumps({"symbol": symbol, "interval": interval, "http_status": status,
+                                      "from_utc": str(current), "until_utc_exclusive": str(following)}), flush=True)
                     return f"provider:{status}", calls
-                frame = normalize(rows, exchange, current, following) if rows else None
-                record.update(provider_rows=len(rows),
-                              rejected_rows=len(rows) - len(frame) if frame is not None else 0,
-                              missing_volume=int(frame.volume.isna().sum()) if frame is not None else 0)
-                if frame is not None and not frame.empty:
-                    folder.mkdir(parents=True, exist_ok=True)
-                    temp = bars.with_suffix(f".{uuid4().hex}.tmp")
-                    try:
-                        frame.to_parquet(temp, index=False, compression="zstd")
-                        if not pd.read_parquet(temp).equals(frame):
-                            raise ValueError("Parquet round-trip mismatch")
-                        with temp.open("rb") as source:
-                            digest = hashlib.file_digest(source, "sha256").hexdigest()
-                        replace_parquet(temp, bars)
-                    finally:
-                        try:
-                            temp.unlink(missing_ok=True)
-                        except PermissionError:
-                            pass  # An external Windows reader may still hold the uncommitted temporary file.
-                    record.update(status="saved", rows=len(frame), sha256=digest,
-                                  first_bar=frame.timestamp.iloc[0].isoformat(),
-                                  last_bar=frame.timestamp.iloc[-1].isoformat(),
-                                  timestamp_semantics="Provider UTC bar start. Unadjusted OHLCV.")
-                else:
-                    record["status"] = "no_valid_bars" if rows else "empty"
-                atomic_json(checkpoint, record)
-                print(json.dumps(record), flush=True)
+                buffers = [[] for _ in windows]
+                for row in rows:
+                    epoch = row["timestamp"]
+                    if not isinstance(epoch, int) or not lower <= epoch < upper:
+                        raise ValueError("Provider returned timestamps outside the requested window")
+                    buffers[(epoch - lower) // int(step.total_seconds())].append(row)
+                for (first, until, marker), subset in zip(windows, buffers, strict=True):
+                    commit_window(marker, symbol, interval, exchange, first, until, subset)
                 sleep(0.2)
                 current = following
     return "complete", calls
