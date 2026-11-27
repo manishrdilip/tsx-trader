@@ -1,7 +1,7 @@
 """Historical, shared-cash portfolio research over a versioned equity universe."""
 import argparse
 import hashlib
-from itertools import product
+from itertools import combinations, product
 import json
 from pathlib import Path
 
@@ -185,21 +185,56 @@ def run(root, spec, result_path):
                 vmm=vmm.mul(close["XIU.TO"]>sma["XIU.TO"],axis=0)
             sell=(close<sma)|rs.lt(rs.quantile(.6,axis=1),axis=0)
             by_momentum=np.argsort(-rs.fillna(-np.inf).to_numpy(),axis=1,kind="stable")
-            strategies=[(("VMM-style momentum baseline" if currency=="CAD" else "USD momentum baseline"),vmm.to_numpy(dtype=bool),sell.to_numpy(),10000,by_momentum)]
+            strategies=[(("VMM-style momentum baseline" if currency=="CAD" else "USD momentum baseline"),
+                         None,vmm.to_numpy(dtype=bool),sell.to_numpy(),10000,by_momentum)]
+            filters = {"MACD > signal":bank["MACD > signal"],
+                       "MACD crosses above signal":bank["MACD crosses above signal"],
+                       "VMM momentum filter":vmm.to_numpy(dtype=bool)}
+            filter_sets = [(), *((key,) for key in filters)]
+            expanded = spec.get("grid") == "multi-filter-v1"
+            if expanded:
+                filters.update({
+                    "close > SMA(200)": (close>sma).to_numpy(),
+                    "20-session return > 0": (close>close.shift(20)).to_numpy(),
+                    "close above prior 20-session closing high": (close>close.shift(1).rolling(20).max()).to_numpy(),
+                })
+                for depth in (2,3):
+                    for keys in combinations(filters,depth):
+                        # A bullish crossover already implies MACD above its signal.
+                        if keys[:2] == ("MACD > signal", "MACD crosses above signal"):
+                            continue
+                        if "VMM momentum filter" in keys and "close > SMA(200)" in keys:
+                            continue
+                        if "close above prior 20-session closing high" in keys and "20-session return > 0" in keys:
+                            continue
+                        filter_sets.append(keys)
+                filter_sets.extend((key,) for key in list(filters)[3:])
             for label, rsi in bank.items():
                 if not label.startswith("RSI"):
                     continue
-                for filt, holding in product(("", "MACD > signal", "MACD crosses above signal", "VMM momentum filter"),(5,10,20,40)):
-                    valid = rsi if not filt else rsi & (vmm.to_numpy(dtype=bool) if filt=="VMM momentum filter" else bank[filt])
-                    strategies.append((f"{label}"+(f" + {filt}" if filt else ""), valid, false, holding,
-                                       by_momentum if filt=="VMM momentum filter" else priority))
+                if expanded and int(label.split("(")[1].split(")")[0]) not in (5,14,30):
+                    continue
+                for keys, holding in product(filter_sets, (5,10,20,40)):
+                    name = " + ".join((label,*keys))
+                    strategies.append((name,(rsi,keys),None,false,holding,
+                                       by_momentum if "VMM momentum filter" in keys else priority))
+
+            def materialize(definition, signal):
+                if definition is None:
+                    return signal
+                rsi, keys = definition
+                signal = rsi.copy()
+                for key in keys:
+                    signal &= filters[key]
+                return signal
             split=int(calendar.searchsorted(middle))
             rows=[]
             def results(a,b):
                 profit, dd, trades, breadth, _, _ = simulate(bars,cashmap,max_slots,signal,exit_,hold,a,b,5,order)
                 return dict(net_profit=round(profit,2),drawdown_pct=round(dd*100,2),trades=int(trades),
                             traded_symbols=int(breadth))
-            for idx,(name,signal,exit_,hold,order) in enumerate(strategies):
+            for idx,(name,definition,signal,exit_,hold,order) in enumerate(strategies):
+                signal = materialize(definition, signal)
                 if idx%40==0 and (guard(health(root)) or cpu_guard(root,85) == "cpu_temperature"):
                     raise RuntimeError("Laptop resource guard paused research")
                 dev=results(1,split)
@@ -208,7 +243,8 @@ def run(root, spec, result_path):
                 rows.append(dict(id=idx,strategy=name,hold_sessions=None if hold==10000 else hold,development=dev,validation=val,full=full))
             rows.sort(key=lambda x:(-x["development"]["net_profit"],x["development"]["drawdown_pct"],x["id"]))
             chosen=rows[0]["id"]
-            _, signal, exit_, hold, order = strategies[chosen]
+            _, definition, signal, exit_, hold, order = strategies[chosen]
+            signal = materialize(definition, signal)
             _, _, _, _, curve, fills = simulate(bars,cashmap,max_slots,signal,exit_,hold,
                                                 1,len(calendar),5,order,True)
             trade_log=[]
