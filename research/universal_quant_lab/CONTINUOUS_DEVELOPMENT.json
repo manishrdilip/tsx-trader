@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 444204000,
-  "batch": 148,
-  "worker_pid": 18156,
+  "completed": 461276000,
+  "batch": 153,
+  "worker_pid": 41752,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T10:02:49.996447+00:00",
+  "updated_utc": "2026-11-27T10:17:51.785333+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -111,9 +111,9 @@
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 587131416644,
-      "net_profit": 1492.2,
-      "drawdown_pct": 14.72
+      "strategy_id": 608411507876,
+      "net_profit": 1538.98,
+      "drawdown_pct": 10.19
     },
     {
       "symbol": "ENB.TO",
@@ -139,21 +139,35 @@
     {
       "symbol": "ENB.TO",
       "currency": "CAD",
-      "strategy_id": 618716480849,
-      "net_profit": 2409.1,
-      "drawdown_pct": 5.74
+      "strategy_id": 147827531648,
+      "net_profit": 2415.78,
+      "drawdown_pct": 8.98
     },
     {
       "symbol": "ENB.TO",
       "currency": "CAD",
-      "strategy_id": 705984128,
-      "net_profit": 2365.44,
-      "drawdown_pct": 9.39
+      "strategy_id": 147852697856,
+      "net_profit": 2415.78,
+      "drawdown_pct": 8.98
+    },
+    {
+      "symbol": "SHOP.TO",
+      "currency": "CAD",
+      "strategy_id": 459923409458,
+      "net_profit": 13731.16,
+      "drawdown_pct": 20.29
     },
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
       "strategy_id": 459557914649,
+      "net_profit": 13571.46,
+      "drawdown_pct": 20.29
+    },
+    {
+      "symbol": "SHOP.TO",
+      "currency": "CAD",
+      "strategy_id": 459923606069,
       "net_profit": 13571.46,
       "drawdown_pct": 20.29
     },
@@ -170,20 +184,6 @@
       "strategy_id": 459848306576,
       "net_profit": 12996.36,
       "drawdown_pct": 22.93
-    },
-    {
-      "symbol": "SHOP.TO",
-      "currency": "CAD",
-      "strategy_id": 131420737235,
-      "net_profit": 12811.28,
-      "drawdown_pct": 22.27
-    },
-    {
-      "symbol": "SHOP.TO",
-      "currency": "CAD",
-      "strategy_id": 279131638355,
-      "net_profit": 12811.28,
-      "drawdown_pct": 22.27
     },
     {
       "symbol": "SU.TO",
