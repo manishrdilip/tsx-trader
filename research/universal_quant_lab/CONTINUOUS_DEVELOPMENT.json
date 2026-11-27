@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 3000000,
-  "batch": 0,
+  "completed": 3852000,
+  "batch": 1,
   "worker_pid": null,
-  "status": "batch_complete",
+  "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T02:50:31.656345+00:00",
+  "updated_utc": "2026-11-27T02:51:24.403531+00:00",
   "promising": [
     {
       "symbol": "SHOP.TO",
@@ -80,5 +80,10 @@
       "net_profit": 3095.8,
       "drawdown_pct": 6.8
     }
-  ]
+  ],
+  "verification": {
+    "first_batch_reconciled": 3000000,
+    "first_batch_distribution_rows": 3000000,
+    "largest_category_board": 100
+  }
 }
