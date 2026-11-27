@@ -1,4 +1,4 @@
-﻿{
+{
   "candidate": {
     "symbol": "SHOP.TO",
     "strategy_id": 459923409458,
@@ -21,13 +21,22 @@
   },
   "owner_reported_replay": {
     "period": "2025–2026",
-    "exact_dates": null,
+    "exact_dates": [
+      "2025-01-01",
+      "2026-11-26"
+    ],
     "artifact": null,
-    "verification": "Owner reported. No matching replay artifact was located.",
+    "verification": "Owner reported exact dates and execution assumption. Replay artifact was not provided.",
     "net_profit_direction": "negative",
     "win_rate_pct": 58,
     "maximum_drawdown_pct": 38.5,
-    "buy_and_hold_return_pct": 25
+    "buy_and_hold_return_pct": 25,
+    "turnover_cap": {
+      "fraction": 0.01,
+      "statistic": "mean",
+      "lookback_sessions": 20,
+      "lag_sessions": 1
+    }
   },
   "validation_disposition": {
     "reasons": [
@@ -37,6 +46,7 @@
       "Fixed hold with a negative later replay reported by the owner"
     ],
     "future_use": "Treat the reported 2025–2026 window as observed for this candidate. Any retuned rule needs a fresh independent test.",
-    "matched_vmm_comparison": "Unavailable for this replay"
+    "matched_vmm_comparison": "Unavailable for this replay",
+    "comparison_limit": "The owner's 1% trailing-mean turnover cap differs from the original run's 0.01% trailing-minimum cap."
   }
 }

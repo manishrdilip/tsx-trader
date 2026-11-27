@@ -1,0 +1,23 @@
+{
+  "version": "portfolio-robustness-v1",
+  "evaluation_cutoff_exclusive": "2024-11-27",
+  "reserved_window": ["2024-11-27", "2026-11-26"],
+  "reserved_window_status": "Quarantined from new searches, with prior exposure. It cannot serve as an independent lockbox for these candidates.",
+  "prospective_holdout": "Freeze up to 50 survivors before recording subsequent unseen observations. Replay each once and preserve outcomes without retuning.",
+  "folds": {"train_years":3,"test_years":1,"first_train_year":2015,"last_complete_test_year":2023},
+  "regimes": {"benchmark_bull_above":0.10,"benchmark_bear_below":-0.10,"otherwise":"choppy"},
+  "gates": {"min_closed_test_trades":200,"remove_top_fraction":0.05,"require_positive_trimmed_profit":true,"beat_both_benchmarks":true,"min_positive_fold_fraction_exclusive":0.5,"max_fold_drawdown":0.35},
+  "accounts": {"starting_cash":5000,"max_positions":5,"friction_per_side":0.003,"fee_per_fill":2,"entry_cap_fraction_prior_20_session_min_turnover":0.0001},
+  "grid": {
+    "momentum": {"lookback":[16,20,24],"threshold":[0.016,0.02,0.024]},
+    "mean_reversion": {"rsi_window":[11,14,17],"threshold":[24,30,36]},
+    "breakout": {"lookback":[16,20,24],"threshold":[0]},
+    "volatility": {"lookback":[16,20,24],"threshold":[0.016,0.02,0.024]},
+    "holding_sessions":[8,10,12]
+  },
+  "baselines":["same-account equal-slot buy-and-hold","same-account 200-session SMA"],
+  "null":{"method":"synchronized 20-session Rademacher block signs on centered log returns, rebuild price paths, rerun the full registered grid","seed":732019,"pilot_replicates":9,"promotion_minimum_replicates":199,"promotion_alpha":0.05},
+  "duplicate_trade_overlap_jaccard":0.8,
+  "ranking":"Out-of-fold after-cost compound return and drawdown. Win rate has zero weight. Incremental VMM contribution requires a matched VMM return stream.",
+  "promotion_missing_evidence":["independent prospective holdout","verified matched VMM return series","historical exit liquidity and execution calibration","delisting settlement data"]
+}
