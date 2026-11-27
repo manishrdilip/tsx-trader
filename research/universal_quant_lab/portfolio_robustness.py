@@ -1,4 +1,4 @@
-﻿"""Walk-forward portfolio screening and search-wide synthetic null pilot."""
+"""Walk-forward portfolio screening and search-wide synthetic null pilot."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -119,63 +119,81 @@ def compound(returns):
     return float(np.prod(1+np.asarray(returns))-1)
 
 
-def search(root,bars,close,mapping,slots,folds,plan,detail):
-    priority=np.tile(np.arange(close.shape[1]),(len(close),1))
+def benchmark_folds(bars,close,mapping,slots,folds,plan,priority):
     false=np.zeros(close.shape,dtype=bool)
     sma=close.rolling(200).mean()
     passive=close.notna().to_numpy()
     above=(close>sma).to_numpy()
     below=(close<sma).to_numpy()
     comparators={}
+    for year,_,start,end in folds:
+        held,*_=backtest(bars,mapping,slots,passive,false,10000,start,end,priority,
+                          position_count=close.shape[1])
+        trend,*_=backtest(bars,mapping,slots,above,below,10000,start,end,priority)
+        limits=plan["regimes"]
+        regime="bull" if held>limits["benchmark_bull_above"] else (
+               "bear" if held<limits["benchmark_bear_below"] else "choppy")
+        comparators[year]=dict(passive=held,sma200=trend,regime=regime)
+    return comparators
+
+
+def evaluate_rule(bars,mapping,slots,folds,plan,rule,signal,exits,priority,comparators):
+    outcomes=[]
+    sig=set()
+    fold_rows=[]
+    detail=comparators is not None
+    for year,train,start,end in folds:
+        result,risk,trades,fills=backtest(bars,mapping,slots,signal,exits,rule[3],start,end,priority,detail)
+        row=dict(year=year,net_return=result)
+        if detail:
+            train_return,*_=backtest(bars,mapping,slots,signal,exits,rule[3],train,start,priority)
+            pnl,signature=extract_trades(bars,fills,start)
+            if len(pnl)!=trades or not np.isclose(sum(pnl),result*CAPITAL,atol=1e-6):
+                raise ValueError("Trade P&L does not reconcile to account equity")
+            sig.update(signature)
+            outcomes.extend(pnl)
+            row.update(train_return=train_return,drawdown=risk,trades=int(trades),**comparators[year])
+        fold_rows.append(row)
+    score=compound([row["net_return"] for row in fold_rows])
+    record=dict(rule=rule,score=score)
     if detail:
-        for year,_,start,end in folds:
-            held,*_=backtest(bars,mapping,slots,passive,false,10000,start,end,priority,
-                              position_count=close.shape[1])
-            trend,*_=backtest(bars,mapping,slots,above,below,10000,start,end,priority)
-            limits=plan["regimes"]
-            regime="bull" if held>limits["benchmark_bull_above"] else (
-                   "bear" if held<limits["benchmark_bear_below"] else "choppy")
-            comparators[year]=dict(passive=held,sma200=trend,regime=regime)
+        gates=plan["gates"]
+        cut=int(np.ceil(len(outcomes)*gates["remove_top_fraction"]))
+        trimmed=float(sum(sorted(outcomes)[:len(outcomes)-cut]))
+        reasons=[]
+        if len(outcomes)<gates["min_closed_test_trades"]:
+            reasons.append("fewer_than_200_closed_trades")
+        if trimmed<=0:
+            reasons.append("nonpositive_after_top_5pct_removed")
+        if score<=max(compound([f["passive"] for f in fold_rows]),compound([f["sma200"] for f in fold_rows])):
+            reasons.append("did_not_beat_both_benchmarks")
+        if np.mean([f["net_return"]>0 for f in fold_rows])<=gates["min_positive_fold_fraction_exclusive"]:
+            reasons.append("positive_in_at_most_half_of_folds")
+        if max(f["drawdown"] for f in fold_rows)>gates["max_fold_drawdown"]:
+            reasons.append("fold_drawdown_limit")
+        record.update(folds=fold_rows,trades=len(outcomes),trimmed_profit=trimmed,hard_gate_failures=reasons)
+    return record,sig
+
+
+def search(root,bars,close,mapping,slots,folds,plan,detail,controls=()):
+    from time import monotonic
+    priority=np.tile(np.arange(close.shape[1]),(len(close),1))
+    false=np.zeros(close.shape,dtype=bool)
+    comparators=benchmark_folds(bars,close,mapping,slots,folds,plan,priority) if detail else None
     rows=[]
     signatures={}
-    for index,(rule,signal) in enumerate(candidates(close,plan["grid"])):
-        if index%30==0:
+    check(root)
+    sampled_at=monotonic()
+    rules=list(candidates(close,plan["grid"]))+list(controls)
+    for index,(rule,signal) in enumerate(rules):
+        if monotonic()-sampled_at>=5:
             check(root)
-        outcomes=[]
-        sig=set()
-        fold_rows=[]
-        for year,train,start,end in folds:
-            result,risk,trades,fills=backtest(bars,mapping,slots,signal,false,rule[3],start,end,priority,detail)
-            row=dict(year=year,net_return=result)
-            if detail:
-                train_return,*_=backtest(bars,mapping,slots,signal,false,rule[3],train,start,priority)
-                pnl,signature=extract_trades(bars,fills,start)
-                if len(pnl)!=trades or not np.isclose(sum(pnl),result*CAPITAL,atol=1e-6):
-                    raise ValueError("Trade P&L does not reconcile to account equity")
-                sig.update(signature)
-                outcomes.extend(pnl)
-                row.update(train_return=train_return,drawdown=risk,trades=int(trades),**comparators[year])
-            fold_rows.append(row)
-        score=compound([row["net_return"] for row in fold_rows])
-        record=dict(id=index,rule=rule,score=score)
-        if detail:
-            gates=plan["gates"]
-            cut=int(np.ceil(len(outcomes)*gates["remove_top_fraction"]))
-            trimmed=float(sum(sorted(outcomes)[:len(outcomes)-cut]))
-            reasons=[]
-            if len(outcomes)<gates["min_closed_test_trades"]:
-                reasons.append("fewer_than_200_closed_trades")
-            if trimmed<=0:
-                reasons.append("nonpositive_after_top_5pct_removed")
-            if score<=max(compound([f["passive"] for f in fold_rows]),compound([f["sma200"] for f in fold_rows])):
-                reasons.append("did_not_beat_both_benchmarks")
-            if np.mean([f["net_return"]>0 for f in fold_rows])<=gates["min_positive_fold_fraction_exclusive"]:
-                reasons.append("positive_in_at_most_half_of_folds")
-            if max(f["drawdown"] for f in fold_rows)>gates["max_fold_drawdown"]:
-                reasons.append("fold_drawdown_limit")
-            record.update(folds=fold_rows,trades=len(outcomes),trimmed_profit=trimmed,hard_gate_failures=reasons)
-            signatures[index]=sig
+            sampled_at=monotonic()
+        record,sig=evaluate_rule(bars,mapping,slots,folds,plan,rule,signal,false,priority,comparators)
+        record["id"]=index
         rows.append(record)
+        if detail:
+            signatures[index]=sig
     return rows,signatures
 
 
@@ -215,10 +233,12 @@ def analyze(root,scope,plan,output,reps):
             # returns as sequential folds, while preserving per-fold cash ledgers.
             rng=np.random.default_rng(spec["null"]["seed"])
             maxima=[]
-            for _ in range(reps):
+            for i in range(reps):
                 prices,signals,dates=synthetic(bars,close,rng)
                 trial,_=search(root,prices,signals,dates,1,folds,spec,False)
                 maxima.append(max(x["score"] for x in trial))
+                if (i+1)%10 == 0:
+                    print(currency,"null replicates",i+1,"/",reps,flush=True)
             for row in rows:
                 row["search_adjusted_empirical_p"]=(1+sum(x>=row["score"] for x in maxima))/(1+len(maxima))
             hard_pass=sorted((x for x in rows if not x["hard_gate_failures"]),
@@ -253,5 +273,9 @@ if __name__=="__main__":
     parser.add_argument("scope",type=Path)
     parser.add_argument("plan",type=Path)
     parser.add_argument("output",type=Path)
+    parser.add_argument("--null-replicates",type=int)
     args=parser.parse_args()
-    analyze(args.root,args.scope,args.plan,args.output,read(args.plan)["null"]["pilot_replicates"])
+    repeats=args.null_replicates if args.null_replicates is not None else read(args.plan)["null"]["pilot_replicates"]
+    if repeats<1:
+        parser.error("At least one null replicate is required")
+    analyze(args.root,args.scope,args.plan,args.output,repeats)

@@ -1,0 +1,362 @@
+{
+  "vmm": {
+    "rule": [
+      "VMM signal reconstruction",
+      0,
+      0,
+      10000
+    ],
+    "score": -0.03317178827344758,
+    "folds": [
+      {
+        "year": 2018,
+        "net_return": -0.01505644599999996,
+        "train_return": 0.0010325300000004064,
+        "drawdown": 0.028017592299020122,
+        "trades": 6,
+        "passive": -0.02507883200000033,
+        "sma200": -0.06497807599999941,
+        "regime": "choppy"
+      },
+      {
+        "year": 2019,
+        "net_return": -0.007849631999999837,
+        "train_return": 0.003200344000000041,
+        "drawdown": 0.03788198183712621,
+        "trades": 11,
+        "passive": 0.10972374599999984,
+        "sma200": 0.3689775240000001,
+        "regime": "bull"
+      },
+      {
+        "year": 2020,
+        "net_return": -0.002452549999999974,
+        "train_return": 0.028375630000000457,
+        "drawdown": 0.006615985107837341,
+        "trades": 4,
+        "passive": -0.03304750000000058,
+        "sma200": 0.10726404400000046,
+        "regime": "choppy"
+      },
+      {
+        "year": 2021,
+        "net_return": 0.06818340800000024,
+        "train_return": -0.029210737999999764,
+        "drawdown": 0.061865992959289184,
+        "trades": 8,
+        "passive": 0.11498964299999971,
+        "sma200": 0.1860564479999999,
+        "regime": "bull"
+      },
+      {
+        "year": 2022,
+        "net_return": -0.04823567200000016,
+        "train_return": 0.05503385799999996,
+        "drawdown": 0.05806680583098256,
+        "trades": 6,
+        "passive": -0.009582842000000346,
+        "sma200": -0.20212016799999938,
+        "regime": "choppy"
+      },
+      {
+        "year": 2023,
+        "net_return": -0.02444522199999956,
+        "train_return": 0.08582644799999999,
+        "drawdown": 0.09934409314459536,
+        "trades": 18,
+        "passive": 0.0710882599999999,
+        "sma200": -0.08226393999999927,
+        "regime": "choppy"
+      }
+    ],
+    "trades": 53,
+    "trimmed_profit": -742.3614699999968,
+    "hard_gate_failures": [
+      "fewer_than_200_closed_trades",
+      "nonpositive_after_top_5pct_removed",
+      "did_not_beat_both_benchmarks",
+      "positive_in_at_most_half_of_folds"
+    ],
+    "limitations": "VMM top-decile, 200-day and XIU entry filters with top-40% and SMA exits. Shared five-slot research fills with conservative volume proxy. Live-specific trailing/rebuy, allocations, guard, routing and actual account returns are unavailable in this reconstruction.",
+    "daily_returns_sha256": "de60727b96f0d028ce848ed817b88b6acfb0822099fb19b20a85b0f466ee1237"
+  },
+  "null": {
+    "CAD": {
+      "rules": 90,
+      "replicates": 100,
+      "best_real": 0.2386567176459231,
+      "best_rule": [
+        "volatility",
+        20,
+        0.02,
+        12
+      ],
+      "p95": 0.40616047027251906,
+      "maximum": 0.6912491689842848,
+      "null_maxima_beaten": 90,
+      "search_adjusted_p": 0.10891089108910891
+    },
+    "USD": {
+      "rules": 90,
+      "replicates": 100,
+      "best_real": -0.014482806911958912,
+      "best_rule": [
+        "mean_reversion",
+        14,
+        24,
+        8
+      ],
+      "p95": 0.2794446546327078,
+      "maximum": 0.5086333946714527,
+      "null_maxima_beaten": 26,
+      "search_adjusted_p": 0.7425742574257426
+    }
+  },
+  "planted": {
+    "sparse": [
+      {
+        "rate": 0.0,
+        "markers": [
+          {
+            "hold": 8,
+            "rank": 31,
+            "return_after_cost": -0.31037340404818525,
+            "trades": 349,
+            "trimmed_profit": -3427.371005984988,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 10,
+            "rank": 39,
+            "return_after_cost": -0.35105700508038074,
+            "trades": 349,
+            "trimmed_profit": -3701.769855837134,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 12,
+            "rank": 40,
+            "return_after_cost": -0.3540352387275425,
+            "trades": 349,
+            "trimmed_profit": -3863.895028311431,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          }
+        ]
+      },
+      {
+        "rate": 0.005,
+        "markers": [
+          {
+            "hold": 8,
+            "rank": 24,
+            "return_after_cost": -0.16392872633251698,
+            "trades": 348,
+            "trimmed_profit": -2606.746737262333,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 10,
+            "rank": 28,
+            "return_after_cost": -0.18148044380774564,
+            "trades": 348,
+            "trimmed_profit": -2718.349158909039,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 12,
+            "rank": 30,
+            "return_after_cost": -0.18850292998069118,
+            "trades": 348,
+            "trimmed_profit": -2826.8145227941236,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          }
+        ]
+      },
+      {
+        "rate": 0.04,
+        "markers": [
+          {
+            "hold": 12,
+            "rank": 1,
+            "return_after_cost": 2.546852707668004,
+            "trades": 334,
+            "trimmed_profit": 4608.474558774879,
+            "failures": []
+          },
+          {
+            "hold": 10,
+            "rank": 2,
+            "return_after_cost": 2.460838079688409,
+            "trades": 334,
+            "trimmed_profit": 4553.634214484204,
+            "failures": []
+          },
+          {
+            "hold": 8,
+            "rank": 3,
+            "return_after_cost": 1.6238096236057777,
+            "trades": 334,
+            "trimmed_profit": 3139.385158983249,
+            "failures": []
+          }
+        ]
+      }
+    ],
+    "dense": [
+      {
+        "rate": 0.0,
+        "markers": [
+          {
+            "hold": 10,
+            "rank": 56,
+            "return_after_cost": -0.46561750296430804,
+            "trades": 653,
+            "trimmed_profit": -6791.503583810103,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 8,
+            "rank": 67,
+            "return_after_cost": -0.5202184011216575,
+            "trades": 669,
+            "trimmed_profit": -6760.629915119417,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 12,
+            "rank": 70,
+            "return_after_cost": -0.5313828454782061,
+            "trades": 572,
+            "trimmed_profit": -7227.101353344255,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds",
+              "fold_drawdown_limit"
+            ]
+          }
+        ]
+      },
+      {
+        "rate": 0.005,
+        "markers": [
+          {
+            "hold": 10,
+            "rank": 29,
+            "return_after_cost": -0.15624192488937605,
+            "trades": 649,
+            "trimmed_profit": -4968.797104711983,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 12,
+            "rank": 35,
+            "return_after_cost": -0.2623900201250893,
+            "trades": 571,
+            "trimmed_profit": -5386.362547855395,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          },
+          {
+            "hold": 8,
+            "rank": 43,
+            "return_after_cost": -0.30426176568982577,
+            "trades": 665,
+            "trimmed_profit": -5231.760134044811,
+            "failures": [
+              "nonpositive_after_top_5pct_removed",
+              "did_not_beat_both_benchmarks",
+              "positive_in_at_most_half_of_folds"
+            ]
+          }
+        ]
+      },
+      {
+        "rate": 0.04,
+        "markers": [
+          {
+            "hold": 12,
+            "rank": 1,
+            "return_after_cost": 10.31792813726336,
+            "trades": 515,
+            "trimmed_profit": 9770.81534053951,
+            "failures": [
+              "did_not_beat_both_benchmarks"
+            ]
+          },
+          {
+            "hold": 10,
+            "rank": 2,
+            "return_after_cost": 10.190243612807427,
+            "trades": 575,
+            "trimmed_profit": 9693.88509915781,
+            "failures": [
+              "did_not_beat_both_benchmarks"
+            ]
+          },
+          {
+            "hold": 8,
+            "rank": 3,
+            "return_after_cost": 4.6016809226135695,
+            "trades": 587,
+            "trimmed_profit": 5750.590911010219,
+            "failures": [
+              "did_not_beat_both_benchmarks"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "search_status": "paused",
+  "holdout_accessed": false,
+  "production_gaps": [
+    "Point-in-time delisting execution and FX settlement",
+    "Historically calibrated spread, exit capacity and slippage",
+    "Exact matched VMM historical input and return stream"
+  ],
+  "artifacts_sha256": {
+    "portfolio-null-100.json": "4c75481598253d8eaa8d728f9a75b6ba0b38db63d017e23b0df544223164555d",
+    "portfolio-positive-controls-sparse.json": "edaeb7fdcd1d26a3eafddb395447a5c80734162b60a0aea8b185cb87dec5376a",
+    "portfolio-positive-controls.json": "ff35886f6370cf8ba4b7dfb20db4fb12e918e0b91dd9f894d027cad48877a93a"
+  }
+}

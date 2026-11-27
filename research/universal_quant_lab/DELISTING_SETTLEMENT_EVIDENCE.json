@@ -1,0 +1,11 @@
+{
+  "status": "Terms verified for five exclusions. Settlement replay remains pending.",
+  "events": [
+    {"symbol":"HEXO.TO","effective":"2023-06-22","type":"stock_exchange","new_symbol":"TLRY","ratio":0.4352,"source":"https://tilray.gcs-web.com/static-files/2458f73c-1736-42bf-9c2e-e1d272cbe159","open":"Pin successor listing, shares and cash-in-lieu handling"},
+    {"symbol":"KL.TO","effective":"2022-02-08","type":"stock_exchange","new_symbol":"AEM.TO","ratio":0.7935,"source":"https://www.agnicoeagle.com/English/news-and-media/news-releases/news-details/2022/AGNICO-EAGLE-AND-KIRKLAND-LAKE-GOLD-COMPLETE-MERGER-TRANSACTION-02-08-2022/default.aspx","open":"Pin successor series and settlement accounting"},
+    {"symbol":"NVEI.TO","effective":"2024-11-15","type":"cash_buyout","currency":"USD","cash_per_share":34,"source":"https://www.nuvei.com/posts/nuvei-announces-completion-of-going-private-transaction","open":"Determine first cash availability and historical CAD FX rate"},
+    {"symbol":"ADZN.V","effective":"2024-07-31","type":"stock_exchange","new_symbol":"SVM.TO","ratio":0.1015,"source":"https://silvercorpmetals.com/silvercorp-completes-acquisition-of-adventus/","open":"Reconcile vendor bars after effective date and successor settlement"},
+    {"symbol":"GMIN.V","effective":"2024-01-11","type":"listing_transfer","new_symbol":"GMIN.TO","ratio":1,"source":"https://www.tsx.com/en/news/new-company-listings?id=1719&lang=en","open":"Pin TSX continuation and subsequent reorganization"},
+    {"symbol":"MTRX.V","type":"unresolved","open":"Identify venue/ticker succession, missing bars and settlement"}
+  ]
+}
