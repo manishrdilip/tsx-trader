@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 90000000,
-  "batch": 30,
-  "worker_pid": 23920,
+  "completed": 107232000,
+  "batch": 35,
+  "worker_pid": 39392,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T04:47:03.737855+00:00",
+  "updated_utc": "2026-11-27T05:02:07.724981+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -48,37 +48,37 @@
     {
       "symbol": "CNR.TO",
       "currency": "CAD",
-      "strategy_id": 449468723981,
+      "strategy_id": 19567466561,
+      "net_profit": 1250.01,
+      "drawdown_pct": 4.82
+    },
+    {
+      "symbol": "CNR.TO",
+      "currency": "CAD",
+      "strategy_id": 19570612337,
+      "net_profit": 1247.3,
+      "drawdown_pct": 4.65
+    },
+    {
+      "symbol": "CNR.TO",
+      "currency": "CAD",
+      "strategy_id": 51779622968,
+      "net_profit": 1243.73,
+      "drawdown_pct": 4.0
+    },
+    {
+      "symbol": "CNR.TO",
+      "currency": "CAD",
+      "strategy_id": 19571202170,
       "net_profit": 1212.58,
       "drawdown_pct": 4.71
     },
     {
       "symbol": "CNR.TO",
       "currency": "CAD",
-      "strategy_id": 491044282652,
-      "net_profit": 1207.87,
-      "drawdown_pct": 4.12
-    },
-    {
-      "symbol": "CNR.TO",
-      "currency": "CAD",
-      "strategy_id": 492050930972,
-      "net_profit": 1207.87,
-      "drawdown_pct": 4.12
-    },
-    {
-      "symbol": "CNR.TO",
-      "currency": "CAD",
-      "strategy_id": 505810653974,
-      "net_profit": 1168.63,
-      "drawdown_pct": 8.12
-    },
-    {
-      "symbol": "CNR.TO",
-      "currency": "CAD",
-      "strategy_id": 459492214909,
-      "net_profit": 1167.29,
-      "drawdown_pct": 13.24
+      "strategy_id": 449468723981,
+      "net_profit": 1212.58,
+      "drawdown_pct": 4.71
     },
     {
       "symbol": "CP.TO",
@@ -188,6 +188,13 @@
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
+      "strategy_id": 438162312722,
+      "net_profit": 1088.73,
+      "drawdown_pct": 4.48
+    },
+    {
+      "symbol": "XIU.TO",
+      "currency": "CAD",
       "strategy_id": 607228997789,
       "net_profit": 1029.79,
       "drawdown_pct": 6.78
@@ -214,13 +221,6 @@
       "drawdown_pct": 5.33
     },
     {
-      "symbol": "XIU.TO",
-      "currency": "CAD",
-      "strategy_id": 634634211857,
-      "net_profit": 987.1,
-      "drawdown_pct": 5.33
-    },
-    {
       "symbol": "ZAG.TO",
       "currency": "CAD",
       "strategy_id": 19249,
@@ -237,21 +237,21 @@
     {
       "symbol": "ZAG.TO",
       "currency": "CAD",
+      "strategy_id": 117082,
+      "net_profit": 0.0,
+      "drawdown_pct": 0.0
+    },
+    {
+      "symbol": "ZAG.TO",
+      "currency": "CAD",
+      "strategy_id": 182619,
+      "net_profit": 0.0,
+      "drawdown_pct": 0.0
+    },
+    {
+      "symbol": "ZAG.TO",
+      "currency": "CAD",
       "strategy_id": 215860,
-      "net_profit": 0.0,
-      "drawdown_pct": 0.0
-    },
-    {
-      "symbol": "ZAG.TO",
-      "currency": "CAD",
-      "strategy_id": 281397,
-      "net_profit": 0.0,
-      "drawdown_pct": 0.0
-    },
-    {
-      "symbol": "ZAG.TO",
-      "currency": "CAD",
-      "strategy_id": 346934,
       "net_profit": 0.0,
       "drawdown_pct": 0.0
     },
@@ -261,6 +261,13 @@
       "strategy_id": 235293774740,
       "net_profit": 3869.02,
       "drawdown_pct": 14.44
+    },
+    {
+      "symbol": "AAPL.US",
+      "currency": "USD",
+      "strategy_id": 497792757986,
+      "net_profit": 3738.77,
+      "drawdown_pct": 11.08
     },
     {
       "symbol": "AAPL.US",
@@ -282,13 +289,6 @@
       "strategy_id": 621953785097,
       "net_profit": 3618.85,
       "drawdown_pct": 17.07
-    },
-    {
-      "symbol": "AAPL.US",
-      "currency": "USD",
-      "strategy_id": 371488574717,
-      "net_profit": 3589.88,
-      "drawdown_pct": 15.33
     }
   ]
 }
