@@ -54,7 +54,7 @@ class Ledger:
 
     def ids(self, job, first, size):
         spec = self.jobs[job]
-        return sampled_ids(first, size, spec["capacity"], spec["seed"])
+        return sampled_ids(first + spec.get("sample_offset", 0), size, spec["capacity"], spec["seed"])
 
     def counts(self):
         completed = self.db.execute(

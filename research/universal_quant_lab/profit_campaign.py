@@ -99,7 +99,8 @@ def prepare(root, config):
         if any(type(x) is not int for x in (depth, quota, seed)):
             raise ValueError("Depth, quota and seed must be integers")
         groups, capacity = space(depth)
-        if not 1 <= quota <= capacity:
+        offset = job.get("sample_offset", 0)
+        if type(offset) is not int or offset < 0 or quota < 1 or offset + quota > capacity:
             raise ValueError("Quota exceeds canonical domain")
         currency = job["currency"]
         spread, slip, fee = (job[k] for k in ("half_spread_bps", "slippage_bps", "fee_per_order"))
@@ -197,8 +198,8 @@ def run(root, config, out):
                         last_sample = time.monotonic()
                     # Disk is checked at every batch even when other metrics are cached.
                     resources["free_bytes"] = shutil.disk_usage(root).free
-                    thermal = cpu_guard(root, config.get("max_cpu_celsius")) if official else None
-                    if (out / "PAUSE").exists() or guard(resources) or thermal:
+                    thermal = cpu_guard(root, config.get("max_cpu_celsius")) if official else cpu_guard(root, 85)
+                    if (out / "PAUSE").exists() or guard(resources) or thermal == "cpu_temperature" or (official and thermal):
                         progress("paused")
                         return
                     identity = job["id"]
