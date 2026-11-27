@@ -15,3 +15,11 @@ The global non-Canadian worker was paused at 330 checked symbols with its checkp
 The strict coordinator started Phase 1 on Windows under PID 42572. It validates the frozen specification hashes and predecessor marker before it advances. A synthetic acceptance check verified ordered phases, interruption at a failed phase, resume from the first missing marker and final formatting for a completed zero-survivor run. These checks did not evaluate market strategies.
 
 Phase 2 through Phase 5 do not yet have verified implementations for this capped sequence. The Phase 6 renderer checks the hashed validation artifact, reconciles actual counts to the search marker and requires a passed independent holdout. The previously seen 2025 period is ineligible as a new independent holdout. No production survivor report or Phase 1 done-marker has been written.
+
+## V2 discovery and forward paper validation
+
+The capped coordinator adopted the new SPEC.md and RUN_SEQUENCE.md hashes. The frozen preregistration lives at config/v2_preregistration.json in the lab root. It records the one-billion valid unique trial target, depth cap of three, shortlist cap of 100, discovery score and a minimum of 60 complete exchange sessions strictly after the shortlist freeze. Forward promotion requires positive after-cost return and an after-cost win against matched buy-and-hold.
+
+All 9,207 capped daily targets have been checked. Intraday backfill resumed with existing checkpoints. Requests now skip windows outside each symbol's recorded daily lifespan. A Windows file-sharing error was recovered with retry around atomic Parquet publication. No Phase 1 marker was written during this update.
+
+Engineering tests verified 276 causal oscillator values per complete bar, exclusion of volume gaps, the full trial-count penalty, consecutive exchange-session validation, the 60-session minimum, rejection of pre-freeze records and rejection of a benchmark tie. The feature-cache orchestration, full discovery executor and live paper executor remain unfinished. The final renderer accepts completed prospective paper evidence only. No new candidate count, shortlist or paper result exists yet.

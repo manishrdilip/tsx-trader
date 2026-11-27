@@ -26,6 +26,17 @@ INTERVALS = ("1m", "5m", "15m", "1h")
 FIELDS = ["open", "high", "low", "close", "volume"]
 
 
+def replace_parquet(temp, target):
+    for attempt in range(8):
+        try:
+            temp.replace(target)
+            return
+        except PermissionError:
+            if attempt == 7:
+                raise
+            sleep(0.1 * 2 ** attempt)
+
+
 def day_epoch(day):
     return int(datetime.combine(day, midnight.min, timezone.utc).timestamp())
 
@@ -51,7 +62,7 @@ def normalize(rows, exchange, start, end):
     return frame[["timestamp", "session", *FIELDS]].sort_values("timestamp").reset_index(drop=True)
 
 
-def backfill(root, symbols, intervals, start, end, max_requests):
+def backfill(root, symbols, intervals, start, end, max_requests, active_dates=None):
     if not start < end <= DEVELOPMENT_END:
         raise ValueError(f"Expected a nonempty UTC date range ending by {DEVELOPMENT_END}")
     if max_requests <= 0 or set(intervals) - set(INTERVALS):
@@ -67,6 +78,9 @@ def backfill(root, symbols, intervals, start, end, max_requests):
             current = start
             while current < end:
                 following = min(current + timedelta(days=28), end)
+                if active_dates and (following <= active_dates[0] or current > active_dates[1]):
+                    current = following
+                    continue
                 folder = base / f"market={exchange}" / f"symbol={symbol}" / f"interval={interval}"
                 checkpoint = folder / f"{current}_{following}.json"
                 bars = checkpoint.with_suffix(".parquet")
@@ -107,9 +121,12 @@ def backfill(root, symbols, intervals, start, end, max_requests):
                             raise ValueError("Parquet round-trip mismatch")
                         with temp.open("rb") as source:
                             digest = hashlib.file_digest(source, "sha256").hexdigest()
-                        temp.replace(bars)
+                        replace_parquet(temp, bars)
                     finally:
-                        temp.unlink(missing_ok=True)
+                        try:
+                            temp.unlink(missing_ok=True)
+                        except PermissionError:
+                            pass  # An external Windows reader may still hold the uncommitted temporary file.
                     record.update(status="saved", rows=len(frame), sha256=digest,
                                   first_bar=frame.timestamp.iloc[0].isoformat(),
                                   last_bar=frame.timestamp.iloc[-1].isoformat(),

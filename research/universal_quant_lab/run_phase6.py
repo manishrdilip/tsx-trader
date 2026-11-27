@@ -1,9 +1,12 @@
-"""Render the final report exclusively from the completed validation evidence."""
-from datetime import datetime, timezone
-import hashlib
+"""V2 final report from the completed, prospective paper ledger."""
+from datetime import date, datetime, timezone
+import math
 import os
 from uuid import uuid4
 
+import exchange_calendars as xc
+
+from forward_v2 import hash_file, preregister
 from run_universe import read
 
 
@@ -18,71 +21,112 @@ def write(path, content):
         temp.replace(path)
     finally:
         temp.unlink(missing_ok=True)
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return hash_file(path)
+
+
+def timestamp(value):
+    parsed = datetime.fromisoformat(value)
+    if parsed.utcoffset() is None:
+        raise ValueError("Forward timestamps must include a timezone")
+    return parsed.astimezone(timezone.utc)
+
+
+def evaluate(result, shortlist, minimum_sessions):
+    frozen = timestamp(shortlist["frozen_utc"])
+    if result["state"] != "complete" or result["mode"] != "prospective-paper":
+        raise RuntimeError("Prospective paper validation is incomplete")
+    registered = {row["id"]: row for row in shortlist["candidates"]}
+    if not 1 <= len(registered) == len(shortlist["candidates"]) <= 100:
+        raise ValueError("Invalid frozen shortlist")
+    seen = set()
+    rows = []
+    for candidate in result["candidates"]:
+        identifier = candidate["id"]
+        if identifier in seen or identifier not in registered:
+            raise ValueError("Forward results include an unregistered or duplicate candidate")
+        seen.add(identifier)
+        initial = float(candidate["starting_equity"])
+        if not math.isfinite(initial) or initial <= 0:
+            raise ValueError("Invalid starting paper equity")
+        history = candidate["sessions"]
+        expected_sessions = candidate["expected_sessions"]
+        if len(history) < minimum_sessions or [item["session"] for item in history] != expected_sessions:
+            raise RuntimeError("Forward trading sessions are incomplete")
+        if sorted(set(expected_sessions)) != expected_sessions:
+            raise ValueError("Duplicate or unordered forward sessions")
+        end = date.fromisoformat(expected_sessions[-1])
+        calendar = xc.get_calendar(registered[identifier]["market_calendar"],
+                                   start=frozen.date(), end=end)
+        scheduled = [session for session in calendar.sessions if calendar.session_open(session) > frozen]
+        if [session.date().isoformat() for session in scheduled] != expected_sessions:
+            raise ValueError("Forward dates do not cover consecutive eligible trading sessions")
+        peak, drawdown = initial, 0.0
+        equity = benchmark = initial
+        for item, session in zip(history, scheduled, strict=True):
+            opened = timestamp(item["market_open_utc"])
+            closed = timestamp(item["market_close_utc"])
+            observed = timestamp(item["logged_utc"])
+            if (not frozen < opened < closed <= observed or opened != calendar.session_open(session)
+                    or closed != calendar.session_close(session)):
+                raise ValueError("Paper record uses a session from at or before the freeze")
+            if observed > datetime.now(timezone.utc):
+                raise ValueError("Paper observation is dated in the future")
+            equity, benchmark = [float(item[k]) for k in ("net_paper_equity", "net_buy_and_hold_equity")]
+            if not all(math.isfinite(value) and value >= 0 for value in (equity, benchmark)):
+                raise ValueError("Invalid net equity in forward ledger")
+            peak = max(peak, equity)
+            drawdown = max(drawdown, 1 - equity / peak)
+        net, base = equity / initial - 1, benchmark / initial - 1
+        rows.append({**registered[identifier], "forward_net_return": net,
+                     "benchmark_net_return": base, "benchmark_delta": net - base,
+                     "max_drawdown": drawdown, "trading_sessions": len(history),
+                     "pass": net > 0 and net > base})
+    if seen != set(registered):
+        raise RuntimeError("Forward results are missing frozen candidates")
+    return rows
 
 
 def run(root, previous_hash, publish):
-    marker = root / "phase5_done.json"
-    if hashlib.sha256(marker.read_bytes()).hexdigest() != previous_hash:
+    phase5_path = root / "phase5_done.json"
+    if hash_file(phase5_path) != previous_hash:
         raise RuntimeError("The Phase 5 completion marker changed")
-    result_path = root / "results/capped-sequence/validation.json"
-    digest = hashlib.sha256(result_path.read_bytes()).hexdigest()
-    result = read(result_path)
-    phase5 = read(marker)
-    if digest != phase5["counts"]["validation_sha256"]:
-        raise RuntimeError("Validation results do not match Phase 5")
-    if result["state"] != "complete" or result["holdout_status"] != "PASS":
-        raise RuntimeError("No completed independent holdout validation")
-    tested, replayed = result["candidates_tested"], result["candidates_replayed"]
-    rows = result["survivors"]
-    if not isinstance(tested, int) or not isinstance(replayed, int) or not 0 <= len(rows) <= replayed <= tested:
-        raise RuntimeError("Inconsistent campaign counts")
+    phase5 = read(phase5_path)
     phase4 = read(root / "phase4_done.json")
-    if tested != phase4["counts"]["candidates_tested"]:
-        raise RuntimeError("Reported tests do not reconcile to the search ledger")
-    for row in rows:
-        if (row["independent_trades"] < 100 or row["profitable_tickers"] < 10
-                or row["holdout_benchmark_delta"] <= 0 or not 0 <= row["corrected_p"] <= 0.05
-                or row["status"] != "PASS"):
-            raise RuntimeError("The validation evidence contains an ineligible survivor")
-
-    counts = {"candidates_tested": tested, "candidates_replayed": replayed, "survivors": len(rows)}
-    now = datetime.now(timezone.utc).isoformat()
-    header = [
-        "# Universal Quant Lab survivors", "",
-        f"Completed {now}. The locked holdout was independently validated.", "",
-        f"- Unique candidates tested: {tested:,}", f"- Candidates replayed on holdout: {replayed:,}",
-        f"- Search space: {phase4['counts']['search_space']:,}",
-        f"- Survivors: {len(rows):,}", "",
-    ]
-    if not rows:
-        header.append("**ZERO PASSED.**")
-    else:
-        header.extend([
-            "| Rule | Timeframe | Training net return | Validation net return | Holdout net return | Holdout drawdown | Independent trades | Profitable tickers | t-stat | Corrected p | Buy-and-hold delta |",
-            "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
-        ])
-        for row in sorted(rows, key=lambda r: (-r["holdout_net_return"], r["holdout_drawdown"], r["id"])):
-            rule = row["rule"].replace("|", "&#124;").replace("\n", " ")
-            header.append(
-                f"| {rule} | {row['timeframe']} | {row['train_net_return']:.2%} | "
-                f"{row['validation_net_return']:.2%} | {row['holdout_net_return']:.2%} | "
-                f"{row['holdout_drawdown']:.2%} | {row['independent_trades']:,} | "
-                f"{row['profitable_tickers']:,} | {row['t_stat']:.4f} | "
-                f"{row['corrected_p']:.4g} | {row['holdout_benchmark_delta']:+.2%} |"
-            )
+    _, plan = preregister(root)
+    results = root / "results/capped-sequence/forward_validation.json"
+    shortlist_path = root / "results/capped-sequence/shortlist.json"
+    if (hash_file(results) != phase5["counts"]["forward_validation_sha256"]
+            or hash_file(shortlist_path) != phase4["counts"]["shortlist_sha256"]):
+        raise RuntimeError("Forward evidence hashes differ from the phase markers")
+    result, shortlist = read(results), read(shortlist_path)
+    tests = phase4["counts"]["candidates_tested"]
+    if tests != shortlist["candidates_tested"] or tests < plan["discovery"]["target_unique_successful"]:
+        raise RuntimeError("Discovery trial total does not reconcile")
+    rows = evaluate(result, shortlist, plan["forward"]["minimum_trading_sessions"])
+    survivors = sorted((row for row in rows if row["pass"]),
+                       key=lambda row: (-row["forward_net_return"], row["max_drawdown"], row["id"]))
+    counts = {"candidates_tested": tests, "forward_tested": len(rows), "survivors": len(survivors)}
     publish(counts)
-    marks = ("phase1_done.json", "phase2_done.json", "phase3_sealed.json",
-             "phase4_done.json", "phase5_done.json")
-    summary = ["# Universal Quant Lab run summary", "", f"Final report written {now}.", "",
-               "| Phase | Started UTC | Finished UTC |", "|---|---|---|"]
-    for index, name in enumerate(marks, 1):
-        item = read(root / name)
-        summary.append(f"| {index} | {item['started']} | {item['finished']} |")
-    intake = read(root / "data_coverage.json")
-    summary.extend(["", "Daily coverage and excluded intraday windows are recorded in data_coverage.json.",
-                    f"The intake covered {intake['counts']['daily_checked']:,} daily symbols.",
-                    f"Validation evidence SHA-256: {digest}", ""])
-    counts["run_summary_sha256"] = write(root / "reports/RUN_SUMMARY.md", "\n".join(summary))
-    counts["survivors_sha256"] = write(root / "reports/SURVIVORS.md", "\n".join(header) + "\n")
+    output = ["# Universal Quant Lab forward survivors", "",
+              f"Historical candidates tested: {tests:,}",
+              f"Candidates tested prospectively: {len(rows):,}", f"Survivors: {len(survivors):,}", ""]
+    if not survivors:
+        output.append("**ZERO PASSED.**")
+    else:
+        output.extend(["| Rule | Timeframe | Paper net return | Buy-and-hold net return | Excess return | Drawdown | Trading sessions |",
+                       "|---|---|---:|---:|---:|---:|---:|"])
+        for row in survivors:
+            rule = row["rule"].replace("|", "&#124;").replace("\n", " ")
+            output.append(f"| {rule} | {row['timeframe']} | {row['forward_net_return']:.2%} | "
+                          f"{row['benchmark_net_return']:.2%} | {row['benchmark_delta']:+.2%} | "
+                          f"{row['max_drawdown']:.2%} | {row['trading_sessions']} |")
+    summary = ["# Universal Quant Lab V2 summary", "",
+               f"Shortlist frozen at {shortlist['frozen_utc']}.",
+               f"Forward validation SHA-256 {hash_file(results)}.", "",
+               "| Phase | Finished UTC |", "|---|---|"]
+    for number, filename in enumerate(("phase1_done.json", "phase2_done.json", "phase3_sealed.json",
+                                       "phase4_done.json", "phase5_done.json"), 1):
+        summary.append(f"| {number} | {read(root / filename)['finished']} |")
+    counts["run_summary_sha256"] = write(root / "reports/RUN_SUMMARY.md", "\n".join(summary) + "\n")
+    counts["survivors_sha256"] = write(root / "reports/SURVIVORS.md", "\n".join(output) + "\n")
     return counts

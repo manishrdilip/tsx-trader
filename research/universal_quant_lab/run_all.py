@@ -16,6 +16,7 @@ import duckdb
 from campaign_watchdog import guard, health
 from eodhd import atomic_json, query, stage_daily
 from eodhd_intraday import STORAGE, backfill
+from forward_v2 import preregister
 from profit_admission import cpu_guard
 from run_sequence_coverage import audit_intraday
 from run_universe import CUTOFF, build, content_hash, read
@@ -184,7 +185,7 @@ def phase1(root, universe, publish):
             symbol = item["symbol"]
             if symbol in intra:
                 continue
-            first = done[symbol][2]
+            first, last = done[symbol][2:4]
             if not first:
                 intra[symbol] = "daily_missing"
             else:
@@ -192,7 +193,8 @@ def phase1(root, universe, publish):
                 # Keep the two existing chunk grids so prior downloads resume exactly.
                 for start, end in ((date.fromisoformat(universe["intraday"]["provider_start"]), INTRADAY_CUT),
                                    (INTRADAY_CUT, CUTOFF + timedelta(days=1))):
-                    state, _ = backfill(root, [symbol], universe["intraday"]["frequency"], start, end, 180)
+                    state, _ = backfill(root, [symbol], universe["intraday"]["frequency"], start, end, 180,
+                                        active_dates=(date.fromisoformat(first), date.fromisoformat(last)))
                     if state != "complete":
                         raise RuntimeError(f"Intraday acquisition for {symbol} stopped: {state}")
                 intra[symbol] = "checked"
@@ -228,6 +230,8 @@ def run(root, limit=6):
     inputs = {"RUN_SEQUENCE.md": content_hash((root / "RUN_SEQUENCE.md").read_bytes()),
               "SPEC.md": content_hash((root / "SPEC.md").read_bytes())}
     inputs["config/universe.json"] = content_hash((root / "config/universe.json").read_bytes())
+    registration, _ = preregister(root)
+    inputs["config/v2_preregistration.json"] = content_hash(registration.read_bytes())
     status_path = root / "status.json"
     phase, previous_hash, counts = 1, None, {}
     started = utc()
