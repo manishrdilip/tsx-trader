@@ -138,3 +138,10 @@ Every eligible instrument must be tested against every applicable implemented st
 - Retain separate top-100 boards by instrument, strategy family, timeframe, currency and risk band, with identical starting capital and comparable horizons. Compare against same-instrument passive/cash and matched VMM where available. Win rate has zero optimization weight. Validate repeatable account-level net profit rather than isolated winning trades.
 - Audit the current continuous provisional campaign against this matrix after completion or from immutable manifests without interrupting running workers. Its rotating bounded scopes, six-condition searches and sample offsets are not proof that every instrument received the same configuration set. Reconcile global uniqueness and coverage, then schedule missing compatible cells in targeted subsequent campaigns. Do not reset or retroactively relabel current counts.
 - Codex and Claude: implement coverage reporting, deterministic shared cohorts and missing-cell planning, and publish a concise coverage audit. Continue the existing local campaign uninterrupted unless safety requires a pause. No additional purchases, live orders, production VMM modification or AI inference for individual bulk tests.
+
+## Owner clarification — positive net profit and improvement over VMM
+
+The goal is to grow the money invested and earn more net profit than VMM. There is no fixed percentage-return hurdle and no preferred holding period. This supersedes earlier numerical profit targets as mandatory hurdles. Compare the results over identical dates with the same starting capital, currency, and cost assumptions.
+
+- Require positive candidate net profit after costs and positive excess net profit over matched VMM. Report both in account currency. When testing a candidate as an addition to VMM, measure the change in net profit of the combined portfolio versus VMM alone under the same capital and execution constraints.
+- Show drawdown, time in capital, and uncertainty beside profit. Retain independent validation and the existing evidence checks. A missing matched VMM series leaves the improvement claim unverified.
