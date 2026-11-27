@@ -1,0 +1,13 @@
+{
+  "version": "sparse-control-power-v1",
+  "purpose": "Measure how often the existing after-cost screen detects known synthetic signals.",
+  "parent_plan": "PORTFOLIO_ROBUSTNESS_PLAN.json",
+  "currency": "CAD",
+  "seeds": [17653, 17654, 17655, 17656, 17657, 17658, 17659, 17660],
+  "injected_returns": [0, 0.005, 0.01, 0.02, 0.04],
+  "marker_holds": [8, 10, 12],
+  "primary_hold": 10,
+  "controls": "Same synthetic baseline for every injection within a seed. One sparse event per four sessions. Every scenario searches the frozen 90 rules and three marked timed holds, applying identical costs, folds, and hard checks.",
+  "interpretation": "Report hard-check pass counts and rankings at each strength. Negative controls and detectable strong signals check the machinery. Weak-signal power is separate from genuine market evidence and does not substitute for exact VMM calibration.",
+  "holdout": "Development observations only. No promotion."
+}
