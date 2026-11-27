@@ -1,5 +1,5 @@
-# India VMM bot - 2026-11-27 AM (LIVE)
-Signals from close of 2026-11-25. Equity Rs 12,942, cash Rs 3,111.
+# India VMM bot - 2026-11-27 PM (LIVE)
+Signals from close of 2026-11-26. Equity Rs 12,901, cash Rs 3,111.
 Market NIFTYBEES.NS above 200-day. Ranking: riskadj.
 
 | Status | Action | Qty | Stock | Limit | Why |
@@ -8,15 +8,15 @@ Market NIFTYBEES.NS above 200-day. Ranking: riskadj.
 
 | Holding | Qty | Close | 200d | % above | 12m % |
 |---|---|---|---|---|---|
-| CUPID.NS | 3 | 366.35 | 199.16 | 83.9 | 494 |
-| GCSL.NS | 1 | 852.45 | 496.72 | 71.6 | 131 |
-| INDSWFTLAB.NS | 2 | 317.45 | 234.26 | 35.5 | 219 |
-| MBAPL.NS | 5 | 195.15 | 132.53 | 47.3 | 141 |
-| NINSYS.NS | 1 | 976.10 | 653.55 | 49.4 | 138 |
-| NRL.NS | 7 | 180.14 | 97.82 | 84.1 | 175 |
-| SBC.NS | 18 | 68.27 | 42.83 | 59.4 | 173 |
-| SHILPAMED.NS | 1 | 852.85 | 633.86 | 34.5 | 128 |
-| SHREEJISPG.NS | 1 | 908.15 | 562.82 | 61.4 | 186 |
-| TFCILTD.NS | 6 | 173.66 | 101.38 | 71.3 | 161 |
+| CUPID.NS | 3 | 371.10 | 200.61 | 85.0 | 501 |
+| GCSL.NS | 1 | 850.55 | 499.52 | 70.3 | 131 |
+| INDSWFTLAB.NS | 2 | 311.95 | 235.28 | 32.6 | 213 |
+| MBAPL.NS | 5 | 191.97 | 133.07 | 44.3 | 137 |
+| NINSYS.NS | 1 | 984.80 | 656.76 | 49.9 | 141 |
+| NRL.NS | 7 | 175.86 | 98.44 | 78.6 | 168 |
+| SBC.NS | 18 | 68.35 | 43.02 | 58.9 | 173 |
+| SHILPAMED.NS | 1 | 835.65 | 636.60 | 31.3 | 123 |
+| SHREEJISPG.NS | 1 | 910.65 | 565.64 | 61.0 | 187 |
+| TFCILTD.NS | 6 | 174.94 | 101.94 | 71.6 | 163 |
 
-- slots 10, slot value Rs 1294, cap 15% = Rs 1941
+- slots 10, slot value Rs 1290, cap 15% = Rs 1935
