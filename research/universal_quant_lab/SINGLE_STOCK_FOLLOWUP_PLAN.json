@@ -1,0 +1,11 @@
+{
+  "parent_plan": "PORTFOLIO_ROBUSTNESS_PLAN.json",
+  "cutoff_exclusive": "2024-11-27",
+  "resume": true,
+  "holding_sessions": [5, 10, 20, 40],
+  "queue": [
+    {"family": "relative_strength", "thresholds": [0.02, 0.04]},
+    {"family": "failed_breakdown", "thresholds": [0.01, 0.03]},
+    {"family": "contraction_breakout", "thresholds": [0.65, 0.8]}
+  ]
+}
