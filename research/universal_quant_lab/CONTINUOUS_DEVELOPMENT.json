@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 242632000,
-  "batch": 80,
-  "worker_pid": 10292,
+  "completed": 259384000,
+  "batch": 86,
+  "worker_pid": 12920,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T07:02:24.431580+00:00",
+  "updated_utc": "2026-11-27T07:17:25.440193+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -114,6 +114,20 @@
       "strategy_id": 74216049028,
       "net_profit": 1234.39,
       "drawdown_pct": 10.73
+    },
+    {
+      "symbol": "ENB.TO",
+      "currency": "CAD",
+      "strategy_id": 596203737425,
+      "net_profit": 2499.74,
+      "drawdown_pct": 5.74
+    },
+    {
+      "symbol": "ENB.TO",
+      "currency": "CAD",
+      "strategy_id": 602847419726,
+      "net_profit": 2429.59,
+      "drawdown_pct": 5.26
     },
     {
       "symbol": "ENB.TO",
@@ -300,16 +314,16 @@
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 497792757986,
-      "net_profit": 3738.77,
-      "drawdown_pct": 11.08
+      "strategy_id": 216092741960,
+      "net_profit": 3774.54,
+      "drawdown_pct": 9.82
     },
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 93625127912,
-      "net_profit": 3736.53,
-      "drawdown_pct": 12.78
+      "strategy_id": 222535291208,
+      "net_profit": 3774.54,
+      "drawdown_pct": 9.82
     }
   ]
 }
