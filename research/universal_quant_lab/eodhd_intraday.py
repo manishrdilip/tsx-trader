@@ -35,10 +35,12 @@ def normalize(rows, exchange, start, end):
     epoch = pd.to_numeric(frame["timestamp"], errors="raise")
     if not np.isfinite(epoch).all() or (epoch % 1 != 0).any():
         raise ValueError("Invalid timestamp")
-    if ((epoch < day_epoch(start)) | (epoch >= day_epoch(end))).any() or epoch.duplicated().any():
-        raise ValueError("Out-of-range or duplicate timestamp")
+    if ((epoch < day_epoch(start)) | (epoch >= day_epoch(end))).any():
+        raise ValueError("Provider returned timestamps outside the requested window")
     frame["timestamp"] = pd.to_datetime(epoch, unit="s", utc=True)
     frame[FIELDS] = frame[FIELDS].apply(pd.to_numeric, errors="raise")
+    frame = frame.drop_duplicates(subset=["timestamp", *FIELDS])
+    frame = frame.loc[~frame.timestamp.duplicated(keep=False)].copy()
     prices = frame[FIELDS[:-1]]
     invalid = (~np.isfinite(prices) | (prices <= 0)).any(axis=1)
     invalid |= (frame.high < prices.max(axis=1)) | (frame.low > prices.min(axis=1))

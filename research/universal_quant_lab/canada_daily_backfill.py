@@ -1,4 +1,4 @@
-"""Resume a local Canadian daily-bar backfill from a frozen EODHD universe."""
+"""Resume a daily-bar backfill from frozen EODHD exchange directories."""
 import argparse
 from contextlib import closing
 from datetime import date, datetime, timezone
@@ -16,6 +16,7 @@ from campaign_watchdog import guard, health
 from eodhd import atomic_json, query, stage_daily
 
 EXCHANGES = {"TO": "TSX", "V": "TSXV", "CN": "CSE", "NEO": "CboeCanada"}
+OTHER_EXCHANGES = {"US": "US", "CC": "Crypto", "FOREX": "FX", "INDX": "Indices"}
 SYMBOL = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]*")
 
 
@@ -23,17 +24,17 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def snapshot(root, path):
+def snapshot(root, path, exchanges):
     if path.exists():
         return json.loads(path.read_bytes())
     with duckdb.connect(str(root / "database/warehouse/catalog.duckdb"), read_only=True) as db:
         existing = {symbol.upper() for (symbol,) in db.execute(
             "SELECT DISTINCT symbol FROM datasets WHERE bar_interval = '1d' AND market IN (?, ?, ?, ?)",
-            list(EXCHANGES.values()),
+            list(exchanges.values()),
         ).fetchall()}
     directories, groups = {}, []
     for delisted in (False, True):
-        for suffix, market in EXCHANGES.items():
+        for suffix, market in exchanges.items():
             status, rows = query(f"exchange-symbol-list/{suffix}", **({"delisted": 1} if delisted else {}))
             if status != 200 or not isinstance(rows, list) or not rows:
                 raise RuntimeError(f"Incomplete provider directory for {suffix}: {status}")
@@ -62,11 +63,12 @@ def snapshot(root, path):
     return data
 
 
-def run(root, cutoff, limit):
-    state = root / "database" / "canada-daily" / cutoff.isoformat()
+def run(root, cutoff, limit, scope="canada"):
+    state = root / "database" / f"{scope}-daily" / cutoff.isoformat()
     state.mkdir(parents=True, exist_ok=True)
     progress = state / "progress.json"
-    universe = snapshot(root, state / "universe.json")
+    universe = snapshot(root, state / "universe.json",
+                        EXCHANGES if scope == "canada" else OTHER_EXCHANGES)
     queue = universe["queue"]
     with closing(sqlite3.connect(state / "checkpoint.sqlite3", timeout=0)) as db:
         # One worker exclusively owns this queue. The lock releases on process exit.
@@ -138,7 +140,8 @@ if __name__ == "__main__":
     parser.add_argument("root", type=Path)
     parser.add_argument("--to", required=True, type=date.fromisoformat)
     parser.add_argument("--limit", default=0, type=int)
+    parser.add_argument("--scope", choices=("canada", "other"), default="canada")
     args = parser.parse_args()
     if args.to >= date.today() or args.limit < 0:
         parser.error("Expected a past cutoff and nonnegative limit")
-    run(args.root, args.to, args.limit)
+    run(args.root, args.to, args.limit, args.scope)
