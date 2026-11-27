@@ -1,0 +1,11 @@
+{
+  "parent_plan":"PORTFOLIO_ROBUSTNESS_PLAN.json",
+  "cutoff_exclusive":"2024-11-27",
+  "resume":true,
+  "holding_sessions":[5,10,20,40],
+  "queue":[
+    {"family":"volume_breakout","thresholds":[1.5,2.0]},
+    {"family":"volume_reversal","thresholds":[1.5,2.0]}
+  ],
+  "signal_timing":"Confirm at the close. Enter next open. Compare event-day volume with prior 20-session median. Exclude windows with split events."
+}

@@ -25,7 +25,7 @@ def signals(bars, close, threshold, direction):
     return (direction*(gap-1)>=threshold) & (last>opening)
 
 
-def candidate_masks(cfg, bars, close, benchmark):
+def candidate_masks(cfg, bars, close, benchmark, volume=None):
     family=cfg.get("family","gap")
     price=close.iloc[:,0]
     prior_valid=price.rolling(20).count().shift().eq(20).to_numpy()
@@ -52,6 +52,20 @@ def candidate_masks(cfg, bars, close, benchmark):
             trend=price.shift().rolling(200).mean()
             recent_return=price.pct_change(5,fill_method=None)
             condition=(price>trend)&(recent_return<=-threshold)&(current_return>0)
+        elif family in ("volume_breakout","volume_reversal"):
+            activity=volume/volume.shift().rolling(20,min_periods=20).median()
+            normal=(activity>=threshold)&(volume.shift().rolling(20).min()>0)
+            # A split during the reference window can mechanically change volume.
+            no_split=(bars[:,0,3]==1)
+            comparable=price.notna()&price.notna().shift(20,fill_value=False)
+            no_split_window=price.where(no_split).rolling(21).count().eq(21)
+            if family=="volume_breakout":
+                condition=price>price.shift().rolling(20).max()
+            else:
+                low=price*(bars[:,0,1]/bars[:,0,2])
+                support=price.shift().rolling(20).min()
+                condition=(low<support)&(price>support)&(current_return>0)
+            condition=condition&normal&comparable&no_split_window
         elif family=="contraction_breakout":
             prior_vol=current_return.shift().rolling(10).std()
             baseline_vol=current_return.shift().rolling(60).std()
@@ -59,6 +73,20 @@ def candidate_masks(cfg, bars, close, benchmark):
         else:
             raise ValueError("Unknown event family")
         yield family,threshold,hold,(condition.to_numpy(dtype=bool)&prior_valid)[:,None]
+
+
+def volume_inputs(db,scope,cutoff):
+    columns={}
+    for job in scope["jobs"]:
+        row=db.execute("""select parquet_glob from datasets where source=? and market=? and symbol=?
+             and bar_interval='1d' and sha256=?""",
+             [job[k] for k in ("source","market","symbol","data_sha256")]).fetchone()
+        if row is None:
+            continue
+        data=db.execute("select session,volume from read_parquet(?) where session<? order by session",
+                        [row[0],cutoff]).df().set_index("session")
+        columns[job["symbol"]]=data.volume
+    return columns
 
 
 def run(root, scope_file, plan_file, output):
@@ -88,6 +116,7 @@ def run(root, scope_file, plan_file, output):
                         config={"threads":1,"memory_limit":"192MB"}) as db:
         inputs={currency:account_inputs(root,db,scope,currency,plan)
                 for currency in sorted({job["currency"] for job in scope["jobs"]})}
+        volume=volume_inputs(db,scope,cfg["cutoff_exclusive"]) if cfg.get("family","").startswith("volume_") else {}
     for currency,(calendar,all_bars,all_close,all_mapping,slots,excluded) in inputs.items():
         report["excluded"].update(excluded)
         folds=fold_starts(calendar,plan)
@@ -116,7 +145,11 @@ def run(root, scope_file, plan_file, output):
             if not benchmarks:
                 report["excluded"][symbol]="No comparable fold with 100 sessions and an eligible opening position"
                 continue
-            for pattern,threshold,hold,mask in candidate_masks(cfg,bars,close,benchmark):
+            traded_volume=volume[symbol].reindex(calendar) if symbol in volume else None
+            if cfg.get("family","").startswith("volume_") and traded_volume is None:
+                report["excluded"][symbol]="No revision-matched volume"
+                continue
+            for pattern,threshold,hold,mask in candidate_masks(cfg,bars,close,benchmark,traded_volume):
                 outcomes=[]; history=[]
                 for year,_,new,end in folds:
                     if year not in benchmarks:
