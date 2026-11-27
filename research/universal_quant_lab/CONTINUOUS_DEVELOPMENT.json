@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 494444000,
-  "batch": 164,
-  "worker_pid": 46276,
+  "completed": 510896000,
+  "batch": 170,
+  "worker_pid": 30280,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T10:47:53.502605+00:00",
+  "updated_utc": "2026-11-27T11:02:53.984002+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -174,14 +174,14 @@
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
-      "strategy_id": 459545331545,
-      "net_profit": 12996.36,
-      "drawdown_pct": 22.93
+      "strategy_id": 31950709337,
+      "net_profit": 13138.75,
+      "drawdown_pct": 20.29
     },
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
-      "strategy_id": 459848306576,
+      "strategy_id": 459545331545,
       "net_profit": 12996.36,
       "drawdown_pct": 22.93
     },
