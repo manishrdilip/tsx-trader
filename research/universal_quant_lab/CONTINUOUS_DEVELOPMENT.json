@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 427640000,
-  "batch": 142,
-  "worker_pid": 39696,
+  "completed": 444204000,
+  "batch": 148,
+  "worker_pid": 18156,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T09:47:47.948550+00:00",
+  "updated_utc": "2026-11-27T10:02:49.996447+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -174,14 +174,14 @@
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
-      "strategy_id": 279131638355,
+      "strategy_id": 131420737235,
       "net_profit": 12811.28,
       "drawdown_pct": 22.27
     },
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
-      "strategy_id": 279233676944,
+      "strategy_id": 279131638355,
       "net_profit": 12811.28,
       "drawdown_pct": 22.27
     },
@@ -223,37 +223,37 @@
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
-      "strategy_id": 438162312722,
-      "net_profit": 1088.73,
-      "drawdown_pct": 4.48
-    },
-    {
-      "symbol": "XIU.TO",
-      "currency": "CAD",
-      "strategy_id": 607228997789,
-      "net_profit": 1029.79,
+      "strategy_id": 428826430958,
+      "net_profit": 1184.38,
       "drawdown_pct": 6.78
     },
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
-      "strategy_id": 11366722658,
-      "net_profit": 1002.92,
-      "drawdown_pct": 6.84
+      "strategy_id": 428827217402,
+      "net_profit": 1157.12,
+      "drawdown_pct": 6.78
     },
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
-      "strategy_id": 62096784878,
-      "net_profit": 991.95,
-      "drawdown_pct": 7.79
+      "strategy_id": 428825644514,
+      "net_profit": 1132.44,
+      "drawdown_pct": 6.78
     },
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
-      "strategy_id": 99959050370,
-      "net_profit": 991.03,
-      "drawdown_pct": 6.9
+      "strategy_id": 428828003846,
+      "net_profit": 1124.19,
+      "drawdown_pct": 6.82
+    },
+    {
+      "symbol": "XIU.TO",
+      "currency": "CAD",
+      "strategy_id": 438162312722,
+      "net_profit": 1088.73,
+      "drawdown_pct": 4.48
     },
     {
       "symbol": "ZAG.TO",
@@ -286,7 +286,7 @@
     {
       "symbol": "ZAG.TO",
       "currency": "CAD",
-      "strategy_id": 49025,
+      "strategy_id": 46505,
       "net_profit": 0.0,
       "drawdown_pct": 0.0
     },
