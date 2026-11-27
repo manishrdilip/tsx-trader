@@ -1,0 +1,3016 @@
+{
+  "run": "development-turnover-3m",
+  "completed": 3000000,
+  "official_completed": 0,
+  "period": "2022-01-01 through 2024-12-31",
+  "initial_capital": 5000,
+  "selection": "Top 100 per symbol by validation net profit, drawdown then canonical ID; provisional in-sample selection",
+  "leaders": {
+    "SHOP.TO": [
+      {
+        "strategy_id": 471091103,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 12275.37,
+        "cagr_pct": 51.16,
+        "drawdown_pct": 24.78,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 269761439,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 12163.55,
+        "cagr_pct": 50.83,
+        "drawdown_pct": 24.78,
+        "trades": 37,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22400092838,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 11665.92,
+        "cagr_pct": 49.36,
+        "drawdown_pct": 30.4,
+        "trades": 50,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21384406562,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 11659.14,
+        "cagr_pct": 49.34,
+        "drawdown_pct": 22.17,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21443776934,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 11018.81,
+        "cagr_pct": 47.4,
+        "drawdown_pct": 30.4,
+        "trades": 47,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 3554529116,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10928.68,
+        "cagr_pct": 47.13,
+        "drawdown_pct": 17.82,
+        "trades": 28,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 244595231,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10748.23,
+        "cagr_pct": 46.57,
+        "drawdown_pct": 23.44,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 445924895,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10687.73,
+        "cagr_pct": 46.38,
+        "drawdown_pct": 21.95,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5649812543,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10569.23,
+        "cagr_pct": 46.01,
+        "drawdown_pct": 26.16,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13016243030,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10523.69,
+        "cagr_pct": 45.87,
+        "drawdown_pct": 21.26,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13028826134,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10523.69,
+        "cagr_pct": 45.87,
+        "drawdown_pct": 21.26,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 2547303263,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10173.64,
+        "cagr_pct": 44.77,
+        "drawdown_pct": 21.8,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 251857538,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 251869838,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 453187202,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 453199502,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12965910614,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12978493718,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13003659926,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10121.74,
+        "cagr_pct": 44.6,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6637395746,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 10068.43,
+        "cagr_pct": 44.43,
+        "drawdown_pct": 15.65,
+        "trades": 23,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19232296406,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9926.43,
+        "cagr_pct": 43.98,
+        "drawdown_pct": 22.05,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12688695254,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9895.86,
+        "cagr_pct": 43.88,
+        "drawdown_pct": 23.14,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18855202658,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9809.2,
+        "cagr_pct": 43.6,
+        "drawdown_pct": 20.83,
+        "trades": 37,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21444170156,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9780.58,
+        "cagr_pct": 43.51,
+        "drawdown_pct": 28.13,
+        "trades": 44,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18830036450,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9698.72,
+        "cagr_pct": 43.24,
+        "drawdown_pct": 28.12,
+        "trades": 40,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12814710605,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9650.16,
+        "cagr_pct": 43.08,
+        "drawdown_pct": 19.84,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 7643460383,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9607.03,
+        "cagr_pct": 42.94,
+        "drawdown_pct": 19.12,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 7933258847,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9607.03,
+        "cagr_pct": 42.94,
+        "drawdown_pct": 19.12,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 7945841951,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9607.03,
+        "cagr_pct": 42.94,
+        "drawdown_pct": 19.12,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22374926630,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9519.82,
+        "cagr_pct": 42.66,
+        "drawdown_pct": 34.31,
+        "trades": 50,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5567438684,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9515.89,
+        "cagr_pct": 42.64,
+        "drawdown_pct": 22.94,
+        "trades": 29,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1874881343,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9513.79,
+        "cagr_pct": 42.64,
+        "drawdown_pct": 25.31,
+        "trades": 38,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5297485631,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9513.79,
+        "cagr_pct": 42.64,
+        "drawdown_pct": 25.31,
+        "trades": 38,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12802127501,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9446.99,
+        "cagr_pct": 42.42,
+        "drawdown_pct": 19.84,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 257166035,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9402.61,
+        "cagr_pct": 42.27,
+        "drawdown_pct": 23.84,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6637401896,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9373.55,
+        "cagr_pct": 42.18,
+        "drawdown_pct": 15.65,
+        "trades": 23,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 24160154510,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9363.23,
+        "cagr_pct": 42.14,
+        "drawdown_pct": 30.75,
+        "trades": 44,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13053992342,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9175.24,
+        "cagr_pct": 41.52,
+        "drawdown_pct": 24.2,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5536767368,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9160.43,
+        "cagr_pct": 41.47,
+        "drawdown_pct": 22.57,
+        "trades": 38,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14095827881,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9156.92,
+        "cagr_pct": 41.46,
+        "drawdown_pct": 18.0,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20224794884,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9109.71,
+        "cagr_pct": 41.3,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20225188106,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9109.71,
+        "cagr_pct": 41.3,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20225581328,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9109.71,
+        "cagr_pct": 41.3,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20225974550,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9109.71,
+        "cagr_pct": 41.3,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20226367772,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9109.71,
+        "cagr_pct": 41.3,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20437134764,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9040.11,
+        "cagr_pct": 41.07,
+        "drawdown_pct": 31.49,
+        "trades": 42,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 3528785375,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 9024.68,
+        "cagr_pct": 41.02,
+        "drawdown_pct": 15.81,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 25168775090,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8964.37,
+        "cagr_pct": 40.81,
+        "drawdown_pct": 18.5,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18854416214,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8958.39,
+        "cagr_pct": 40.79,
+        "drawdown_pct": 22.8,
+        "trades": 37,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14690195234,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8924.06,
+        "cagr_pct": 40.68,
+        "drawdown_pct": 33.54,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20224008440,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8883.83,
+        "cagr_pct": 40.54,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20224401662,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8883.83,
+        "cagr_pct": 40.54,
+        "drawdown_pct": 19.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 3553951583,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8860.59,
+        "cagr_pct": 40.46,
+        "drawdown_pct": 23.39,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 31069535,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8850.53,
+        "cagr_pct": 40.43,
+        "drawdown_pct": 21.54,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21431593202,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8772.38,
+        "cagr_pct": 40.17,
+        "drawdown_pct": 24.5,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 16399138046,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8746.12,
+        "cagr_pct": 40.08,
+        "drawdown_pct": 23.46,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1862501000,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8700.49,
+        "cagr_pct": 39.92,
+        "drawdown_pct": 25.75,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22399699616,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8681.68,
+        "cagr_pct": 39.86,
+        "drawdown_pct": 41.84,
+        "trades": 52,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12687908810,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8673.46,
+        "cagr_pct": 39.83,
+        "drawdown_pct": 25.57,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14098973657,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8655.84,
+        "cagr_pct": 39.77,
+        "drawdown_pct": 19.74,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 332664659,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8629.89,
+        "cagr_pct": 39.68,
+        "drawdown_pct": 24.35,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 382997075,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8629.89,
+        "cagr_pct": 39.68,
+        "drawdown_pct": 24.35,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12977707274,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8609.83,
+        "cagr_pct": 39.61,
+        "drawdown_pct": 25.78,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5642734547,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8599.33,
+        "cagr_pct": 39.58,
+        "drawdown_pct": 25.1,
+        "trades": 31,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13079158550,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8593.76,
+        "cagr_pct": 39.56,
+        "drawdown_pct": 31.24,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 16803757334,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8593.76,
+        "cagr_pct": 39.56,
+        "drawdown_pct": 31.24,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 17004699926,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8593.76,
+        "cagr_pct": 39.56,
+        "drawdown_pct": 31.24,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21434732828,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8593.76,
+        "cagr_pct": 39.56,
+        "drawdown_pct": 31.24,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 17115785141,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8583.97,
+        "cagr_pct": 39.52,
+        "drawdown_pct": 23.18,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18122433461,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8583.97,
+        "cagr_pct": 39.52,
+        "drawdown_pct": 23.18,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5461268744,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8491.07,
+        "cagr_pct": 39.21,
+        "drawdown_pct": 24.92,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6876284261,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8490.35,
+        "cagr_pct": 39.2,
+        "drawdown_pct": 30.12,
+        "trades": 43,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 258149090,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8467.3,
+        "cagr_pct": 39.12,
+        "drawdown_pct": 25.31,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 258161390,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8467.3,
+        "cagr_pct": 39.12,
+        "drawdown_pct": 25.31,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 16008471989,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8465.2,
+        "cagr_pct": 39.12,
+        "drawdown_pct": 23.9,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13379180786,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8441.28,
+        "cagr_pct": 39.03,
+        "drawdown_pct": 24.5,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 17143703903,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8407.63,
+        "cagr_pct": 38.92,
+        "drawdown_pct": 23.08,
+        "trades": 26,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18150352223,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8407.63,
+        "cagr_pct": 38.92,
+        "drawdown_pct": 23.08,
+        "trades": 26,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19994366792,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8330.38,
+        "cagr_pct": 38.65,
+        "drawdown_pct": 21.41,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21450461708,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8300.77,
+        "cagr_pct": 38.55,
+        "drawdown_pct": 27.24,
+        "trades": 38,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 17176144718,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8280.07,
+        "cagr_pct": 38.48,
+        "drawdown_pct": 21.2,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18182793038,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8280.07,
+        "cagr_pct": 38.48,
+        "drawdown_pct": 21.2,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 232399199,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8248.07,
+        "cagr_pct": 38.36,
+        "drawdown_pct": 21.59,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 3453673823,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8192.17,
+        "cagr_pct": 38.17,
+        "drawdown_pct": 15.57,
+        "trades": 29,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6750059999,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8163.11,
+        "cagr_pct": 38.07,
+        "drawdown_pct": 18.81,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20398205786,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8121.88,
+        "cagr_pct": 37.92,
+        "drawdown_pct": 19.58,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20398599008,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8121.88,
+        "cagr_pct": 37.92,
+        "drawdown_pct": 19.58,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20398992230,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8121.88,
+        "cagr_pct": 37.92,
+        "drawdown_pct": 19.58,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20399385452,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8121.88,
+        "cagr_pct": 37.92,
+        "drawdown_pct": 19.58,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13680984821,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8109.53,
+        "cagr_pct": 37.88,
+        "drawdown_pct": 23.75,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1220559935,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8078.41,
+        "cagr_pct": 37.77,
+        "drawdown_pct": 22.15,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13669188161,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8074.72,
+        "cagr_pct": 37.76,
+        "drawdown_pct": 30.4,
+        "trades": 39,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21450068486,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8063.68,
+        "cagr_pct": 37.72,
+        "drawdown_pct": 30.4,
+        "trades": 41,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 533416790,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8055.16,
+        "cagr_pct": 37.69,
+        "drawdown_pct": 21.68,
+        "trades": 28,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21447315932,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8051.52,
+        "cagr_pct": 37.68,
+        "drawdown_pct": 27.24,
+        "trades": 42,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12976134386,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8044.95,
+        "cagr_pct": 37.65,
+        "drawdown_pct": 26.4,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19799328680,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8043.69,
+        "cagr_pct": 37.65,
+        "drawdown_pct": 18.89,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 18927555506,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 8025.78,
+        "cagr_pct": 37.59,
+        "drawdown_pct": 26.73,
+        "trades": 38,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12884120438,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 7995.69,
+        "cagr_pct": 37.48,
+        "drawdown_pct": 14.21,
+        "trades": 26,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 17163758225,
+        "job_id": "68265497f6c1314429f8e11ad918b876d290729685f2a9edf404002ddf76bf37",
+        "currency": "CAD",
+        "net_profit": 7971.86,
+        "cagr_pct": 37.4,
+        "drawdown_pct": 18.61,
+        "trades": 26,
+        "holding_sessions": 10
+      }
+    ],
+    "AAPL.US": [
+      {
+        "strategy_id": 18981033698,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3738.77,
+        "cagr_pct": 20.45,
+        "drawdown_pct": 11.08,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10578063869,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3501.11,
+        "cagr_pct": 19.35,
+        "drawdown_pct": 17.15,
+        "trades": 37,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6141745565,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6166911773,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6192077981,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6217244189,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6242410397,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6267576605,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6292742813,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3423.58,
+        "cagr_pct": 18.98,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12203053784,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3403.99,
+        "cagr_pct": 18.89,
+        "drawdown_pct": 7.09,
+        "trades": 15,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12203059934,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3403.99,
+        "cagr_pct": 18.89,
+        "drawdown_pct": 7.09,
+        "trades": 15,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19249401563,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3336.36,
+        "cagr_pct": 18.57,
+        "drawdown_pct": 7.09,
+        "trades": 15,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8660529086,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3281.01,
+        "cagr_pct": 18.31,
+        "drawdown_pct": 12.7,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22493161528,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3189.44,
+        "cagr_pct": 17.87,
+        "drawdown_pct": 7.37,
+        "trades": 34,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 19320771356,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3123.92,
+        "cagr_pct": 17.56,
+        "drawdown_pct": 6.8,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6248701949,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3119.5,
+        "cagr_pct": 17.54,
+        "drawdown_pct": 16.93,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13493817299,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3118.44,
+        "cagr_pct": 17.53,
+        "drawdown_pct": 6.8,
+        "trades": 22,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1231779062,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3110.68,
+        "cagr_pct": 17.49,
+        "drawdown_pct": 6.8,
+        "trades": 20,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13191822803,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3065.01,
+        "cagr_pct": 17.27,
+        "drawdown_pct": 6.8,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 16211767763,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3065.01,
+        "cagr_pct": 17.27,
+        "drawdown_pct": 6.8,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 24351856385,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3054.14,
+        "cagr_pct": 17.22,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 25276517918,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3053.02,
+        "cagr_pct": 17.21,
+        "drawdown_pct": 16.58,
+        "trades": 31,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10192128776,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3051.07,
+        "cagr_pct": 17.2,
+        "drawdown_pct": 6.8,
+        "trades": 17,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12593338919,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3049.29,
+        "cagr_pct": 17.2,
+        "drawdown_pct": 9.15,
+        "trades": 26,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12593725991,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3049.29,
+        "cagr_pct": 17.2,
+        "drawdown_pct": 9.15,
+        "trades": 26,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8363843087,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3046.74,
+        "cagr_pct": 17.18,
+        "drawdown_pct": 16.63,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6273868157,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3032.39,
+        "cagr_pct": 17.11,
+        "drawdown_pct": 14.66,
+        "trades": 33,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14842824757,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3018.07,
+        "cagr_pct": 17.04,
+        "drawdown_pct": 5.83,
+        "trades": 28,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 6956882471,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3015.91,
+        "cagr_pct": 17.03,
+        "drawdown_pct": 8.82,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 7057547303,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3015.91,
+        "cagr_pct": 17.03,
+        "drawdown_pct": 8.82,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6956108327,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3015.12,
+        "cagr_pct": 17.03,
+        "drawdown_pct": 9.05,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 7056773159,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3015.12,
+        "cagr_pct": 17.03,
+        "drawdown_pct": 9.05,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8400275509,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3009.03,
+        "cagr_pct": 17.0,
+        "drawdown_pct": 7.38,
+        "trades": 30,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 9884616872,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3006.94,
+        "cagr_pct": 16.99,
+        "drawdown_pct": 6.8,
+        "trades": 17,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14143604354,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3006.53,
+        "cagr_pct": 16.99,
+        "drawdown_pct": 19.7,
+        "trades": 40,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1298024669,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3002.43,
+        "cagr_pct": 16.97,
+        "drawdown_pct": 7.78,
+        "trades": 15,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10557425864,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 3001.98,
+        "cagr_pct": 16.97,
+        "drawdown_pct": 6.59,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13493424077,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2993.64,
+        "cagr_pct": 16.93,
+        "drawdown_pct": 16.67,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21743412098,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21746557874,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21768578306,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21771724082,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21793744514,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21796890290,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2988.81,
+        "cagr_pct": 16.9,
+        "drawdown_pct": 17.71,
+        "trades": 36,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1232159984,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4652601551,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4652994773,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4653387995,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4653781217,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4653977828,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4654174439,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4654371050,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4654567661,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4654764272,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4654960883,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4655157494,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 4655354105,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10191932165,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10545235982,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10548381758,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10551527534,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10570402190,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10573547966,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10595568398,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12294287438,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22763239505,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22766385281,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 24373876817,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2970.77,
+        "cagr_pct": 16.81,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6795268229,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2951.85,
+        "cagr_pct": 16.72,
+        "drawdown_pct": 14.2,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19030770131,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2950.11,
+        "cagr_pct": 16.71,
+        "drawdown_pct": 9.2,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12399480473,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2938.72,
+        "cagr_pct": 16.66,
+        "drawdown_pct": 13.32,
+        "trades": 25,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12392009255,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2929.55,
+        "cagr_pct": 16.61,
+        "drawdown_pct": 8.82,
+        "trades": 24,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8363056643,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2923.3,
+        "cagr_pct": 16.58,
+        "drawdown_pct": 18.18,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12634424468,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2918.94,
+        "cagr_pct": 16.56,
+        "drawdown_pct": 14.57,
+        "trades": 30,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6754778663,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2914.29,
+        "cagr_pct": 16.54,
+        "drawdown_pct": 15.95,
+        "trades": 28,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 9774723623,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2914.29,
+        "cagr_pct": 16.54,
+        "drawdown_pct": 15.95,
+        "trades": 28,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 9878325320,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2913.52,
+        "cagr_pct": 16.53,
+        "drawdown_pct": 9.25,
+        "trades": 18,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 141558767,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2911.09,
+        "cagr_pct": 16.52,
+        "drawdown_pct": 17.12,
+        "trades": 35,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10576300520,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2907.06,
+        "cagr_pct": 16.5,
+        "drawdown_pct": 6.59,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 23435839586,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2905.42,
+        "cagr_pct": 16.49,
+        "drawdown_pct": 6.8,
+        "trades": 20,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 5041498109,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2903.04,
+        "cagr_pct": 16.48,
+        "drawdown_pct": 17.71,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10674212798,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2901.28,
+        "cagr_pct": 16.47,
+        "drawdown_pct": 6.6,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19345937564,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2900.47,
+        "cagr_pct": 16.47,
+        "drawdown_pct": 6.8,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1417564157,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2895.24,
+        "cagr_pct": 16.44,
+        "drawdown_pct": 12.65,
+        "trades": 17,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19330208684,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2894.6,
+        "cagr_pct": 16.44,
+        "drawdown_pct": 12.86,
+        "trades": 32,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6223535741,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2889.05,
+        "cagr_pct": 16.41,
+        "drawdown_pct": 15.13,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 19279876268,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2886.79,
+        "cagr_pct": 16.4,
+        "drawdown_pct": 15.05,
+        "trades": 34,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12398300807,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2883.37,
+        "cagr_pct": 16.39,
+        "drawdown_pct": 14.46,
+        "trades": 27,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14198858195,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.4,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 6.8,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8969404967,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.35,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 15.99,
+        "trades": 29,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 9070069799,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.35,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 15.99,
+        "trades": 29,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10982701607,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.35,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 15.99,
+        "trades": 29,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 10576693742,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.24,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12297427064,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.24,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12297433214,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.24,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 24377022593,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2878.24,
+        "cagr_pct": 16.36,
+        "drawdown_pct": 6.8,
+        "trades": 19,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 9884629172,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2866.77,
+        "cagr_pct": 16.3,
+        "drawdown_pct": 7.95,
+        "trades": 18,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 9878337620,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2861.95,
+        "cagr_pct": 16.28,
+        "drawdown_pct": 9.25,
+        "trades": 20,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12250240424,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2860.28,
+        "cagr_pct": 16.27,
+        "drawdown_pct": 7.09,
+        "trades": 15,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 12199908008,
+        "job_id": "3d71d214439cc731c2cde16ca2c049336a1e9956e16455bcde4e9ec42f6a82ca",
+        "currency": "USD",
+        "net_profit": 2854.14,
+        "cagr_pct": 16.24,
+        "drawdown_pct": 8.52,
+        "trades": 16,
+        "holding_sessions": 10
+      }
+    ],
+    "XEG.TO": [
+      {
+        "strategy_id": 1912636805,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1135.89,
+        "cagr_pct": 7.06,
+        "drawdown_pct": 6.71,
+        "trades": 9,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1887470597,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1094.63,
+        "cagr_pct": 6.82,
+        "drawdown_pct": 6.71,
+        "trades": 9,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22563548266,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1060.06,
+        "cagr_pct": 6.62,
+        "drawdown_pct": 3.95,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 1510364549,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1056.77,
+        "cagr_pct": 6.6,
+        "drawdown_pct": 6.81,
+        "trades": 10,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 705045893,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1050.0,
+        "cagr_pct": 6.56,
+        "drawdown_pct": 6.84,
+        "trades": 11,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14750024365,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1032.2,
+        "cagr_pct": 6.45,
+        "drawdown_pct": 6.42,
+        "trades": 16,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14774404129,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1025.54,
+        "cagr_pct": 6.41,
+        "drawdown_pct": 5.05,
+        "trades": 15,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 8784459553,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1011.71,
+        "cagr_pct": 6.33,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 8785233697,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1011.71,
+        "cagr_pct": 6.33,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14623990564,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1011.71,
+        "cagr_pct": 6.33,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 15831384865,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1011.71,
+        "cagr_pct": 6.33,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 15832171309,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1011.71,
+        "cagr_pct": 6.33,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14775190573,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 1005.55,
+        "cagr_pct": 6.3,
+        "drawdown_pct": 5.07,
+        "trades": 15,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 7928808481,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 958.35,
+        "cagr_pct": 6.02,
+        "drawdown_pct": 5.11,
+        "trades": 15,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14623793953,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 938.75,
+        "cagr_pct": 5.9,
+        "drawdown_pct": 6.74,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14597853601,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 937.34,
+        "cagr_pct": 5.89,
+        "drawdown_pct": 6.82,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 15807005101,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 936.19,
+        "cagr_pct": 5.89,
+        "drawdown_pct": 6.88,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 7643853605,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 921.32,
+        "cagr_pct": 5.8,
+        "drawdown_pct": 8.01,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 8759293345,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 907.36,
+        "cagr_pct": 5.71,
+        "drawdown_pct": 6.88,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 8760067489,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 907.36,
+        "cagr_pct": 5.71,
+        "drawdown_pct": 6.88,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22565121154,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 907.29,
+        "cagr_pct": 5.71,
+        "drawdown_pct": 3.33,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22566694042,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 890.93,
+        "cagr_pct": 5.62,
+        "drawdown_pct": 2.81,
+        "trades": 7,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14598627745,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 882.25,
+        "cagr_pct": 5.56,
+        "drawdown_pct": 6.82,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 7878476065,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 881.13,
+        "cagr_pct": 5.56,
+        "drawdown_pct": 7.03,
+        "trades": 17,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14709266501,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 872.98,
+        "cagr_pct": 5.51,
+        "drawdown_pct": 3.56,
+        "trades": 20,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22362218602,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 866.61,
+        "cagr_pct": 5.47,
+        "drawdown_pct": 6.89,
+        "trades": 15,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14975733793,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 865.41,
+        "cagr_pct": 5.46,
+        "drawdown_pct": 5.14,
+        "trades": 14,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 13944318637,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 861.92,
+        "cagr_pct": 5.44,
+        "drawdown_pct": 6.42,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22358804528,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 858.96,
+        "cagr_pct": 5.43,
+        "drawdown_pct": 3.58,
+        "trades": 23,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13230948392,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 857.71,
+        "cagr_pct": 5.42,
+        "drawdown_pct": 2.77,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14709069890,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 850.2,
+        "cagr_pct": 5.37,
+        "drawdown_pct": 3.56,
+        "trades": 21,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22465242766,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 849.02,
+        "cagr_pct": 5.37,
+        "drawdown_pct": 4.51,
+        "trades": 9,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 15806218657,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 847.18,
+        "cagr_pct": 5.35,
+        "drawdown_pct": 6.88,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22438503670,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 846.84,
+        "cagr_pct": 5.35,
+        "drawdown_pct": 4.7,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14976520237,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 845.42,
+        "cagr_pct": 5.34,
+        "drawdown_pct": 5.15,
+        "trades": 14,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22466416282,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 841.87,
+        "cagr_pct": 5.32,
+        "drawdown_pct": 2.81,
+        "trades": 7,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 13944705709,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 839.7,
+        "cagr_pct": 5.31,
+        "drawdown_pct": 6.42,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14910399554,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 838.75,
+        "cagr_pct": 5.3,
+        "drawdown_pct": 3.55,
+        "trades": 18,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1510561160,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 837.53,
+        "cagr_pct": 5.3,
+        "drawdown_pct": 7.26,
+        "trades": 10,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14623019809,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 837.31,
+        "cagr_pct": 5.3,
+        "drawdown_pct": 6.81,
+        "trades": 10,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14623806253,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 837.31,
+        "cagr_pct": 5.3,
+        "drawdown_pct": 6.81,
+        "trades": 10,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 13742988973,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 836.74,
+        "cagr_pct": 5.29,
+        "drawdown_pct": 6.42,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 7618687397,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 823.55,
+        "cagr_pct": 5.21,
+        "drawdown_pct": 8.13,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14598824356,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 818.36,
+        "cagr_pct": 5.18,
+        "drawdown_pct": 6.88,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 5951426117,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 811.13,
+        "cagr_pct": 5.14,
+        "drawdown_pct": 3.56,
+        "trades": 23,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 6769721099,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 810.33,
+        "cagr_pct": 5.13,
+        "drawdown_pct": 4.63,
+        "trades": 27,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 23169110146,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 807.33,
+        "cagr_pct": 5.11,
+        "drawdown_pct": 3.33,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22359590972,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 806.95,
+        "cagr_pct": 5.11,
+        "drawdown_pct": 3.58,
+        "trades": 23,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20261626678,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 799.17,
+        "cagr_pct": 5.07,
+        "drawdown_pct": 2.65,
+        "trades": 8,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 13231341614,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 796.33,
+        "cagr_pct": 5.05,
+        "drawdown_pct": 6.24,
+        "trades": 9,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22413337462,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 796.11,
+        "cagr_pct": 5.05,
+        "drawdown_pct": 2.56,
+        "trades": 10,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 730814234,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 790.92,
+        "cagr_pct": 5.02,
+        "drawdown_pct": 5.08,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 755980442,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 790.92,
+        "cagr_pct": 5.02,
+        "drawdown_pct": 5.08,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 22466029210,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 787.42,
+        "cagr_pct": 4.99,
+        "drawdown_pct": 4.45,
+        "trades": 8,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22373687577,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 785.23,
+        "cagr_pct": 4.98,
+        "drawdown_pct": 5.37,
+        "trades": 22,
+        "holding_sessions": 2
+      },
+      {
+        "strategy_id": 14800356781,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 782.84,
+        "cagr_pct": 4.97,
+        "drawdown_pct": 4.92,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 737105786,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 778.02,
+        "cagr_pct": 4.94,
+        "drawdown_pct": 5.45,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14237590562,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 772.01,
+        "cagr_pct": 4.9,
+        "drawdown_pct": 7.31,
+        "trades": 9,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 14724071713,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 768.84,
+        "cagr_pct": 4.88,
+        "drawdown_pct": 6.89,
+        "trades": 19,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 20135795638,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 765.41,
+        "cagr_pct": 4.86,
+        "drawdown_pct": 4.7,
+        "trades": 9,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14750810809,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 760.38,
+        "cagr_pct": 4.83,
+        "drawdown_pct": 3.08,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 23156127670,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 758.33,
+        "cagr_pct": 4.82,
+        "drawdown_pct": 2.96,
+        "trades": 10,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 733370177,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 753.79,
+        "cagr_pct": 4.79,
+        "drawdown_pct": 2.82,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1539462977,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 753.79,
+        "cagr_pct": 4.79,
+        "drawdown_pct": 2.82,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 20249043574,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 752.58,
+        "cagr_pct": 4.78,
+        "drawdown_pct": 3.3,
+        "trades": 10,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22464456322,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 747.07,
+        "cagr_pct": 4.75,
+        "drawdown_pct": 4.49,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 12812613421,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 746.74,
+        "cagr_pct": 4.75,
+        "drawdown_pct": 4.93,
+        "trades": 7,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14816026274,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 743.93,
+        "cagr_pct": 4.73,
+        "drawdown_pct": 7.84,
+        "trades": 9,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13744561861,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 742.08,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 3.0,
+        "trades": 9,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 13945492153,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 742.08,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 3.0,
+        "trades": 9,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 1536919334,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 741.51,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 4.36,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1562085542,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 741.51,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 4.36,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 13029225506,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 741.51,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 4.36,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 15847840802,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 741.51,
+        "cagr_pct": 4.72,
+        "drawdown_pct": 4.36,
+        "trades": 8,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 21559259278,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 736.04,
+        "cagr_pct": 4.68,
+        "drawdown_pct": 3.38,
+        "trades": 7,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14774791201,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 735.01,
+        "cagr_pct": 4.68,
+        "drawdown_pct": 5.17,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 22565907598,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 734.08,
+        "cagr_pct": 4.67,
+        "drawdown_pct": 3.35,
+        "trades": 8,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14774987812,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 732.05,
+        "cagr_pct": 4.66,
+        "drawdown_pct": 5.17,
+        "trades": 11,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14598640045,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 728.73,
+        "cagr_pct": 4.64,
+        "drawdown_pct": 7.09,
+        "trades": 12,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14751597253,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 728.26,
+        "cagr_pct": 4.64,
+        "drawdown_pct": 4.57,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 14752383697,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 728.26,
+        "cagr_pct": 4.64,
+        "drawdown_pct": 4.57,
+        "trades": 13,
+        "holding_sessions": 5
+      },
+      {
+        "strategy_id": 764827937,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 793729754,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 794712809,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 795499253,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 796285697,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 818895962,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 819879017,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 821451905,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 869228378,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 870211433,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1599822554,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1600608998,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1600805609,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1602181886,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1602378497,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1624988762,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1625971817,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1639931198,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      },
+      {
+        "strategy_id": 1640127809,
+        "job_id": "b78629fd69ca9f5fd61108cb6e5bba83f25303f0f69b27181db9fc7b4b62a016",
+        "currency": "CAD",
+        "net_profit": 727.77,
+        "cagr_pct": 4.63,
+        "drawdown_pct": 3.28,
+        "trades": 7,
+        "holding_sessions": 10
+      }
+    ]
+  }
+}
