@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 327000000,
-  "batch": 109,
-  "worker_pid": 46672,
+  "completed": 344224000,
+  "batch": 114,
+  "worker_pid": 43104,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T08:17:33.989627+00:00",
+  "updated_utc": "2026-11-27T08:32:36.793483+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
