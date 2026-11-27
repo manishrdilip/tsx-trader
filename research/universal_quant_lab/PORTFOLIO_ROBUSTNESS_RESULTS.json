@@ -1,0 +1,275 @@
+{
+  "plan_sha256": "d6300093f351a138dbcc2b0dea26623d4e3afca83bba1015a6e24dceef3e3640",
+  "scope": "portfolio-discovery-v2.json",
+  "official": 0,
+  "cutoff_exclusive": "2024-11-27",
+  "state": "complete",
+  "promotion_candidates": [],
+  "report_sha256": "86396843d6d2d46bfdfc8297e9207b77c1e6041558fbc72fababca2347fedd34",
+  "scope_sha256": "4ea9a2dddd45d4de7012b44b5d617959e58e90413a67a2dd110bf8edf32f9722",
+  "runner_sha256": "60720e33bb25e987c382604769c7c3e0055d961a9964e713a75b4825553d65ed",
+  "accounts": {
+    "CAD": {
+      "symbols": 25,
+      "rules": 90,
+      "null_draws": 9,
+      "hard_gate_passes": 0,
+      "distinct_after_overlap": 0,
+      "max_null_return": 0.3436819640239588,
+      "leader": {
+        "id": 77,
+        "rule": [
+          "volatility",
+          20,
+          0.02,
+          12
+        ],
+        "score": 0.2386567176459231,
+        "folds": [
+          {
+            "year": 2018,
+            "net_return": 0.026281896000000596,
+            "train_return": -0.09120909199999896,
+            "drawdown": 0.08152986234793647,
+            "trades": 21,
+            "passive": -0.02507883200000033,
+            "sma200": -0.06497807599999941,
+            "regime": "choppy"
+          },
+          {
+            "year": 2019,
+            "net_return": 0.17953416200000047,
+            "train_return": 0.0128430800000011,
+            "drawdown": 0.04999090647432891,
+            "trades": 20,
+            "passive": 0.10972374599999984,
+            "sma200": 0.3689775240000001,
+            "regime": "bull"
+          },
+          {
+            "year": 2020,
+            "net_return": -0.0015904679999999645,
+            "train_return": 0.16240781200000184,
+            "drawdown": 0.17949466035160067,
+            "trades": 56,
+            "passive": -0.03304750000000058,
+            "sma200": 0.10726404400000046,
+            "regime": "choppy"
+          },
+          {
+            "year": 2021,
+            "net_return": -0.0003056359999993219,
+            "train_return": 0.1423481480000015,
+            "drawdown": 0.06892703093492758,
+            "trades": 52,
+            "passive": 0.11498964299999971,
+            "sma200": 0.1860564479999999,
+            "regime": "bull"
+          },
+          {
+            "year": 2022,
+            "net_return": -0.021544035999999142,
+            "train_return": 0.12503237600000067,
+            "drawdown": 0.20443730148968464,
+            "trades": 60,
+            "passive": -0.009582842000000346,
+            "sma200": -0.20212016799999938,
+            "regime": "choppy"
+          },
+          {
+            "year": 2023,
+            "net_return": 0.04774723600000034,
+            "train_return": 0.033714336000001455,
+            "drawdown": 0.10456376127652711,
+            "trades": 51,
+            "passive": 0.0710882599999999,
+            "sma200": -0.08226393999999927,
+            "regime": "choppy"
+          }
+        ],
+        "trades": 260,
+        "trimmed_profit": -1013.8553999999891,
+        "hard_gate_failures": [
+          "nonpositive_after_top_5pct_removed",
+          "positive_in_at_most_half_of_folds"
+        ],
+        "search_adjusted_empirical_p": 0.2
+      },
+      "nearest_grid_returns": [
+        {
+          "rule": [
+            "volatility",
+            16,
+            0.02,
+            12
+          ],
+          "score": 0.08292581417744782,
+          "failures": [
+            "nonpositive_after_top_5pct_removed",
+            "did_not_beat_both_benchmarks",
+            "positive_in_at_most_half_of_folds"
+          ]
+        },
+        {
+          "rule": [
+            "volatility",
+            20,
+            0.016,
+            12
+          ],
+          "score": 0.08011786854228742,
+          "failures": [
+            "nonpositive_after_top_5pct_removed",
+            "did_not_beat_both_benchmarks"
+          ]
+        },
+        {
+          "rule": [
+            "volatility",
+            20,
+            0.02,
+            10
+          ],
+          "score": -0.022696494013556112,
+          "failures": [
+            "nonpositive_after_top_5pct_removed",
+            "did_not_beat_both_benchmarks",
+            "positive_in_at_most_half_of_folds"
+          ]
+        },
+        {
+          "rule": [
+            "volatility",
+            20,
+            0.024,
+            12
+          ],
+          "score": 0.08432348845036075,
+          "failures": [
+            "nonpositive_after_top_5pct_removed",
+            "did_not_beat_both_benchmarks",
+            "positive_in_at_most_half_of_folds"
+          ]
+        },
+        {
+          "rule": [
+            "volatility",
+            24,
+            0.02,
+            12
+          ],
+          "score": 0.06782662626979197,
+          "failures": [
+            "nonpositive_after_top_5pct_removed",
+            "did_not_beat_both_benchmarks",
+            "positive_in_at_most_half_of_folds"
+          ]
+        }
+      ],
+      "failure_tally": {
+        "nonpositive_after_top_5pct_removed": 90,
+        "did_not_beat_both_benchmarks": 89,
+        "positive_in_at_most_half_of_folds": 87,
+        "fold_drawdown_limit": 5,
+        "fewer_than_200_closed_trades": 13
+      }
+    },
+    "USD": {
+      "symbols": 14,
+      "rules": 90,
+      "null_draws": 9,
+      "hard_gate_passes": 0,
+      "distinct_after_overlap": 0,
+      "max_null_return": 0.2775690278545053,
+      "leader": {
+        "id": 36,
+        "rule": [
+          "mean_reversion",
+          14,
+          24,
+          8
+        ],
+        "score": -0.014482806911958912,
+        "folds": [
+          {
+            "year": 2018,
+            "net_return": 0.042674335999999854,
+            "train_return": -0.013695115999999325,
+            "drawdown": 0.05071500858916733,
+            "trades": 18,
+            "passive": -0.02016836000000003,
+            "sma200": -0.020358583999999427,
+            "regime": "choppy"
+          },
+          {
+            "year": 2019,
+            "net_return": 0.0,
+            "train_return": 0.03544738600000055,
+            "drawdown": 0.0,
+            "trades": 0,
+            "passive": 0.19529070599999995,
+            "sma200": 0.09903901800000021,
+            "regime": "bull"
+          },
+          {
+            "year": 2020,
+            "net_return": -0.040661075999999956,
+            "train_return": 0.03469331399999992,
+            "drawdown": 0.16302721241261908,
+            "trades": 8,
+            "passive": 0.1753291860000003,
+            "sma200": 0.15571012764000025,
+            "regime": "bull"
+          },
+          {
+            "year": 2021,
+            "net_return": -0.00979561253999982,
+            "train_return": -0.013043321999999717,
+            "drawdown": 0.01213991486780186,
+            "trades": 3,
+            "passive": 0.06697669400000013,
+            "sma200": 0.19125177300000032,
+            "regime": "choppy"
+          },
+          {
+            "year": 2022,
+            "net_return": 0.0010719560000001366,
+            "train_return": -0.04965301531999994,
+            "drawdown": 0.03594910185958322,
+            "trades": 16,
+            "passive": -0.11268917599999968,
+            "sma200": -0.18255232539999944,
+            "regime": "bear"
+          },
+          {
+            "year": 2023,
+            "net_return": -0.0060756879999999,
+            "train_return": -0.047624369319999825,
+            "drawdown": 0.026921758794869466,
+            "trades": 5,
+            "passive": 0.18703179100000034,
+            "sma200": 0.1425853420000003,
+            "regime": "bull"
+          }
+        ],
+        "trades": 50,
+        "trimmed_profit": -358.6413626999947,
+        "hard_gate_failures": [
+          "fewer_than_200_closed_trades",
+          "nonpositive_after_top_5pct_removed",
+          "did_not_beat_both_benchmarks",
+          "positive_in_at_most_half_of_folds"
+        ],
+        "search_adjusted_empirical_p": 0.9
+      },
+      "nearest_grid_returns": [],
+      "failure_tally": {
+        "nonpositive_after_top_5pct_removed": 90,
+        "did_not_beat_both_benchmarks": 90,
+        "positive_in_at_most_half_of_folds": 88,
+        "fewer_than_200_closed_trades": 32,
+        "fold_drawdown_limit": 2
+      }
+    }
+  }
+}
