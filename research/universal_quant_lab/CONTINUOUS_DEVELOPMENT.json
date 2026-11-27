@@ -1,1 +1,13 @@
-{"status":"scheduled","provisional_target":1000000000,"completed":0,"official_completed":0}
+{
+  "campaign": "continuous-development-v1",
+  "provisional_target": 1000000000,
+  "official_completed": 0,
+  "completed": 0,
+  "batch": 0,
+  "worker_pid": null,
+  "status": "waiting",
+  "resource_pause": false,
+  "retry_limit_reached": false,
+  "updated_utc": "2026-11-27T02:47:03.699665+00:00",
+  "promising": []
+}
