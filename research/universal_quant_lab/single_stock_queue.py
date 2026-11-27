@@ -1,4 +1,4 @@
-﻿"""Run the fixed research queue and preserve per-instrument checkpoints."""
+"""Run the fixed research queue and preserve per-instrument checkpoints."""
 import argparse
 import hashlib
 from pathlib import Path
@@ -10,11 +10,12 @@ from portfolio_robustness import read
 from single_stock_event import run
 
 
-def execute(root, plan_file):
+def execute(root, plan_file, scope, name):
     plan=read(plan_file)
-    folder=root/"results/single-stock-followup-v1"
+    folder=root/"results"/name
+    if folder.parent!=(root/"results") or not name.startswith("single-stock-"):
+        raise ValueError("Expected a dedicated single-stock results folder")
     folder.mkdir(exist_ok=True)
-    scope=root/"config/portfolio-discovery-v2.json"
     status=folder/"progress.json"
     with exclusive(folder/"runner.lock"):
         frozen=folder/"queue.json"
@@ -62,5 +63,7 @@ if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument("root",type=Path)
     p.add_argument("plan",type=Path)
+    p.add_argument("--scope",type=Path)
+    p.add_argument("--name",default="single-stock-followup-v1")
     args=p.parse_args()
-    execute(args.root,args.plan)
+    execute(args.root,args.plan,args.scope or args.root/"config/portfolio-discovery-v2.json",args.name)

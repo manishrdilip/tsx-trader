@@ -79,14 +79,15 @@ def run(root, scope_file, plan_file, output):
         report=saved
     with duckdb.connect(str(root/"database/warehouse/catalog.duckdb"),read_only=True,
                         config={"threads":1,"memory_limit":"192MB"}) as db:
-        inputs={currency:account_inputs(root,db,scope,currency,plan) for currency in ("CAD","USD")}
+        inputs={currency:account_inputs(root,db,scope,currency,plan)
+                for currency in sorted({job["currency"] for job in scope["jobs"]})}
     for currency,(calendar,all_bars,all_close,all_mapping,slots,excluded) in inputs.items():
         report["excluded"].update(excluded)
         folds=fold_starts(calendar,plan)
         priority=np.zeros((len(calendar),1),dtype=np.int64)
         false=np.zeros(priority.shape,dtype=bool)
         for i,symbol in enumerate(all_close.columns):
-            if symbol in report["instruments"]:
+            if ("targets" in cfg and symbol not in cfg["targets"]) or symbol in report["instruments"]:
                 continue
             check(root)
             bars=np.ascontiguousarray(all_bars[:,i:i+1])
