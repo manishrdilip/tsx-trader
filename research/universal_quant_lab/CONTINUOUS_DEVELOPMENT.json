@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 56548000,
-  "batch": 18,
-  "worker_pid": 34364,
+  "completed": 73388000,
+  "batch": 24,
+  "worker_pid": 31716,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T04:16:58.008987+00:00",
+  "updated_utc": "2026-11-27T04:32:00.475541+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -146,9 +146,37 @@
     {
       "symbol": "SHOP.TO",
       "currency": "CAD",
-      "strategy_id": 41702425886,
-      "net_profit": 11631.07,
-      "drawdown_pct": 22.31
+      "strategy_id": 563753094710,
+      "net_profit": 11646.51,
+      "drawdown_pct": 27.22
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "strategy_id": 310875467045,
+      "net_profit": 4943.0,
+      "drawdown_pct": 15.04
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "strategy_id": 309264829733,
+      "net_profit": 4740.9,
+      "drawdown_pct": 15.04
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "strategy_id": 310070148389,
+      "net_profit": 4740.9,
+      "drawdown_pct": 15.04
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "strategy_id": 317380931813,
+      "net_profit": 4672.79,
+      "drawdown_pct": 24.39
     },
     {
       "symbol": "SU.TO",
@@ -156,34 +184,6 @@
       "strategy_id": 336620989829,
       "net_profit": 4338.11,
       "drawdown_pct": 23.18
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 336671322245,
-      "net_profit": 4310.82,
-      "drawdown_pct": 24.39
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 37057097474,
-      "net_profit": 4257.23,
-      "drawdown_pct": 24.43
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 336646156037,
-      "net_profit": 4105.54,
-      "drawdown_pct": 23.18
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 61619316482,
-      "net_profit": 4020.09,
-      "drawdown_pct": 14.99
     },
     {
       "symbol": "XIU.TO",
