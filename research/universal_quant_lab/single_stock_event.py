@@ -45,6 +45,13 @@ def candidate_masks(cfg, bars, close, benchmark):
             low=price * (bars[:,0,1]/bars[:,0,2])
             support=price.shift().rolling(20).min()
             condition=(low<=support*(1-threshold))&(price>support)&(current_return>0)
+        elif family=="market_rebound":
+            market_return=benchmark.pct_change(fill_method=None)
+            condition=(market_return.shift()<=-threshold)&(market_return>0)&(current_return>0)
+        elif family=="trend_pullback":
+            trend=price.shift().rolling(200).mean()
+            recent_return=price.pct_change(5,fill_method=None)
+            condition=(price>trend)&(recent_return<=-threshold)&(current_return>0)
         elif family=="contraction_breakout":
             prior_vol=current_return.shift().rolling(10).std()
             baseline_vol=current_return.shift().rolling(60).std()

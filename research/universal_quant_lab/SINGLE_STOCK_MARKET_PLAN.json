@@ -1,0 +1,10 @@
+{
+  "parent_plan":"PORTFOLIO_ROBUSTNESS_PLAN.json",
+  "cutoff_exclusive":"2024-11-27",
+  "resume":true,
+  "holding_sessions":[5,10,20,40],
+  "queue":[
+    {"family":"market_rebound","thresholds":[0.02,0.03]},
+    {"family":"trend_pullback","thresholds":[0.03,0.05]}
+  ]
+}
