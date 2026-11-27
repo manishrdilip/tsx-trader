@@ -52,8 +52,6 @@ def ingest(root, bars, source, market, symbol, interval):
             sha256 VARCHAR, parquet_glob VARCHAR, audit JSON,
             PRIMARY KEY (source, market, symbol, bar_interval, sha256)
         )""")
-        db.execute("INSERT OR IGNORE INTO datasets VALUES (?, ?, ?, ?, ?, ?, ?)",
-                   [*dimensions.values(), digest, pattern, json.dumps(audit)])
         count, distinct = db.execute(
             "SELECT count(*), count(DISTINCT timestamp) FROM read_parquet(?)", [pattern]
         ).fetchone()
