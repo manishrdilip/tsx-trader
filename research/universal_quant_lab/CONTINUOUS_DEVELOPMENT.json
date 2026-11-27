@@ -2,20 +2,34 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 461276000,
-  "batch": 153,
-  "worker_pid": 41752,
+  "completed": 477448000,
+  "batch": 159,
+  "worker_pid": 34252,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T10:17:51.785333+00:00",
+  "updated_utc": "2026-11-27T10:32:53.267423+00:00",
   "promising": [
+    {
+      "symbol": "BNS.TO",
+      "currency": "CAD",
+      "strategy_id": 295966743689,
+      "net_profit": 2163.05,
+      "drawdown_pct": 8.57
+    },
     {
       "symbol": "BNS.TO",
       "currency": "CAD",
       "strategy_id": 140199326222,
       "net_profit": 2053.85,
       "drawdown_pct": 8.76
+    },
+    {
+      "symbol": "BNS.TO",
+      "currency": "CAD",
+      "strategy_id": 294356106377,
+      "net_profit": 2028.82,
+      "drawdown_pct": 9.5
     },
     {
       "symbol": "BNS.TO",
@@ -30,20 +44,6 @@
       "strategy_id": 140174160014,
       "net_profit": 2026.33,
       "drawdown_pct": 8.76
-    },
-    {
-      "symbol": "BNS.TO",
-      "currency": "CAD",
-      "strategy_id": 391431613946,
-      "net_profit": 1928.56,
-      "drawdown_pct": 10.13
-    },
-    {
-      "symbol": "BNS.TO",
-      "currency": "CAD",
-      "strategy_id": 159501807758,
-      "net_profit": 1928.17,
-      "drawdown_pct": 8.27
     },
     {
       "symbol": "CNR.TO",
@@ -314,16 +314,16 @@
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 670247441285,
-      "net_profit": 4030.02,
-      "drawdown_pct": 17.39
+      "strategy_id": 93684892616,
+      "net_profit": 4113.35,
+      "drawdown_pct": 12.32
     },
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 235291115924,
-      "net_profit": 4018.97,
-      "drawdown_pct": 14.6
+      "strategy_id": 93710058824,
+      "net_profit": 4113.35,
+      "drawdown_pct": 12.32
     }
   ]
 }
