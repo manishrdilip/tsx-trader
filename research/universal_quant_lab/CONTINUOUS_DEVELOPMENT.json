@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 510896000,
-  "batch": 170,
-  "worker_pid": 30280,
-  "status": "running",
+  "completed": 528000000,
+  "batch": 175,
+  "worker_pid": null,
+  "status": "batch_complete",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T11:02:53.984002+00:00",
+  "updated_utc": "2026-11-27T11:17:54.345443+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -104,16 +104,16 @@
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 588037400132,
-      "net_profit": 1611.16,
-      "drawdown_pct": 10.2
+      "strategy_id": 512466321986,
+      "net_profit": 1650.89,
+      "drawdown_pct": 13.54
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 608411507876,
-      "net_profit": 1538.98,
-      "drawdown_pct": 10.19
+      "strategy_id": 588037400132,
+      "net_profit": 1611.16,
+      "drawdown_pct": 10.2
     },
     {
       "symbol": "ENB.TO",
@@ -251,9 +251,9 @@
     {
       "symbol": "XIU.TO",
       "currency": "CAD",
-      "strategy_id": 438162312722,
-      "net_profit": 1088.73,
-      "drawdown_pct": 4.48
+      "strategy_id": 248502783086,
+      "net_profit": 1090.01,
+      "drawdown_pct": 6.93
     },
     {
       "symbol": "ZAG.TO",
