@@ -1,7 +1,8 @@
-﻿"""Run a pinned sequence of disjoint, bounded provisional CPU searches."""
+"""Run a pinned sequence of disjoint, bounded provisional CPU searches."""
 import argparse
 import base64
 from datetime import datetime, timezone
+from collections import defaultdict
 import json
 from pathlib import Path
 import subprocess
@@ -42,7 +43,9 @@ def leaders(directory):
         with duckdb.connect(str(directory / "global.duckdb"), read_only=True) as db:
             rows = db.execute("""
                 SELECT scope, job, strategy_id, profit, drawdown FROM top_candidates
-                WHERE category='profit' ORDER BY profit DESC, drawdown, job, strategy_id LIMIT 10
+                WHERE category='profit'
+                QUALIFY row_number() OVER (PARTITION BY job ORDER BY profit DESC, drawdown, job, strategy_id) <= 10
+                ORDER BY scope, profit DESC, drawdown, job, strategy_id
             """).fetchall()
     except duckdb.IOException:
         return []
@@ -52,8 +55,16 @@ def leaders(directory):
             for _, job, identifier, profit, drawdown in rows]
 
 
+def idle(directory):
+    try:
+        with exclusive(directory / "runner.lock"):
+            return True
+    except OSError:
+        return False
+
+
 def supervise(root, folder):
-    frozen = read(folder / "scope.json")
+    baseline = read(folder / "scope.json")
     previous = 0
     last_publish = -float("inf")
     retained = []
@@ -62,21 +73,30 @@ def supervise(root, folder):
         size = min(CHUNK, TARGET - start)
         directory = folder / f"batch-{index:04d}"
         directory.mkdir(exist_ok=True)
-        config = dict(frozen, mode="engineering", batch=4000, threads=2, target=size)
-        config["jobs"] = [
-            dict(job, quota=size // 3 + (i < size % 3), depth=6, seed=249731,
-                 sample_offset=index * (CHUNK // 3))
-            for i, job in enumerate(frozen["jobs"])
-        ]
         config_path = directory / "config.json"
-        if config_path.exists() and read(config_path) != config:
-            raise ValueError("Frozen batch configuration changed")
-        if not config_path.exists():
+        if config_path.exists():
+            config = read(config_path)
+            if config["target"] != size or config.get("mode") != "engineering":
+                raise ValueError("Invalid frozen batch allocation")
+        else:
+            scopes = [baseline]
+            scopes.extend(read(path) for path in sorted(folder.glob("scope-[0-9]*.json")))
+            frozen = scopes[index % len(scopes)]
+            count = len(frozen["jobs"])
+            if not 1 <= count <= 3:
+                raise ValueError("Use one to three instruments per bounded scope")
+            config = dict(frozen, mode="engineering", batch=4000, threads=2, target=size)
+            config["jobs"] = [
+                dict(job, quota=size // count + (i < size % count), depth=6, seed=249731,
+                     sample_offset=index * CHUNK)
+                for i, job in enumerate(frozen["jobs"])
+            ]
             atomic_json(config_path, config)
         progress_file = directory / "progress.json"
         healthy = 0
         worker = None
         attempts = 0
+        last_rows = 0
         log = None
         while True:
             progress = read(progress_file) if progress_file.exists() else {}
@@ -87,12 +107,18 @@ def supervise(root, folder):
             if complete and progress["engineering_completed"] != size:
                 raise ValueError("Completed batch has the wrong count")
             if worker is not None and worker.poll() is not None:
+                rows = progress.get("engineering_completed", 0)
+                if worker.returncode == 0 and progress.get("status") == "paused":
+                    attempts = 0
+                elif rows > last_rows:
+                    attempts = 0
+                last_rows = rows
                 log.close()
                 worker = None
             blocked = guard(health(root)) or cpu_guard(root, 85) == "cpu_temperature"
             manually_paused = (folder / "PAUSE").exists() or (directory / "PAUSE").exists()
             healthy = 0 if blocked or manually_paused else healthy + 1
-            if not complete and worker is None and healthy >= 3 and attempts < 8:
+            if not complete and worker is None and healthy >= 3 and attempts < 8 and idle(directory):
                 log = (directory / "worker.log").open("ab")
                 worker = subprocess.Popen([sys.executable, "-B", str(lab / "continuous_development.py"),
                                            str(root), "--worker", str(config_path)], stdout=log, stderr=log,
@@ -100,11 +126,17 @@ def supervise(root, folder):
                 attempts += 1
                 healthy = 0
             if complete:
-                retained = sorted(retained + leaders(directory), key=lambda x: -x["net_profit"])[:30]
+                by_symbol = defaultdict(list)
+                for candidate in retained + leaders(directory):
+                    by_symbol[candidate["currency"], candidate["symbol"]].append(candidate)
+                retained = [candidate for key in sorted(by_symbol)
+                            for candidate in sorted(by_symbol[key],
+                                key=lambda x: (-x["net_profit"], x["drawdown_pct"], x["strategy_id"]))[:5]]
             report = dict(campaign=folder.name, provisional_target=TARGET, official_completed=0,
                           completed=previous + progress.get("engineering_completed", 0),
                           batch=index, worker_pid=worker.pid if worker else None,
-                          status="batch_complete" if complete else ("running" if worker else "waiting"),
+                          status=("complete" if previous + size == TARGET else "batch_complete") if complete
+                          else ("running" if worker or not idle(directory) else "waiting"),
                           resource_pause=bool(blocked or manually_paused),
                           retry_limit_reached=attempts >= 8 and worker is None and not complete,
                           updated_utc=datetime.now(timezone.utc).isoformat(), promising=retained)

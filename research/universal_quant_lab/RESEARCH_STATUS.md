@@ -54,3 +54,11 @@ The completed-pilot Windows task was disabled after verifying its action path. T
 - Campaign wall-time arithmetic from measured rates already in this file (not new benchmarks): 1,000,000,000 evaluations take about 1.8 h at the 153,197.5/s batch rate, about 2.5 h at the 111,124/s wall rate, and about 29 h at the 9,548/s memory-capped turnover rate. A 104-day duration is not reproduced by these rates. The binding constraints are data eligibility, the global coordinator, the VMM comparator and the sealed holdout, not compute time.
 
 LibreHardwareMonitor v0.9.6 was downloaded from the official GitHub release and extracted in the dedicated workspace. The archive matched the published SHA-256 (086d9f1b5a99e643edc2cfaaac16051685b551e4c5ac0b32a57c58c0e529c001). The runtime blocked the combined install/launch command. Separate download and extraction succeeded. The WMI probe returned no package/core readings. The added WMI reader writes the existing watchdog sample format only after both sensor types are present; hardware integration remains unverified.
+
+## Continuous provisional campaign
+
+The detached CPU supervisor targets one billion new provisional evaluations in rotating immutable three-million scopes. Each worker uses two CPU threads, 4,000-row leases and a 192 MB single-thread DuckDB configuration. Scope manifests pin the data and a nonoverlapping candidate index range. Full Parquet, batch distributions and category top-100 tables remain on D:. The supervisor publishes state and candidate summaries every 15 minutes while GitHub is reachable.
+
+Ten additional Canadian symbols cleared the development calendar and corporate-action checks and were queued in separately pinned scopes. The Coinbase minute data and intraday/position experiments use separate manifests and evaluation counters. Those experiments cover next-open entries, time exits, candlestick and trailing range conditions. There are no official evaluations in these runs.
+
+The LibreHardwareMonitor CSV bridge received an actual 61 C package reading with 14 valid individual core readings. It preserves the source timestamp and never writes a substitute reading. The discovery runner consults the fresh CPU reading at batch boundaries when available, while retaining the existing disk, GPU and RAM checks.

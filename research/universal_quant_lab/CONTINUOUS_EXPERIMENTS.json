@@ -1,0 +1,116 @@
+{
+  "provisional_runs": [
+    {
+      "symbol": "BTC-USD",
+      "scope": "intraday",
+      "evaluations": 3744,
+      "best": {
+        "strategy_id": 242,
+        "families": [
+          0,
+          6
+        ],
+        "variants": [
+          0,
+          0
+        ],
+        "holding_bars": 60,
+        "net_profit": 6.711326100000406,
+        "drawdown_pct": 0.1281413940109754,
+        "trade_count": 1
+      },
+      "result_sha256": "8cc445364d10f7e3d1fceafefd30111235e14ce8760f21ea08b55d8c87354eb3"
+    },
+    {
+      "symbol": "ETH-USD",
+      "scope": "intraday",
+      "evaluations": 3744,
+      "best": {
+        "strategy_id": 2882,
+        "families": [
+          6,
+          10
+        ],
+        "variants": [
+          0,
+          0
+        ],
+        "holding_bars": 60,
+        "net_profit": 1.5249191800003246,
+        "drawdown_pct": 0.03109924805735607,
+        "trade_count": 1
+      },
+      "result_sha256": "998cdda029ffc14ca4073018471d6079d7979dfb363af410d68376c50690c937"
+    },
+    {
+      "symbol": "AAPL.US",
+      "scope": "position",
+      "evaluations": 2160,
+      "best": {
+        "strategy_id": 401,
+        "families": [
+          0,
+          9
+        ],
+        "variants": [
+          1,
+          1
+        ],
+        "holding_bars": 60,
+        "net_profit": 3763.2201700000005,
+        "drawdown_pct": 23.796319493394698,
+        "trade_count": 8
+      },
+      "result_sha256": "51e02ea8da1243773a5773b0c06aac51e3272b02d91cdf7bbfd6dd2d08d58161"
+    },
+    {
+      "symbol": "SHOP.TO",
+      "scope": "position",
+      "evaluations": 2160,
+      "best": {
+        "strategy_id": 1601,
+        "families": [
+          4,
+          8
+        ],
+        "variants": [
+          1,
+          1
+        ],
+        "holding_bars": 60,
+        "net_profit": 12332.144829999997,
+        "drawdown_pct": 24.365684751402693,
+        "trade_count": 7
+      },
+      "result_sha256": "6b6e8222114e7c369b3bdbefd072b2692444461ac32c83f23e516d5f772ee5f1"
+    },
+    {
+      "symbol": "XEG.TO",
+      "scope": "position",
+      "evaluations": 2160,
+      "best": {
+        "strategy_id": 972,
+        "families": [
+          2,
+          6
+        ],
+        "variants": [
+          1,
+          0
+        ],
+        "holding_bars": 20,
+        "net_profit": 1007.8238800000008,
+        "drawdown_pct": 7.36597759093925,
+        "trade_count": 7
+      },
+      "result_sha256": "ab41222818c109e6e44c743977cbdf424f8aceed4c35da340147db84001ef660"
+    }
+  ],
+  "official_completed": 0,
+  "minute_data": {
+    "source": "Coinbase Exchange",
+    "period": "2024-11-01 through 2024-11-07 UTC",
+    "total_bars": 20160,
+    "missing_buckets": 0
+  }
+}
