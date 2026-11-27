@@ -23,7 +23,13 @@ ENDPOINT = "repos/manishrdilip/tsx-trader/contents/research/universal_quant_lab/
 
 
 def read(path):
-    return json.loads(path.read_bytes())
+    for attempt in range(6):
+        try:
+            return json.loads(path.read_bytes())
+        except PermissionError:
+            if attempt == 5:
+                raise
+            time.sleep(.05 * 2**attempt)
 
 
 def publish(report):
@@ -99,7 +105,11 @@ def supervise(root, folder):
         last_rows = 0
         log = None
         while True:
-            progress = read(progress_file) if progress_file.exists() else {}
+            try:
+                progress = read(progress_file) if progress_file.exists() else {}
+            except (FileNotFoundError, PermissionError):
+                time.sleep(2)
+                continue
             complete = progress.get("status") == "complete"
             if complete and worker is not None and worker.poll() is None:
                 time.sleep(1)

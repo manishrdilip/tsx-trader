@@ -56,7 +56,16 @@ def atomic_json(path, value):
     temp = path.with_suffix(f".{uuid4().hex}.tmp")
     try:
         temp.write_text(json.dumps(value, allow_nan=False), encoding="utf-8")
-        temp.replace(path)
+        # Windows readers and scanners can briefly block an atomic replacement.
+        from time import sleep
+        for attempt in range(6):
+            try:
+                temp.replace(path)
+                break
+            except PermissionError:
+                if attempt == 5:
+                    raise
+                sleep(.05 * 2**attempt)
     finally:
         temp.unlink(missing_ok=True)
 
