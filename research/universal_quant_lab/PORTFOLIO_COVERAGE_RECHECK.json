@@ -1,0 +1,57 @@
+{
+  "plan_revision": "44a8648",
+  "audit_totals": {
+    "committed": 586348000,
+    "planned": 588000000,
+    "failed_attempts": 0
+  },
+  "continuous_domains": [
+    {
+      "currency": "CAD",
+      "depth": 6,
+      "symbol_count": 12,
+      "union_configurations": 273452000,
+      "configurations_shared_by_all": 0,
+      "duplicate_evaluations_within_permutation": 0
+    },
+    {
+      "currency": "USD",
+      "depth": 6,
+      "symbol_count": 1,
+      "union_configurations": 40448000,
+      "configurations_shared_by_all": 40448000,
+      "duplicate_evaluations_within_permutation": 0
+    }
+  ],
+  "matched_cohort": {
+    "name": "shared-cohort-v1",
+    "count": 38480,
+    "per_instrument": {
+      "1": 960,
+      "2": 1000,
+      "3": 1000
+    },
+    "symbols": [
+      "AAPL.US",
+      "BNS.TO",
+      "CNR.TO",
+      "CP.TO",
+      "ENB.TO",
+      "SHOP.TO",
+      "SU.TO",
+      "TD.TO",
+      "VFV.TO",
+      "XBB.TO",
+      "XEG.TO",
+      "XIU.TO",
+      "ZAG.TO"
+    ],
+    "official": 0
+  },
+  "pending": "Remaining applicable families, deeper combinations, and non-daily data.",
+  "continuous_snapshot": {
+    "completed": 586348000,
+    "status": "running",
+    "updated_utc": "2026-11-27T12:24:40.519672+00:00"
+  }
+}
