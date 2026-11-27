@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 225452000,
-  "batch": 75,
-  "worker_pid": 12920,
+  "completed": 242632000,
+  "batch": 80,
+  "worker_pid": 10292,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T06:47:23.042787+00:00",
+  "updated_utc": "2026-11-27T07:02:24.431580+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -69,16 +69,16 @@
     {
       "symbol": "CNR.TO",
       "currency": "CAD",
-      "strategy_id": 19571202170,
-      "net_profit": 1212.58,
-      "drawdown_pct": 4.71
+      "strategy_id": 84281287025,
+      "net_profit": 1235.49,
+      "drawdown_pct": 4.48
     },
     {
       "symbol": "CNR.TO",
       "currency": "CAD",
-      "strategy_id": 449468723981,
-      "net_profit": 1212.58,
-      "drawdown_pct": 4.71
+      "strategy_id": 84283646357,
+      "net_profit": 1213.97,
+      "drawdown_pct": 4.79
     },
     {
       "symbol": "CP.TO",
@@ -90,30 +90,30 @@
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 313189544644,
-      "net_profit": 1223.8,
-      "drawdown_pct": 8.3
+      "strategy_id": 74241215236,
+      "net_profit": 1331.01,
+      "drawdown_pct": 10.69
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 487122351961,
-      "net_profit": 1212.97,
-      "drawdown_pct": 6.1
+      "strategy_id": 91452673250,
+      "net_profit": 1283.35,
+      "drawdown_pct": 13.3
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 648296806820,
-      "net_profit": 1171.51,
-      "drawdown_pct": 17.34
+      "strategy_id": 91402340834,
+      "net_profit": 1267.43,
+      "drawdown_pct": 16.93
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 444620884034,
-      "net_profit": 1144.61,
-      "drawdown_pct": 15.0
+      "strategy_id": 74216049028,
+      "net_profit": 1234.39,
+      "drawdown_pct": 10.73
     },
     {
       "symbol": "ENB.TO",
@@ -244,6 +244,13 @@
     {
       "symbol": "ZAG.TO",
       "currency": "CAD",
+      "strategy_id": 16729,
+      "net_profit": 0.0,
+      "drawdown_pct": 0.0
+    },
+    {
+      "symbol": "ZAG.TO",
+      "currency": "CAD",
       "strategy_id": 18304,
       "net_profit": 0.0,
       "drawdown_pct": 0.0
@@ -258,21 +265,14 @@
     {
       "symbol": "ZAG.TO",
       "currency": "CAD",
+      "strategy_id": 82266,
+      "net_profit": 0.0,
+      "drawdown_pct": 0.0
+    },
+    {
+      "symbol": "ZAG.TO",
+      "currency": "CAD",
       "strategy_id": 83841,
-      "net_profit": 0.0,
-      "drawdown_pct": 0.0
-    },
-    {
-      "symbol": "ZAG.TO",
-      "currency": "CAD",
-      "strategy_id": 84786,
-      "net_profit": 0.0,
-      "drawdown_pct": 0.0
-    },
-    {
-      "symbol": "ZAG.TO",
-      "currency": "CAD",
-      "strategy_id": 117082,
       "net_profit": 0.0,
       "drawdown_pct": 0.0
     },
