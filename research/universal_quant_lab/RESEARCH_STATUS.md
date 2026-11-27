@@ -62,3 +62,9 @@ The detached CPU supervisor targets one billion new provisional evaluations in r
 Ten additional Canadian symbols cleared the development calendar and corporate-action checks and were queued in separately pinned scopes. The Coinbase minute data and intraday/position experiments use separate manifests and evaluation counters. Those experiments cover next-open entries, time exits, candlestick and trailing range conditions. There are no official evaluations in these runs.
 
 The LibreHardwareMonitor CSV bridge received an actual 61 C package reading with 14 valid individual core readings. It preserves the source timestamp and never writes a substitute reading. The discovery runner consults the fresh CPU reading at batch boundaries when available, while retaining the existing disk, GPU and RAM checks.
+
+## Shopify candidate validation disposition
+
+SHOP.TO strategy 459923409458 remains a historical leaderboard entry and is rejected for promotion. The owner reported a loss and 38.5% drawdown during a 2025–2026 replay, versus a 25% gain from holding the stock. The local research checkout did not contain a replay artifact or exact replay dates to reproduce those figures. Treat that reported window as observed for this candidate. See [candidate review](SHOPIFY_CANDIDATE_REVIEW.json).
+
+For future candidates, report cost-matched passive performance, trade counts by chronological fold, regime results and a replay excluding the largest winning trades. For stacked filters, compare against simpler versions across matched windows to measure what each condition adds. Compare with VMM only when a matched benchmark is available. Cross-instrument results can corroborate repeatability, and specialist candidates still require independent evidence on their intended instrument.

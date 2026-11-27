@@ -1,0 +1,42 @@
+﻿{
+  "candidate": {
+    "symbol": "SHOP.TO",
+    "strategy_id": 459923409458,
+    "run": "continuous-development-v1",
+    "batch": "batch-0150",
+    "holding_sessions": 10
+  },
+  "status": "rejected_for_promotion",
+  "selection": {
+    "period": "2022–2024",
+    "net_profit_cad": 13731.16,
+    "trades": 34,
+    "maximum_drawdown_pct": 20.29
+  },
+  "prior_development_period": {
+    "period": "2016–2021",
+    "net_profit_cad": 659.77,
+    "trades": 106,
+    "maximum_drawdown_pct": 49.18
+  },
+  "owner_reported_replay": {
+    "period": "2025–2026",
+    "exact_dates": null,
+    "artifact": null,
+    "verification": "Owner reported. No matching replay artifact was located.",
+    "net_profit_direction": "negative",
+    "win_rate_pct": 58,
+    "maximum_drawdown_pct": 38.5,
+    "buy_and_hold_return_pct": 25
+  },
+  "validation_disposition": {
+    "reasons": [
+      "Leaderboard selection on the same period used to report performance",
+      "Small trade sample and unmeasured profit concentration",
+      "Overlapping price and momentum conditions",
+      "Fixed hold with a negative later replay reported by the owner"
+    ],
+    "future_use": "Treat the reported 2025–2026 window as observed for this candidate. Any retuned rule needs a fresh independent test.",
+    "matched_vmm_comparison": "Unavailable for this replay"
+  }
+}
