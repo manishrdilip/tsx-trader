@@ -1,0 +1,37 @@
+{
+    "status":  "complete",
+    "scope":  "provisional_development",
+    "official_v2_evaluations":  0,
+    "checked_symbols":  57,
+    "tested_symbols":  47,
+    "excluded_symbols":  10,
+    "candidate_rules":  40,
+    "symbol_candidate_replays":  1880,
+    "validation_positive_rules":  0,
+    "leader":  {
+                   "rule":  "rsi14_reclaim_with_macd",
+                   "atr_tp_sl_max_hold_bars":  [
+                                                   2.0,
+                                                   1.5,
+                                                   24
+                                               ],
+                   "train":  {
+                                 "equal_weight_net_return":  -0.1790534478651825,
+                                 "median_sleeve_drawdown":  0.1509998901231338,
+                                 "worst_sleeve_drawdown":  0.4914764659154545,
+                                 "profitable_symbols":  0,
+                                 "trades":  4210,
+                                 "mean_hold_minutes":  33.802850356294535
+                             },
+                   "validation":  {
+                                      "equal_weight_net_return":  -0.183029515547757,
+                                      "median_sleeve_drawdown":  0.1553491897026861,
+                                      "worst_sleeve_drawdown":  0.49750676642366715,
+                                      "profitable_symbols":  0,
+                                      "trades":  3923,
+                                      "mean_hold_minutes":  33.665562069844505
+                                  }
+               },
+    "plan_sha256":  "a90256a68d52cd1bfc16e65f7a71c134aa804cf57c37b94a0fc480479fac87b6",
+    "elapsed_seconds":  58.14087430003565
+}
