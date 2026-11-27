@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 377936000,
-  "batch": 125,
-  "worker_pid": 34732,
+  "completed": 394380000,
+  "batch": 131,
+  "worker_pid": 3764,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T09:02:42.272533+00:00",
+  "updated_utc": "2026-11-27T09:17:44.886610+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -321,9 +321,9 @@
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 377106633689,
-      "net_profit": 3900.88,
-      "drawdown_pct": 12.65
+      "strategy_id": 235291115924,
+      "net_profit": 4018.97,
+      "drawdown_pct": 14.6
     }
   ]
 }
