@@ -1,0 +1,322 @@
+{
+  "single-stock-followup-v1": {
+    "status": {
+      "state": "complete",
+      "evaluations": 864,
+      "hard_gate_passes": 0,
+      "official": 0,
+      "holdout_accessed": false,
+      "queue_sha256": "ba96f38452e44c396e774e1a3ac2cacca49d3194a5f6eef0b49d8084618416ae"
+    },
+    "phases": {
+      "contraction_breakout": {
+        "tests": 288,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "AAPL.US",
+            "direction": "contraction_breakout",
+            "threshold": 0.8,
+            "hold": 20,
+            "return_after_cost": 1.716163185289885,
+            "closed_trades": 41,
+            "wins": 31,
+            "trimmed_profit": 4316.436734000023,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks"
+            ]
+          },
+          "CAD": {
+            "symbol": "SHOP.TO",
+            "direction": "contraction_breakout",
+            "threshold": 0.65,
+            "hold": 40,
+            "return_after_cost": 4.262105947134455,
+            "closed_trades": 16,
+            "wins": 12,
+            "trimmed_profit": 8598.453410000006,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 14,
+        "nvidia": null,
+        "excluded": {
+          "HEXO.TO": "Price history ends before the window; delisting settlement unavailable",
+          "KL.TO": "Price history ends before the window; delisting settlement unavailable",
+          "NVEI.TO": "Price history ends before the window; delisting settlement unavailable",
+          "ADZN.V": "Price history ends before the window; delisting settlement unavailable",
+          "GMIN.V": "Price history ends before the window; delisting settlement unavailable",
+          "MTRX.V": "Price history ends before the window; delisting settlement unavailable",
+          "ZGLD.TO": "Unavailable or insufficient session history",
+          "HIVE.V": "Unavailable or insufficient session history",
+          "CNQ.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZCN.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZEB.TO": "No comparable fold with 100 sessions and an eligible opening position"
+        }
+      },
+      "failed_breakdown": {
+        "tests": 288,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "SLV.US",
+            "direction": "failed_breakdown",
+            "threshold": 0.01,
+            "hold": 40,
+            "return_after_cost": 0.597544820012812,
+            "closed_trades": 8,
+            "wins": 5,
+            "trimmed_profit": 1235.001420000006,
+            "hard_gate_failures": [
+              "trade_count",
+              "fold_consistency"
+            ]
+          },
+          "CAD": {
+            "symbol": "SHOP.TO",
+            "direction": "failed_breakdown",
+            "threshold": 0.01,
+            "hold": 20,
+            "return_after_cost": 0.8475502094665612,
+            "closed_trades": 25,
+            "wins": 13,
+            "trimmed_profit": 169.5019300000131,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks",
+              "drawdown"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 11,
+        "nvidia": null,
+        "excluded": {
+          "HEXO.TO": "Price history ends before the window; delisting settlement unavailable",
+          "KL.TO": "Price history ends before the window; delisting settlement unavailable",
+          "NVEI.TO": "Price history ends before the window; delisting settlement unavailable",
+          "ADZN.V": "Price history ends before the window; delisting settlement unavailable",
+          "GMIN.V": "Price history ends before the window; delisting settlement unavailable",
+          "MTRX.V": "Price history ends before the window; delisting settlement unavailable",
+          "ZGLD.TO": "Unavailable or insufficient session history",
+          "HIVE.V": "Unavailable or insufficient session history",
+          "CNQ.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZCN.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZEB.TO": "No comparable fold with 100 sessions and an eligible opening position"
+        }
+      },
+      "relative_strength": {
+        "tests": 288,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "MSFT.US",
+            "direction": "relative_strength",
+            "threshold": 0.02,
+            "hold": 40,
+            "return_after_cost": 0.8320689170144027,
+            "closed_trades": 12,
+            "wins": 9,
+            "trimmed_profit": 2413.209375000004,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks"
+            ]
+          },
+          "CAD": {
+            "symbol": "SHOP.TO",
+            "direction": "relative_strength",
+            "threshold": 0.02,
+            "hold": 40,
+            "return_after_cost": 3.890104448876839,
+            "closed_trades": 30,
+            "wins": 15,
+            "trimmed_profit": 5415.031380000008,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks",
+              "drawdown"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 7,
+        "nvidia": null,
+        "excluded": {
+          "HEXO.TO": "Price history ends before the window; delisting settlement unavailable",
+          "KL.TO": "Price history ends before the window; delisting settlement unavailable",
+          "NVEI.TO": "Price history ends before the window; delisting settlement unavailable",
+          "ADZN.V": "Price history ends before the window; delisting settlement unavailable",
+          "GMIN.V": "Price history ends before the window; delisting settlement unavailable",
+          "MTRX.V": "Price history ends before the window; delisting settlement unavailable",
+          "ZGLD.TO": "Unavailable or insufficient session history",
+          "HIVE.V": "Unavailable or insufficient session history",
+          "CNQ.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZCN.TO": "No comparable fold with 100 sessions and an eligible opening position",
+          "ZEB.TO": "No comparable fold with 100 sessions and an eligible opening position"
+        }
+      }
+    }
+  },
+  "single-stock-nvidia-v1": {
+    "status": {
+      "state": "complete",
+      "evaluations": 144,
+      "hard_gate_passes": 0,
+      "official": 0,
+      "holdout_accessed": false,
+      "queue_sha256": "7deb811249cfcd618a70e64ba508d5beae0435502fcb9a5443467866457f7d81"
+    },
+    "phases": {
+      "contraction_breakout": {
+        "tests": 32,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "TSLA.US",
+            "direction": "contraction_breakout",
+            "threshold": 0.8,
+            "hold": 20,
+            "return_after_cost": 10.953893452747996,
+            "closed_trades": 29,
+            "wins": 19,
+            "trimmed_profit": 14479.864840500022,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 15,
+        "nvidia": {
+          "direction": "contraction_breakout",
+          "threshold": 0.8,
+          "hold": 40,
+          "return_after_cost": 4.258663533878402,
+          "closed_trades": 23,
+          "wins": 15,
+          "trimmed_profit": 6586.866589500016,
+          "hard_gate_failures": [
+            "trade_count",
+            "benchmarks",
+            "drawdown"
+          ]
+        },
+        "excluded": {}
+      },
+      "failed_breakdown": {
+        "tests": 32,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "AMD.US",
+            "direction": "failed_breakdown",
+            "threshold": 0.03,
+            "hold": 40,
+            "return_after_cost": 3.316651978706325,
+            "closed_trades": 10,
+            "wins": 8,
+            "trimmed_profit": 5478.389260000003,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 15,
+        "nvidia": {
+          "direction": "failed_breakdown",
+          "threshold": 0.03,
+          "hold": 20,
+          "return_after_cost": 1.1459437775728474,
+          "closed_trades": 11,
+          "wins": 7,
+          "trimmed_profit": 3035.959660000004,
+          "hard_gate_failures": [
+            "trade_count",
+            "benchmarks",
+            "fold_consistency"
+          ]
+        },
+        "excluded": {}
+      },
+      "gap": {
+        "tests": 48,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "TSLA.US",
+            "direction": "up_gap_followthrough",
+            "threshold": 0.03,
+            "hold": 10,
+            "return_after_cost": 2.4462043789233623,
+            "closed_trades": 34,
+            "wins": 20,
+            "trimmed_profit": 5235.166221900024,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks",
+              "drawdown"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 3,
+        "nvidia": {
+          "direction": "down_gap_reversal",
+          "threshold": 0.03,
+          "hold": 5,
+          "return_after_cost": 0.2925845937775564,
+          "closed_trades": 25,
+          "wins": 13,
+          "trimmed_profit": -162.4842079999903,
+          "hard_gate_failures": [
+            "trade_count",
+            "trimmed_profit",
+            "benchmarks",
+            "fold_consistency"
+          ]
+        },
+        "excluded": {}
+      },
+      "relative_strength": {
+        "tests": 32,
+        "passes": 0,
+        "best": {
+          "USD": {
+            "symbol": "TSLA.US",
+            "direction": "relative_strength",
+            "threshold": 0.04,
+            "hold": 40,
+            "return_after_cost": 8.262001954929346,
+            "closed_trades": 21,
+            "wins": 12,
+            "trimmed_profit": 15064.71998690001,
+            "hard_gate_failures": [
+              "trade_count",
+              "benchmarks",
+              "drawdown"
+            ]
+          }
+        },
+        "most_trades_at_80pct": 3,
+        "nvidia": {
+          "direction": "relative_strength",
+          "threshold": 0.02,
+          "hold": 40,
+          "return_after_cost": 2.9301530727469105,
+          "closed_trades": 23,
+          "wins": 16,
+          "trimmed_profit": 4704.211186300014,
+          "hard_gate_failures": [
+            "trade_count",
+            "benchmarks",
+            "drawdown"
+          ]
+        },
+        "excluded": {}
+      }
+    }
+  }
+}
