@@ -1,0 +1,271 @@
+{
+  "provisional_evaluations": 1122,
+  "official_evaluations": 0,
+  "model": {
+    "capital": 5000.0,
+    "friction_per_side": 0.003,
+    "fee_per_side": 2.0,
+    "max_slots": 5,
+    "entry_turnover_limit": 0.0001,
+    "prior_close_signals": true,
+    "final_open_liquidation": true
+  },
+  "benchmark_note": "Simplified VMM entry and exit filters on the admitted universe; same portfolio fill model. USD uses momentum without the TSX market gate.",
+  "date_range": [
+    "2000-01-01",
+    "2022-01-01",
+    "2025-01-01"
+  ],
+  "excluded": {
+    "HEXO.TO": "Price history ends before the window; delisting settlement unavailable",
+    "KL.TO": "Price history ends before the window; delisting settlement unavailable",
+    "NVEI.TO": "Price history ends before the window; delisting settlement unavailable",
+    "ADZN.V": "Price history ends before the window; delisting settlement unavailable",
+    "GMIN.V": "Price history ends before the window; delisting settlement unavailable",
+    "MTRX.V": "Price history ends before the window; delisting settlement unavailable",
+    "ZGLD.TO": "Unavailable or insufficient session history",
+    "HIVE.V": "Unavailable or insufficient session history"
+  },
+  "selection_note": "Latest contiguous usable segment after calendar/action gaps. Later listings enter after signal warm-up. Survivorship and coverage bias remain.",
+  "accounts": {
+    "CAD": {
+      "symbols": [
+        "BMO.TO",
+        "BNS.TO",
+        "CM.TO",
+        "CNC.V",
+        "CNQ.TO",
+        "CNR.TO",
+        "CP.TO",
+        "EMO.V",
+        "ENB.TO",
+        "FTS.TO",
+        "PNG.V",
+        "RY.TO",
+        "SHOP.TO",
+        "SU.TO",
+        "TD.TO",
+        "VFV.TO",
+        "WCN.TO",
+        "XBB.TO",
+        "XEG.TO",
+        "XIC.TO",
+        "XIU.TO",
+        "ZAG.TO",
+        "ZCN.TO",
+        "ZEB.TO",
+        "ZSP.TO"
+      ],
+      "leaders_by_family": {
+        "rsi5": {
+          "id": 52,
+          "strategy": "RSI(5) <= 35",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 24474.27,
+            "drawdown_pct": 31.11,
+            "trades": 519,
+            "traded_symbols": 18
+          },
+          "validation": {
+            "net_profit": -466.77,
+            "drawdown_pct": 25.21,
+            "trades": 95,
+            "traded_symbols": 20
+          },
+          "full": {
+            "net_profit": 20074.33,
+            "drawdown_pct": 31.27,
+            "trades": 612,
+            "traded_symbols": 21
+          }
+        },
+        "rsi_macd": {
+          "id": 104,
+          "strategy": "RSI(5) <= 50 + MACD > signal",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 7046.6,
+            "drawdown_pct": 42.67,
+            "trades": 476,
+            "traded_symbols": 19
+          },
+          "validation": {
+            "net_profit": -161.07,
+            "drawdown_pct": 19.16,
+            "trades": 93,
+            "traded_symbols": 22
+          },
+          "full": {
+            "net_profit": 8784.08,
+            "drawdown_pct": 42.67,
+            "trades": 567,
+            "traded_symbols": 23
+          }
+        },
+        "rsi_vmm": {
+          "id": 112,
+          "strategy": "RSI(5) <= 50 + VMM momentum filter",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 948.13,
+            "drawdown_pct": 15.13,
+            "trades": 107,
+            "traded_symbols": 12
+          },
+          "validation": {
+            "net_profit": 1049.11,
+            "drawdown_pct": 8.65,
+            "trades": 35,
+            "traded_symbols": 11
+          },
+          "full": {
+            "net_profit": 2216.8,
+            "drawdown_pct": 15.13,
+            "trades": 142,
+            "traded_symbols": 17
+          }
+        },
+        "momentum": {
+          "id": 0,
+          "strategy": "VMM-style momentum baseline",
+          "hold_sessions": null,
+          "development": {
+            "net_profit": -472.91,
+            "drawdown_pct": 29.39,
+            "trades": 129,
+            "traded_symbols": 13
+          },
+          "validation": {
+            "net_profit": -37.94,
+            "drawdown_pct": 14.61,
+            "trades": 35,
+            "traded_symbols": 11
+          },
+          "full": {
+            "net_profit": -188.14,
+            "drawdown_pct": 29.39,
+            "trades": 162,
+            "traded_symbols": 18
+          }
+        }
+      },
+      "positive_both_count": 101,
+      "excluded": {}
+    },
+    "USD": {
+      "symbols": [
+        "AAPL.US",
+        "AMZN.US",
+        "BRK-B.US",
+        "GLD.US",
+        "GOOGL.US",
+        "IWM.US",
+        "KO.US",
+        "MSFT.US",
+        "QQQ.US",
+        "SHY.US",
+        "SLV.US",
+        "SPY.US",
+        "TLT.US",
+        "VTI.US"
+      ],
+      "leaders_by_family": {
+        "rsi5": {
+          "id": 4,
+          "strategy": "RSI(5) <= 20",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 11329.93,
+            "drawdown_pct": 36.54,
+            "trades": 507,
+            "traded_symbols": 14
+          },
+          "validation": {
+            "net_profit": 1245.56,
+            "drawdown_pct": 20.71,
+            "trades": 79,
+            "traded_symbols": 13
+          },
+          "full": {
+            "net_profit": 20097.36,
+            "drawdown_pct": 36.54,
+            "trades": 585,
+            "traded_symbols": 14
+          }
+        },
+        "rsi_macd": {
+          "id": 88,
+          "strategy": "RSI(5) <= 45 + MACD > signal",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 13203.25,
+            "drawdown_pct": 52.41,
+            "trades": 575,
+            "traded_symbols": 14
+          },
+          "validation": {
+            "net_profit": 2234.31,
+            "drawdown_pct": 16.27,
+            "trades": 83,
+            "traded_symbols": 14
+          },
+          "full": {
+            "net_profit": 20597.3,
+            "drawdown_pct": 52.41,
+            "trades": 658,
+            "traded_symbols": 14
+          }
+        },
+        "rsi_vmm": {
+          "id": 112,
+          "strategy": "RSI(5) <= 50 + VMM momentum filter",
+          "hold_sessions": 40,
+          "development": {
+            "net_profit": 8319.82,
+            "drawdown_pct": 18.02,
+            "trades": 144,
+            "traded_symbols": 12
+          },
+          "validation": {
+            "net_profit": -463.3,
+            "drawdown_pct": 11.28,
+            "trades": 19,
+            "traded_symbols": 3
+          },
+          "full": {
+            "net_profit": 7175.74,
+            "drawdown_pct": 18.02,
+            "trades": 163,
+            "traded_symbols": 12
+          }
+        },
+        "momentum": {
+          "id": 0,
+          "strategy": "USD momentum baseline",
+          "hold_sessions": null,
+          "development": {
+            "net_profit": 18876.07,
+            "drawdown_pct": 19.94,
+            "trades": 134,
+            "traded_symbols": 12
+          },
+          "validation": {
+            "net_profit": -231.8,
+            "drawdown_pct": 10.08,
+            "trades": 22,
+            "traded_symbols": 3
+          },
+          "full": {
+            "net_profit": 18141.33,
+            "drawdown_pct": 19.94,
+            "trades": 155,
+            "traded_symbols": 12
+          }
+        }
+      },
+      "positive_both_count": 113,
+      "excluded": {}
+    }
+  }
+}
