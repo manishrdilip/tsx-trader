@@ -1,0 +1,45 @@
+{
+  "scenarios": 40,
+  "total_synthetic_candidate_evaluations": 3720,
+  "results": [
+    {
+      "edge": 0,
+      "scenarios": 8,
+      "passed": 0,
+      "median_rank": 36.0,
+      "median_after_cost_return": -0.37207252652172007
+    },
+    {
+      "edge": 0.005,
+      "scenarios": 8,
+      "passed": 0,
+      "median_rank": 17.5,
+      "median_after_cost_return": -0.20502801193224834
+    },
+    {
+      "edge": 0.01,
+      "scenarios": 8,
+      "passed": 0,
+      "median_rank": 2.5,
+      "median_after_cost_return": 0.009595683720689752
+    },
+    {
+      "edge": 0.02,
+      "scenarios": 8,
+      "passed": 4,
+      "median_rank": 2.0,
+      "median_after_cost_return": 0.5811371203955032
+    },
+    {
+      "edge": 0.04,
+      "scenarios": 8,
+      "passed": 8,
+      "median_rank": 2.0,
+      "median_after_cost_return": 2.5927380395804906
+    }
+  ],
+  "exact_matched_vmm": "unavailable; local logs cover nine dates in November 2026, outside the historical folds",
+  "historical_search": "paused",
+  "official": 0,
+  "holdout_accessed": false
+}
