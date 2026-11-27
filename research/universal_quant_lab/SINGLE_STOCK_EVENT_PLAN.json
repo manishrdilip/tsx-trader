@@ -1,0 +1,15 @@
+{
+  "id": "daily-gap-followthrough-v1",
+  "question": "After a large overnight gap and directional trading during the event day, does an executable next-open entry earn after-cost profit in the following 2, 5 or 10 sessions?",
+  "scope": "Frozen portfolio-discovery-v2 stock and ETF revisions. Each evaluation uses a separate CAD or USD 5,000 single-instrument account. SHOP.TO is the named initial case and all usable instruments receive the same 12 rules.",
+  "parent_plan": "PORTFOLIO_ROBUSTNESS_PLAN.json",
+  "cutoff_exclusive": "2024-11-27",
+  "gap_abs_thresholds": [0.03, 0.05],
+  "holding_sessions": [2, 5, 10],
+  "patterns": {
+    "up_gap_followthrough": "Split-consistent opening gap at least threshold, followed by close above open.",
+    "down_gap_reversal": "Split-consistent opening gap at most negative threshold, followed by close above open."
+  },
+  "execution": "Signal at event-day close. Buy next open. Sell after fixed sessions or at fold end. Use the existing whole-share turnover cap, CAD/USD 2 per side, and 30 basis points per side.",
+  "evidence": "Compare unchanged configurations over the same six historical test folds (2018?2023). Report positive trades, cost-adjusted profit, drawdown, profit excluding the largest 5% of trades, and identical-date passive and SMA200 baselines. An 80% win rate is descriptive. Statistical and independent validation remain required."
+}
