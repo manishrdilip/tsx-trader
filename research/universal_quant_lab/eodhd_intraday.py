@@ -67,7 +67,7 @@ def backfill(root, symbols, intervals, start, end, max_requests, active_dates=No
         raise ValueError(f"Expected a nonempty UTC date range ending by {DEVELOPMENT_END}")
     if max_requests <= 0 or set(intervals) - set(INTERVALS):
         raise ValueError("Expected supported intervals and a positive request budget")
-    if any(not re.fullmatch(r"[A-Z0-9][A-Z0-9_.-]*\.(US|CC)", symbol) for symbol in symbols):
+    if any(not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]*\.(US|CC)", symbol) for symbol in symbols):
         raise ValueError("Intraday candidates must be US equities or EODHD crypto symbols")
 
     calls = 0
