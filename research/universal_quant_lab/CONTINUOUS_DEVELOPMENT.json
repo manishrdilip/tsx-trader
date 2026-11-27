@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 528000000,
-  "batch": 175,
-  "worker_pid": null,
-  "status": "batch_complete",
+  "completed": 544624000,
+  "batch": 181,
+  "worker_pid": 17748,
+  "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T11:17:54.345443+00:00",
+  "updated_utc": "2026-11-27T11:33:03.024259+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -195,7 +195,21 @@
     {
       "symbol": "SU.TO",
       "currency": "CAD",
+      "strategy_id": 312145272101,
+      "net_profit": 4943.0,
+      "drawdown_pct": 15.04
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
       "strategy_id": 309264829733,
+      "net_profit": 4740.9,
+      "drawdown_pct": 15.04
+    },
+    {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "strategy_id": 309729316133,
       "net_profit": 4740.9,
       "drawdown_pct": 15.04
     },
@@ -205,20 +219,6 @@
       "strategy_id": 310070148389,
       "net_profit": 4740.9,
       "drawdown_pct": 15.04
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 317380931813,
-      "net_profit": 4672.79,
-      "drawdown_pct": 24.39
-    },
-    {
-      "symbol": "SU.TO",
-      "currency": "CAD",
-      "strategy_id": 336620989829,
-      "net_profit": 4338.11,
-      "drawdown_pct": 23.18
     },
     {
       "symbol": "XIU.TO",
