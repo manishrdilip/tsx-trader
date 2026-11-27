@@ -1,0 +1,82 @@
+{
+  "method": "daily-gap-followthrough-v1",
+  "evaluations": 432,
+  "instruments": 36,
+  "hard_gate_passes": 0,
+  "cutoff_exclusive": "2024-11-27",
+  "official": 0,
+  "holdout_accessed": false,
+  "best_shop": {
+    "symbol": "SHOP.TO",
+    "currency": "CAD",
+    "direction": "up_gap_followthrough",
+    "threshold": 0.05,
+    "hold": 10,
+    "return_after_cost": -0.022916483776254215,
+    "closed_trades": 16,
+    "wins": 9,
+    "trimmed_profit": -1179.4756999999931,
+    "hard_gate_failures": [
+      "trade_count",
+      "trimmed_profit",
+      "benchmarks",
+      "drawdown",
+      "fold_consistency"
+    ]
+  },
+  "best_by_currency": {
+    "CAD": {
+      "symbol": "SU.TO",
+      "currency": "CAD",
+      "direction": "up_gap_followthrough",
+      "threshold": 0.03,
+      "hold": 5,
+      "return_after_cost": 0.4707601075471821,
+      "closed_trades": 13,
+      "wins": 9,
+      "trimmed_profit": 1186.785360000008,
+      "hard_gate_failures": [
+        "trade_count"
+      ]
+    },
+    "USD": {
+      "symbol": "SLV.US",
+      "currency": "USD",
+      "direction": "down_gap_reversal",
+      "threshold": 0.03,
+      "hold": 5,
+      "return_after_cost": 0.2646321381860619,
+      "closed_trades": 8,
+      "wins": 5,
+      "trimmed_profit": 563.0042630000053,
+      "hard_gate_failures": [
+        "trade_count",
+        "fold_consistency"
+      ]
+    }
+  },
+  "observed_80pct_win_rate": 46,
+  "highest_trade_count_among_80pct": 6,
+  "failure_tally": {
+    "trade_count": 432,
+    "fold_consistency": 428,
+    "benchmarks": 374,
+    "trimmed_profit": 405,
+    "drawdown": 14
+  },
+  "excluded": {
+    "HEXO.TO": "Price history ends before the window; delisting settlement unavailable",
+    "KL.TO": "Price history ends before the window; delisting settlement unavailable",
+    "NVEI.TO": "Price history ends before the window; delisting settlement unavailable",
+    "ADZN.V": "Price history ends before the window; delisting settlement unavailable",
+    "GMIN.V": "Price history ends before the window; delisting settlement unavailable",
+    "MTRX.V": "Price history ends before the window; delisting settlement unavailable",
+    "ZGLD.TO": "Unavailable or insufficient session history",
+    "HIVE.V": "Unavailable or insufficient session history",
+    "CNQ.TO": "No comparable fold with 100 sessions and an eligible opening position",
+    "ZCN.TO": "No comparable fold with 100 sessions and an eligible opening position",
+    "ZEB.TO": "No comparable fold with 100 sessions and an eligible opening position"
+  },
+  "code_sha256": "3bd61d8db2f097df531b20c2f74b4a9a698d99554b9323e0f09b0c0c234550ff",
+  "plan_sha256": "2e8a3beddb2af4747dd4e996f7875e13bc6a5cf92e855c80641487f547ef3156"
+}

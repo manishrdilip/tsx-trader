@@ -79,7 +79,7 @@ def run(root, scope_file, plan_file, output):
                     outcomes.extend(pnl)
                     bh,trend=benchmarks[year]
                     history.append(dict(year=year,net_return=ret,drawdown=risk,closed_trades=int(trades),
-                         passive_return=bh,sma200_return=trend,positive_trades=sum(x>0 for x in pnl)))
+                         passive_return=bh,sma200_return=trend,positive_trades=int(sum(x>0 for x in pnl))))
                 ret=compound([x["net_return"] for x in history])
                 cut=int(np.ceil(len(outcomes)*plan["gates"]["remove_top_fraction"]))
                 trim=float(sum(sorted(outcomes)[:len(outcomes)-cut]))
@@ -93,7 +93,7 @@ def run(root, scope_file, plan_file, output):
                     failures.append("fold_consistency")
                 rows.append(dict(direction="up_gap_followthrough" if direction==1 else "down_gap_reversal",
                      threshold=threshold,hold=hold,return_after_cost=ret,closed_trades=len(outcomes),
-                     wins=sum(x>0 for x in outcomes),trimmed_profit=trim,hard_gate_failures=failures,folds=history))
+                     wins=int(sum(x>0 for x in outcomes)),trimmed_profit=trim,hard_gate_failures=failures,folds=history))
             report["instruments"][symbol]=dict(currency=currency,results=rows)
             report["evaluations"]+=len(rows)
             report["hard_gate_passes"]+=sum(not rule["hard_gate_failures"] for rule in rows)
