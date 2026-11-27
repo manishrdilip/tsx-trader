@@ -2,13 +2,13 @@
   "campaign": "continuous-development-v1",
   "provisional_target": 1000000000,
   "official_completed": 0,
-  "completed": 310188000,
-  "batch": 103,
-  "worker_pid": 45052,
+  "completed": 327000000,
+  "batch": 109,
+  "worker_pid": 46672,
   "status": "running",
   "resource_pause": false,
   "retry_limit_reached": false,
-  "updated_utc": "2026-11-27T08:02:32.309794+00:00",
+  "updated_utc": "2026-11-27T08:17:33.989627+00:00",
   "promising": [
     {
       "symbol": "BNS.TO",
@@ -90,30 +90,30 @@
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 461534148698,
-      "net_profit": 1428.35,
-      "drawdown_pct": 13.15
+      "strategy_id": 588842718788,
+      "net_profit": 1730.71,
+      "drawdown_pct": 10.2
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 648310960292,
-      "net_profit": 1354.52,
-      "drawdown_pct": 15.34
+      "strategy_id": 588037400132,
+      "net_profit": 1611.16,
+      "drawdown_pct": 10.2
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 74241215236,
-      "net_profit": 1331.01,
-      "drawdown_pct": 10.69
+      "strategy_id": 587131416644,
+      "net_profit": 1492.2,
+      "drawdown_pct": 14.72
     },
     {
       "symbol": "CP.TO",
       "currency": "CAD",
-      "strategy_id": 20565264866,
-      "net_profit": 1306.3,
-      "drawdown_pct": 9.83
+      "strategy_id": 587936735300,
+      "net_profit": 1492.2,
+      "drawdown_pct": 14.72
     },
     {
       "symbol": "ENB.TO",
@@ -314,14 +314,14 @@
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 216092741960,
-      "net_profit": 3774.54,
-      "drawdown_pct": 9.82
+      "strategy_id": 402792088820,
+      "net_profit": 3869.02,
+      "drawdown_pct": 14.44
     },
     {
       "symbol": "AAPL.US",
       "currency": "USD",
-      "strategy_id": 222535291208,
+      "strategy_id": 216092741960,
       "net_profit": 3774.54,
       "drawdown_pct": 9.82
     }
