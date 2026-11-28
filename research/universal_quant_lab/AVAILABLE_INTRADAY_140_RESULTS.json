@@ -1,0 +1,70 @@
+{
+  "status": "complete",
+  "scope": "provisional_development",
+  "official_v2_evaluations": 0,
+  "checked_symbols": 140,
+  "tested_symbols": 107,
+  "excluded_symbols": 33,
+  "newly_admitted_symbols": 60,
+  "candidate_rules": 40,
+  "symbol_candidate_replays": 4280,
+  "seconds": 141.52664249995723,
+  "train_positive_rules": 0,
+  "validation_positive_rules": 0,
+  "best_training_rule": {
+    "rule": "rsi14_reclaim_with_macd",
+    "atr_tp_sl_max_hold_bars": [
+      2.0,
+      1.5,
+      24
+    ],
+    "train": {
+      "equal_weight_net_return": -0.16734944133138055,
+      "median_sleeve_drawdown": 0.13285991769121083,
+      "worst_sleeve_drawdown": 0.4914764659154545,
+      "profitable_symbols": 0,
+      "trades": 9651,
+      "mean_hold_minutes": 33.347321521085895
+    },
+    "validation": {
+      "equal_weight_net_return": -0.16935966779324962,
+      "median_sleeve_drawdown": 0.12681624783056195,
+      "worst_sleeve_drawdown": 0.5511866351984158,
+      "profitable_symbols": 0,
+      "trades": 8861,
+      "mean_hold_minutes": 33.26768987698905
+    }
+  },
+  "best_validation_rule": {
+    "rule": "rsi14_reclaim_with_macd",
+    "atr_tp_sl_max_hold_bars": [
+      2.0,
+      1.5,
+      24
+    ],
+    "train": {
+      "equal_weight_net_return": -0.16734944133138055,
+      "median_sleeve_drawdown": 0.13285991769121083,
+      "worst_sleeve_drawdown": 0.4914764659154545,
+      "profitable_symbols": 0,
+      "trades": 9651,
+      "mean_hold_minutes": 33.347321521085895
+    },
+    "validation": {
+      "equal_weight_net_return": -0.16935966779324962,
+      "median_sleeve_drawdown": 0.12681624783056195,
+      "worst_sleeve_drawdown": 0.5511866351984158,
+      "profitable_symbols": 0,
+      "trades": 8861,
+      "mean_hold_minutes": 33.26768987698905
+    }
+  },
+  "best_training_rule_added_symbols_validation_return": -0.15865162038555222,
+  "same_original_47_symbol_scores_verified": true,
+  "plan_sha256": "27722f50108be0f64817f9ef131b48e238a6dafbd78b7cef584595558527c68a",
+  "limitations": [
+    "Equal USD capital per symbol sleeve with no cross-symbol competition.",
+    "Coverage-selected cohort; validation is previously available data, not a forward holdout.",
+    "No formal multiple-testing or buy-and-hold comparison in this bounded screen."
+  ]
+}

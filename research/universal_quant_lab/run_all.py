@@ -116,13 +116,19 @@ def fetch_daily(root, item):
 
 
 def fetch_intraday(root, symbol, frequencies, start, end, active_dates, publish):
-    for delay in (30, 120, 300, None):
+    retry_delays = iter((30, 120, 300))
+    while True:
         state, _ = backfill(root, [symbol], frequencies, start, end, 180,
                             active_dates=active_dates)
         if state == "complete":
             publish({"intraday_retry": None})
             return
-        if state != "provider:429" or delay is None:
+        if state in {"memory", "disk", "gpu_temperature", "cpu_temperature"}:
+            publish({"intraday_retry": {"symbol": symbol, "reason": state}})
+            safe_to_run(root)
+            continue
+        delay = next(retry_delays, None) if state == "provider:429" else None
+        if delay is None:
             raise RuntimeError(f"Intraday acquisition for {symbol} stopped: {state}")
         publish({"intraday_retry": {"symbol": symbol, "reason": state, "delay_seconds": delay}})
         time.sleep(delay)
