@@ -1,0 +1,44 @@
+{
+  "state": "complete",
+  "scope": "provisional_development",
+  "interval": "1m",
+  "official_v2_evaluations": 0,
+  "symbols_checked": 140,
+  "symbols_eligible": 47,
+  "symbols_excluded": 93,
+  "candidate_count": 40,
+  "symbol_candidate_replays": 1880,
+  "positive_validation": 0,
+  "best_validation": {
+    "rule": "rsi14_reclaim_with_macd",
+    "atr_tp_sl_max_hold_bars": [
+      2.0,
+      1.5,
+      24
+    ],
+    "train": {
+      "equal_weight_net_return": -0.38670633381789443,
+      "median_sleeve_drawdown": 0.2942978455712478,
+      "worst_sleeve_drawdown": 0.9800485833799848,
+      "profitable_symbols": 0,
+      "trades": 17495,
+      "mean_hold_minutes": 6.972563589597028,
+      "win_rate": 0.0016004572735067162
+    },
+    "validation": {
+      "equal_weight_net_return": -0.37820541265140195,
+      "median_sleeve_drawdown": 0.2563230040837467,
+      "worst_sleeve_drawdown": 0.979953941134987,
+      "profitable_symbols": 0,
+      "trades": 15368,
+      "mean_hold_minutes": 7.338040083289953,
+      "win_rate": 0.0039042165538781884
+    }
+  },
+  "plan_sha256": "08608c711d6f452ad147e494ec85c0952f0662260d159c99f5a138fee32a2e4b",
+  "limitations": [
+    "Equal USD capital per symbol sleeve with no cross-symbol competition.",
+    "Coverage-selected cohort; validation is previously available data, not a forward holdout.",
+    "No formal multiple-testing or buy-and-hold comparison in this bounded screen."
+  ]
+}

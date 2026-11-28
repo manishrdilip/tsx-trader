@@ -1,0 +1,219 @@
+{
+  "scope": "provisional development",
+  "official_v2_evaluations": 0,
+  "checked": 140,
+  "candidate_count": 9,
+  "symbol_candidate_replays": 1008,
+  "plan_sha256": "49694e443b1fcc9328874bf57ff0690d1294f78c12d17555497eafcac8e081b5",
+  "train_ranked": [
+    {
+      "entry": "monthly_calendar",
+      "exit": "8pct_trailing_exit",
+      "train": {
+        "net_return": 1.3673404020702844,
+        "median_drawdown": 0.32840830267532767,
+        "trades": 2815,
+        "win_rate": 0.47424511545293074,
+        "mean_hold_sessions": 46.33534635879219,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.01962317155988257,
+        "median_drawdown": 0.397638474020962,
+        "trades": 1821,
+        "win_rate": 0.3525535420098847,
+        "mean_hold_sessions": 32.521691378363535,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "monthly_calendar",
+      "exit": "20_session_time_exit",
+      "train": {
+        "net_return": 1.2887542060358788,
+        "median_drawdown": 0.30857007323955604,
+        "trades": 5659,
+        "win_rate": 0.5700653825764269,
+        "mean_hold_sessions": 20.0,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.027190034263757688,
+        "median_drawdown": 0.3723421440578256,
+        "trades": 2576,
+        "win_rate": 0.5073757763975155,
+        "mean_hold_sessions": 19.869565217391305,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "monthly_trend_gate",
+      "exit": "8pct_trailing_exit",
+      "train": {
+        "net_return": 0.5204811302055498,
+        "median_drawdown": 0.3004654305659001,
+        "trades": 1482,
+        "win_rate": 0.44871794871794873,
+        "mean_hold_sessions": 55.69230769230769,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.04427035372089268,
+        "median_drawdown": 0.2906570187836955,
+        "trades": 790,
+        "win_rate": 0.330379746835443,
+        "mean_hold_sessions": 38.02151898734177,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "monthly_trend_gate",
+      "exit": "100_day_trend_exit",
+      "train": {
+        "net_return": 0.49895473339347685,
+        "median_drawdown": 0.3080014716779386,
+        "trades": 1395,
+        "win_rate": 0.3634408602150538,
+        "mean_hold_sessions": 54.6831541218638,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.018442540175588797,
+        "median_drawdown": 0.27514803103203733,
+        "trades": 684,
+        "win_rate": 0.29239766081871343,
+        "mean_hold_sessions": 41.96345029239766,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "weekly_pullback_in_uptrend",
+      "exit": "8pct_trailing_exit",
+      "train": {
+        "net_return": 0.4295099101039734,
+        "median_drawdown": 0.2609590796147558,
+        "trades": 1065,
+        "win_rate": 0.4676056338028169,
+        "mean_hold_sessions": 51.44507042253521,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.02403615784577603,
+        "median_drawdown": 0.22584039897638303,
+        "trades": 576,
+        "win_rate": 0.3611111111111111,
+        "mean_hold_sessions": 34.06944444444444,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "monthly_calendar",
+      "exit": "100_day_trend_exit",
+      "train": {
+        "net_return": 0.3755031468060896,
+        "median_drawdown": 0.39058342796445467,
+        "trades": 4265,
+        "win_rate": 0.3409144196951934,
+        "mean_hold_sessions": 21.138804220398594,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.10550591801416512,
+        "median_drawdown": 0.34290330146323267,
+        "trades": 2561,
+        "win_rate": 0.3155017571261226,
+        "mean_hold_sessions": 13.793049590003905,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "monthly_trend_gate",
+      "exit": "20_session_time_exit",
+      "train": {
+        "net_return": 0.2829683341077178,
+        "median_drawdown": 0.31171270663113293,
+        "trades": 3371,
+        "win_rate": 0.5404924354790863,
+        "mean_hold_sessions": 20.0,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.06257566596768457,
+        "median_drawdown": 0.27515093783435474,
+        "trades": 1241,
+        "win_rate": 0.48670427074939565,
+        "mean_hold_sessions": 19.850120870265915,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "weekly_pullback_in_uptrend",
+      "exit": "20_session_time_exit",
+      "train": {
+        "net_return": 0.20818538826034022,
+        "median_drawdown": 0.1885688357727357,
+        "trades": 1077,
+        "win_rate": 0.6081708449396471,
+        "mean_hold_sessions": 19.774373259052926,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.012474738986798701,
+        "median_drawdown": 0.1803130361020886,
+        "trades": 564,
+        "win_rate": 0.4929078014184397,
+        "mean_hold_sessions": 19.664893617021278,
+        "buy_and_hold": 0.19799842208636154
+      }
+    },
+    {
+      "entry": "weekly_pullback_in_uptrend",
+      "exit": "100_day_trend_exit",
+      "train": {
+        "net_return": 0.1959752420989973,
+        "median_drawdown": 0.20561615402387756,
+        "trades": 1210,
+        "win_rate": 0.33884297520661155,
+        "mean_hold_sessions": 22.813223140495868,
+        "buy_and_hold": 2.404312456728161
+      },
+      "validation": {
+        "net_return": -0.03367838876680099,
+        "median_drawdown": 0.16359594687758772,
+        "trades": 653,
+        "win_rate": 0.28637059724349156,
+        "mean_hold_sessions": 16.777947932618684,
+        "buy_and_hold": 0.19799842208636154
+      }
+    }
+  ],
+  "limitations": [
+    "Point-in-time eligibility, total-return adjustments and exit liquidity remain approximate.",
+    "Previously observed development periods. Continuous coverage filter creates survivorship bias.",
+    "Separate equal-capital sleeves. No matched VMM return series."
+  ],
+  "admitted_count": 112,
+  "excluded_count": 28,
+  "best_validation": {
+    "entry": "weekly_pullback_in_uptrend",
+    "exit": "20_session_time_exit",
+    "train": {
+      "net_return": 0.20818538826034022,
+      "median_drawdown": 0.1885688357727357,
+      "trades": 1077,
+      "win_rate": 0.6081708449396471,
+      "mean_hold_sessions": 19.774373259052926,
+      "buy_and_hold": 2.404312456728161
+    },
+    "validation": {
+      "net_return": -0.012474738986798701,
+      "median_drawdown": 0.1803130361020886,
+      "trades": 564,
+      "win_rate": 0.4929078014184397,
+      "mean_hold_sessions": 19.664893617021278,
+      "buy_and_hold": 0.19799842208636154
+    }
+  },
+  "profitable_validation": 0,
+  "beat_passive_validation": 0
+}
