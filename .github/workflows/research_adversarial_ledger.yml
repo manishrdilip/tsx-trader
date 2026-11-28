@@ -1,0 +1,37 @@
+name: Research adversarial cash ledger audit
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/adversarial_ledger_audit.py"
+      - ".github/workflows/research_adversarial_ledger.yml"
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Regression tests and deterministic execution checks
+        run: |
+          set -euo pipefail
+          python -m unittest research.test_execution_accounting research.test_cash_invariants -v
+          python -m research.stop_identifiability_audit
+          python -m research.execution_stress_audit
+          python -m research.adversarial_ledger_audit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: adversarial-ledger-audit
+          path: |
+            research/adversarial_ledger_results/
+            research/execution_stress_results/
+            research/stop_identifiability_results/
+          if-no-files-found: warn

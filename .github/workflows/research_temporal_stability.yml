@@ -1,0 +1,50 @@
+name: Research intraday chronological stability
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/temporal_stability.py"
+      - "research/temporal_robustness_screen.py"
+      - "research/temporal_frontier.py"
+      - "research/test_execution_accounting.py"
+      - "research/test_cash_invariants.py"
+      - "research/test_signal_causality.py"
+      - "research/test_temporal_frontier_contract.py"
+      - "research/test_temporal_split_contract.py"
+      - ".github/workflows/research_temporal_stability.yml"
+permissions:
+  contents: read
+jobs:
+  stability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Verify research execution regression suite
+        run: python -m unittest research.test_execution_accounting -v
+      - name: Verify cash and session invariants
+        run: python -m unittest research.test_cash_invariants -v
+      - name: Audit five strategy signals for future-bar leakage
+        run: python -m unittest research.test_signal_causality -v
+      - name: Validate return-risk frontier contract
+        run: python -m unittest research.test_temporal_frontier_contract -v
+      - name: Verify chronological split and fixed-capital contract
+        run: python -m unittest research.test_temporal_split_contract -v
+      - name: Chronological block stability across five strategies and three costs
+        run: python research/temporal_stability.py
+      - name: Screen chronological and transaction-cost robustness
+        run: python research/temporal_robustness_screen.py
+      - name: Compare same-period return-risk frontiers
+        run: python research/temporal_frontier.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: temporal-stability-diagnostics
+          path: research/temporal_stability_results/
+          if-no-files-found: warn

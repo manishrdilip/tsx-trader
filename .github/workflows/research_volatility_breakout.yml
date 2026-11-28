@@ -1,0 +1,29 @@
+name: Research independent TSX volatility breakout grid
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - "research/daily_volatility_breakout_grid.py"
+      - ".github/workflows/research_volatility_breakout.yml"
+permissions:
+  contents: read
+jobs:
+  volatility-breakout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Run 1728 distinct daily volatility breakout screens at 3 costs
+        run: python research/daily_volatility_breakout_grid.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: volatility-breakout-grid-results
+          path: research/volatility_breakout_results/
+          if-no-files-found: warn

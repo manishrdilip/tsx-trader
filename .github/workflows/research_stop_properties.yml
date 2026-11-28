@@ -1,0 +1,24 @@
+name: Research stop property regression
+on:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - 'research/test_executable_stop_properties.py'
+      - 'research/executable_stop_reference_audit.py'
+      - '.github/workflows/research_stop_properties.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Reference stop checks
+        run: python research/executable_stop_reference_audit.py
+      - name: Adversarial property checks
+        run: python -m unittest discover -s research -p test_executable_stop_properties.py -v

@@ -1,0 +1,45 @@
+name: Research sequential intraday validation
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/intraday-professional-setups-20261121
+    paths:
+      - ".github/workflows/research_sequential.yml"
+permissions:
+  contents: read
+concurrency:
+  group: sequential-intraday-research
+  cancel-in-progress: false
+jobs:
+  sequential:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - name: Verify deterministic execution accounting before downloading data
+        run: python -m unittest research.test_execution_accounting -v
+      - name: Run sequential cost stress tests (stop on failure)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for cost in 0.001 0.0025 0.005; do
+            echo "::group::15-stock strategies cost $cost"
+            RESEARCH_COST_PER_SIDE="$cost" python research/pro_intraday_test.py
+            echo "::endgroup::"
+            echo "::group::59-stock Bull Flag variants cost $cost"
+            RESEARCH_COST_PER_SIDE="$cost" MAX_TICKERS=100 python research/bull_flag_combinations.py
+            echo "::endgroup::"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sequential-research-results
+          path: |
+            research/intraday_results/
+            research/intraday_combo_results/
+          if-no-files-found: warn

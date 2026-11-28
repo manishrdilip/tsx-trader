@@ -1,0 +1,63 @@
+name: Research TSX weekly defensive rotation
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths: ['.github/workflows/research_weekly_defensive.yml']
+permissions:
+  contents: read
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: pip install yfinance pandas numpy
+      - run: |
+          python - <<'PY'
+          import yfinance as yf, pandas as pd, numpy as np
+          symbols=['XIU.TO','XIC.TO','XEG.TO','XFN.TO','XMA.TO','XIT.TO','XRE.TO','XBB.TO','XSB.TO']
+          d=yf.download(symbols,start='2007-01-01',end='2026-11-26',auto_adjust=False,progress=False)
+          o=d['Open']; c=d['Close']; a=d['Adj Close']; div={}
+          for s in symbols:
+              div[s]=yf.Ticker(s).dividends
+              div[s].index=div[s].index.tz_localize(None)
+          # Fixed hypotheses: absolute trend, relative momentum, defensive fallback.
+          # Raw execution prices; dividends credited on ex-date (optimistic timing).
+          # Exclude split-affected symbols entirely; retrospective selection caveat.
+          for s in symbols.copy():
+              if len(yf.Ticker(s).splits.loc['2009':]):
+                  symbols.remove(s)
+          print('universe',symbols)
+          for look in [63,126]:
+            score=a.pct_change(look)
+            for cost in [.001,.005]:
+              for start,end in [('2009','2022'),('2023','2026')]:
+                dates=c.loc[start:end].index
+                cash=5000.; qty=0; held=None; pending=None; peak=5000.; dd=0.; equity=[]; pnls=[]; basis=0
+                for i,t in enumerate(dates):
+                  if held:
+                    cash+=qty*float(div[held].get(t,0))
+                  if pending is not None:
+                    target=pending; pending=None
+                    if target!=held:
+                      if held:
+                        px=o.at[t,held]
+                        if not np.isfinite(px): raise ValueError('missing exit')
+                        proceeds=qty*px*(1-cost); cash+=proceeds; pnls.append(proceeds-basis); held=None; qty=0
+                      if target!='cash':
+                        px=o.at[t,target]*(1+cost)
+                        if np.isfinite(px) and px>0:
+                          qty=int(cash/px); basis=qty*px; cash-=basis; held=target if qty else None
+                  value=cash+(qty*c.at[t,held] if held else 0)
+                  if not np.isfinite(value): raise ValueError('missing mark')
+                  peak=max(peak,value); dd=min(dd,value/peak-1); equity.append(value)
+                  if i+1<len(dates) and dates[i+1].isocalendar().week!=t.isocalendar().week:
+                    ranked=score.loc[t,symbols].dropna()
+                    ranked=ranked[ranked>0]
+                    pending=ranked.idxmax() if len(ranked) else 'cash'
+                final=equity[-1]-(qty*c.at[dates[-1],held]*cost if held else 0)
+                years=(dates[-1]-dates[0]).days/365.25
+                ret=pd.Series(equity).pct_change().dropna()
+                gains=sum(x for x in pnls if x>0); losses=-sum(x for x in pnls if x<0)
+                print('CAD',look,cost,start,end,'net',final-5000,'CAGR',(final/5000)**(1/years)-1,'closeDD',dd,'closed trades',len(pnls),'PF ex dividends',gains/losses if losses else None,'expectancy ex dividends',np.mean(pnls) if pnls else None,'Sharpe',ret.mean()/ret.std()*np.sqrt(252) if ret.std() else None)
+          print('Exploratory only: survivor bias, retrospective split exclusions, ex-date dividend cash timing, close-only drawdown, no independent holdout or matched VMM baseline.')
+          PY

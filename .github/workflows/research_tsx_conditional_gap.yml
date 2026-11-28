@@ -1,0 +1,54 @@
+name: Research TSX overnight conditional gap screen
+on:
+  push:
+    branches: [research/intraday-professional-setups-20261121]
+    paths: ['.github/workflows/research_tsx_conditional_gap.yml']
+permissions:
+  contents: read
+jobs:
+  screen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: pip install yfinance pandas numpy
+      - run: |
+          python - <<'PY'
+          import yfinance as yf,pandas as pd,numpy as np
+          syms=['XIU.TO','XIC.TO','ZCN.TO','XEG.TO','XFN.TO','XMA.TO','XIT.TO','XRE.TO']
+          for s in syms:
+              d=yf.download(s,start='2009-01-01',end='2026-11-25',auto_adjust=False,progress=False)
+              if d.empty: print(s,'missing');continue
+              if isinstance(d.columns,pd.MultiIndex):d.columns=d.columns.get_level_values(0)
+              # Raw prices for whole shares; exclude corporate action discontinuities using adjustment factor changes.
+              d=d.dropna(subset=['Open','Close','Adj Close','High','Low'])
+              o=d.Open.to_numpy();c=d.Close.to_numpy();a=(d['Adj Close']/d.Close).to_numpy()
+              trend=d['Adj Close'].rolling(100).mean().to_numpy()
+              adj=d['Adj Close'].to_numpy()
+              for mode in ['gap_reversal','gap_continuation','quiet_gap_reversal']:
+                for cost in [.001,.005]:
+                  for lo,hi in [(2009,2022),(2023,2026)]:
+                    cash=5000.;peak=cash;dd=0.;p=[];dates=[]
+                    for i in range(101,len(d)-1):
+                      if not lo<=d.index[i].year<=hi or d.index[i+1].year>hi:continue
+                      dates.append(d.index[i])
+                      gap=o[i]/c[i-1]-1
+                      # signal at close, next open entry and following open exit; no overnight gap known at entry decision
+                      if mode=='gap_reversal': signal=gap<-.01 and c[i]>o[i] and adj[i]>trend[i]
+                      elif mode=='gap_continuation':signal=gap>.01 and c[i]>o[i] and adj[i]>trend[i]
+                      else:signal=gap<-.005 and c[i]>o[i] and np.std(np.diff(np.log(adj[i-20:i+1])))<.012
+                      if not signal or i+2>=len(d) or d.index[i+2].year>hi:continue
+                      # skip overlapping signals via explicit last exit index
+                      if p and i+1<last:continue
+                      if abs(a[i+2]/a[i+1]-1)>1e-6:
+                        # adjustment changes imply distribution or split; report exclusion as retrospective bias
+                        continue
+                      entry=o[i+1]*(1+cost);n=int(cash/entry)
+                      if n<=0:continue
+                      low=cash-n*entry+n*d.Low.iloc[i+1]*(1-cost)
+                      dd=min(dd,low/peak-1)
+                      profit=n*(o[i+2]*(1-cost)-entry);cash+=profit;peak=max(peak,cash);dd=min(dd,cash/peak-1);p.append(profit);last=i+2
+                    if len(dates)<2:continue
+                    x=np.array(p);years=(dates[-1]-dates[0]).days/365.25
+                    print(s,mode,cost,lo,hi,'CAD','net',round(cash-5000,2),'CAGR',round((cash/5000)**(1/years)-1,5),'DD_lower_bound',round(dd,5),'trades',len(x),'PF',round(x[x>0].sum()/max(1e-9,-x[x<0].sum()),4),'expectancy',round(x.mean(),4) if len(x) else None)
+          print('Exploratory only: current ETF universe survivor bias; retrospective corporate-action exclusions; no independent holdout or exact VMM comparison; not acceptance eligible.')
+          PY

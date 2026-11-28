@@ -1,0 +1,33 @@
+name: Research TSX Bull Flag combinations
+on:
+  pull_request:
+    paths:
+      - "research/bull_flag_combinations.py"
+      - ".github/workflows/bull_flag_combinations.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  combos:
+    strategy:
+      fail-fast: false
+      matrix:
+        cost: ['0.001', '0.0025', '0.005']
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      MAX_TICKERS: "100"
+      RESEARCH_COST_PER_SIDE: ${{ matrix.cost }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pandas numpy yfinance
+      - run: python research/bull_flag_combinations.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bull-flag-combination-results-${{ matrix.cost }}
+          path: research/intraday_combo_results/
+          if-no-files-found: warn
