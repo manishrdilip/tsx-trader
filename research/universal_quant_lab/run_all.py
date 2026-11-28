@@ -115,6 +115,20 @@ def fetch_daily(root, item):
         return "failed_row_validation", 0, None, None
 
 
+def fetch_intraday(root, symbol, frequencies, start, end, active_dates, publish):
+    for delay in (30, 120, 300, None):
+        state, _ = backfill(root, [symbol], frequencies, start, end, 180,
+                            active_dates=active_dates)
+        if state == "complete":
+            publish({"intraday_retry": None})
+            return
+        if state != "provider:429" or delay is None:
+            raise RuntimeError(f"Intraday acquisition for {symbol} stopped: {state}")
+        publish({"intraday_retry": {"symbol": symbol, "reason": state, "delay_seconds": delay}})
+        time.sleep(delay)
+        quota(root)
+
+
 def phase1(root, universe, publish):
     evidence_root = root / "checkpoints/capped-sequence"
     evidence_root.mkdir(parents=True, exist_ok=True)
@@ -193,10 +207,8 @@ def phase1(root, universe, publish):
                 # Keep the two existing chunk grids so prior downloads resume exactly.
                 for start, end in ((date.fromisoformat(universe["intraday"]["provider_start"]), INTRADAY_CUT),
                                    (INTRADAY_CUT, CUTOFF + timedelta(days=1))):
-                    state, _ = backfill(root, [symbol], universe["intraday"]["frequency"], start, end, 180,
-                                        active_dates=(date.fromisoformat(first), date.fromisoformat(last)))
-                    if state != "complete":
-                        raise RuntimeError(f"Intraday acquisition for {symbol} stopped: {state}")
+                    fetch_intraday(root, symbol, universe["intraday"]["frequency"], start, end,
+                                   (date.fromisoformat(first), date.fromisoformat(last)), publish)
                 intra[symbol] = "checked"
             atomic_json(intra_path, intra)
             counts["intraday_symbols_checked"] = len(intra)
