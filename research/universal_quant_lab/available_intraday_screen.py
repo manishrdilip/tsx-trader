@@ -44,15 +44,16 @@ def check(root):
         sleep(20)
 
 
-def freeze(root, out, limit):
+def freeze(root, out, limit, interval, cohort):
     ledger = read(root / "checkpoints/capped-sequence/intraday.json")
-    scanned = list(ledger.items())[:limit]
+    scanned = ([(symbol, ledger[symbol]) for symbol in cohort] if cohort is not None
+               else list(ledger.items())[:limit])
     selection = {}
     for symbol, status in scanned:
         if status != "checked" or not symbol.endswith(".US"):
             selection[symbol] = []
             continue
-        folder = root / STORAGE / "market=US" / f"symbol={symbol}" / "interval=5m"
+        folder = root / STORAGE / "market=US" / f"symbol={symbol}" / f"interval={interval}"
         windows = []
         for path in sorted(folder.glob("*.json")):
             record = read(path)
@@ -61,7 +62,7 @@ def freeze(root, out, limit):
                 windows.append([path.with_suffix(".parquet").relative_to(root).as_posix(), record["sha256"]])
         selection[symbol] = windows
     plan = {"created_utc": now(), "status": "development_only", "official_v2": False,
-            "code_sha256": digest(Path(__file__)), "first_inclusive": START,
+            "code_sha256": digest(Path(__file__)), "interval": interval, "first_inclusive": START,
             "validation_start": SPLIT, "end_exclusive": END,
             "minimum_complete_sessions_each_split": 35,
             "execution": {"starting_sleeve_usd": CAPITAL, "friction_per_side": FRICTION,
@@ -128,7 +129,7 @@ def signal_arrays(bars):
 def simulate(prices, end_bar, signal, atr, cap, take, stop, hold, first, last):
     cash, quantity, entry_cash = CAPITAL, 0., 0.
     target, floor, filled, buys, tied = 0., 0., 0, 0, 0
-    min_hold, peak, drawdown, holding_total = 0, CAPITAL, 0., 0
+    peak, drawdown, holding_total, wins = CAPITAL, 0., 0, 0
     for i in range(first, last):
         current_open, high, low, close = prices[i]
         if quantity == 0 and i > first and not end_bar[i-1] and not end_bar[i] and signal[i-1]:
@@ -157,40 +158,41 @@ def simulate(prices, end_bar, signal, atr, cap, take, stop, hold, first, last):
                 exit_price = target
             if exit_price > 0:
                 cash += quantity*exit_price*(1-FRICTION)-FEE
+                wins += int(cash > entry_cash)
                 holding_total += i-filled+1
                 quantity = 0.
         equity = cash if quantity == 0 else cash + quantity*close*(1-FRICTION)-FEE
         peak = max(peak, equity)
         drawdown = max(drawdown, (peak-equity)/peak)
-    return cash/CAPITAL-1, drawdown, buys, holding_total, tied
+    return cash/CAPITAL-1, drawdown, buys, holding_total, tied, wins
 
 
-def calendar():
+def calendar(interval):
     cal = xc.get_calendar("XNYS", start=START, end=END)
     days = {}
     for sess in cal.sessions:
         opening, closing = cal.session_open(sess), cal.session_close(sess)
         days[sess.date().isoformat()] = (opening, closing,
-            pd.date_range(opening, closing, freq="5min", inclusive="left"))
+            pd.date_range(opening, closing, freq=f"{interval[:-1]}min", inclusive="left"))
     return days
 
 
-def run(root, out, limit):
+def run(root, out, limit, interval="5m", cohort=None):
     out.mkdir(parents=True, exist_ok=True)
-    plan = read(out / "plan.json") if (out / "plan.json").exists() else freeze(root, out, limit)
-    if plan["code_sha256"] != digest(Path(__file__)):
+    plan = read(out / "plan.json") if (out / "plan.json").exists() else freeze(root, out, limit, interval, cohort)
+    if plan["code_sha256"] != digest(Path(__file__)) or plan["interval"] != interval:
         raise ValueError("Run code changed")
     result_path = out / "progress.json"
     prior = read(result_path) if result_path.exists() else {"symbols": {}, "excluded": {}}
     admitted, excluded = prior["symbols"], prior["excluded"]
-    days, start_time = calendar(), perf_counter()
+    days, start_time = calendar(interval), perf_counter()
     for symbol, windows in plan["source_windows"].items():
         if symbol in admitted or symbol in excluded:
             continue
         check(root)
         bars = frame(root, windows, days)
         if bars is None:
-            excluded[symbol] = "No complete regular sessions with saved 5m data"
+            excluded[symbol] = "No complete regular sessions with saved bars"
         else:
             counts = bars.groupby(bars.session >= SPLIT).session.nunique()
             if len(counts) != 2 or counts.min() < 35:
@@ -209,7 +211,7 @@ def run(root, out, limit):
                                   "official_v2_evaluations": 0, "updated_utc": now()})
     if not admitted:
         raise RuntimeError("No symbols met the registered data minimum")
-    combined = np.asarray([item["scores"] for item in admitted.values()]).reshape(len(admitted),len(CANDIDATES),2,5)
+    combined = np.asarray([item["scores"] for item in admitted.values()]).reshape(len(admitted),len(CANDIDATES),2,6)
     rows = []
     for i, (rule, exit_) in enumerate(CANDIDATES):
         details = {}
@@ -221,11 +223,12 @@ def run(root, out, limit):
                              "worst_sleeve_drawdown": float(values[:,1].max()),
                              "profitable_symbols": int((values[:,0]>0).sum()),
                              "trades": trades,
-                             "mean_hold_minutes": float(values[:,3].sum()*5/trades) if trades else None}
+                             "mean_hold_minutes": float(values[:,3].sum()*int(interval[:-1])/trades) if trades else None,
+                             "win_rate": float(values[:,5].sum()/trades) if trades else None}
         rows.append({"rule": FAMILIES[rule], "atr_tp_sl_max_hold_bars": exit_, **details})
     rows.sort(key=lambda r: (-r["train"]["equal_weight_net_return"],r["rule"],r["atr_tp_sl_max_hold_bars"]))
     report = {"status":"complete","stage":"provisional_development","official_v2_evaluations":0,
-              "cross_symbol_candidates":len(rows), "symbol_candidate_replays":len(rows)*len(admitted),
+              "interval":interval,"cross_symbol_candidates":len(rows), "symbol_candidate_replays":len(rows)*len(admitted),
               "eligible_symbols":list(admitted),"excluded_symbols":excluded,"plan_sha256":digest(out/"plan.json"),
               "elapsed_seconds_this_process":perf_counter()-start_time,"train_ranked_results":rows,
               "limitations":["Equal USD capital per symbol sleeve with no cross-symbol competition.",
@@ -242,5 +245,6 @@ if __name__ == "__main__":
     parser.add_argument("root",type=Path)
     parser.add_argument("out",type=Path)
     parser.add_argument("--limit",type=int,default=57)
+    parser.add_argument("--interval",choices=("1m","5m"),default="5m")
     args=parser.parse_args()
-    run(args.root,args.out,args.limit)
+    run(args.root,args.out,args.limit,args.interval)

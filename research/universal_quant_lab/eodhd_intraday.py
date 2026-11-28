@@ -112,7 +112,7 @@ def backfill(root, symbols, intervals, start, end, max_requests, active_dates=No
         for interval in dict.fromkeys(intervals):
             current = start
             folder = base / f"market={exchange}" / f"symbol={symbol}" / f"interval={interval}"
-            group_size = {"5m": 4, "1h": 12}.get(interval, 1)
+            group_size = {"1m": 2, "5m": 4, "1h": 12}.get(interval, 1)
             while current < end:
                 following = min(current + step, end)
                 if active_dates and (following <= active_dates[0] or current > active_dates[1]):

@@ -1,0 +1,168 @@
+{
+  "status": "complete",
+  "scope": "provisional development",
+  "official_v2_evaluations": 0,
+  "frozen_cohort_size": 140,
+  "plan_sha256": "7f8648baa3e51b9ddaf3b266adf4b579bc4ef10829798ec2874b9a5a139a4a98",
+  "timeframes": {
+    "1d": {
+      "eligible_symbols": 120,
+      "candidate_count": 40,
+      "symbol_candidate_replays": 4800,
+      "train_selected": {
+        "rule": "rsi_short_recovery",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 20,
+        "train": {
+          "net": 0.2049325820661446,
+          "passive": 2.3193861278371073,
+          "passive_delta": -2.114453545770963,
+          "median_drawdown": 0.34918028718386984,
+          "trades": 6720,
+          "win_rate": 0.4956845238095238
+        },
+        "validation": {
+          "net": -0.11456928502792749,
+          "passive": 0.1849533479027105,
+          "passive_delta": -0.29952263293063797,
+          "median_drawdown": 0.330529313587211,
+          "trades": 3795,
+          "win_rate": 0.42292490118577075
+        }
+      },
+      "highest_validation": {
+        "rule": "rsi_with_ema_trend",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 20,
+        "train": {
+          "net": -0.002307151874726025,
+          "passive": 2.3193861278371073,
+          "passive_delta": -2.3216932797118335,
+          "median_drawdown": 0.1639835141543091,
+          "trades": 1498,
+          "win_rate": 0.45727636849132175
+        },
+        "validation": {
+          "net": -0.02170124022476685,
+          "passive": 0.1849533479027105,
+          "passive_delta": -0.20665458812747736,
+          "median_drawdown": 0.1082136844889752,
+          "trades": 686,
+          "win_rate": 0.42128279883381925
+        }
+      },
+      "positive_validation": 0,
+      "beat_passive_validation": 0
+    },
+    "1w": {
+      "eligible_symbols": 117,
+      "candidate_count": 40,
+      "symbol_candidate_replays": 4680,
+      "train_selected": {
+        "rule": "rsi_short_recovery",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 8,
+        "train": {
+          "net": 0.4010434751134634,
+          "passive": 2.3174245334041386,
+          "passive_delta": -1.9163810582906753,
+          "median_drawdown": 0.21740915418910345,
+          "trades": 1287,
+          "win_rate": 0.5835275835275835
+        },
+        "validation": {
+          "net": 0.014501859149403721,
+          "passive": 0.1586742077240486,
+          "passive_delta": -0.1441723485746449,
+          "median_drawdown": 0.22930318411561934,
+          "trades": 822,
+          "win_rate": 0.4878345498783455
+        }
+      },
+      "highest_validation": {
+        "rule": "rsi_short_recovery",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 8,
+        "train": {
+          "net": 0.4010434751134634,
+          "passive": 2.3174245334041386,
+          "passive_delta": -1.9163810582906753,
+          "median_drawdown": 0.21740915418910345,
+          "trades": 1287,
+          "win_rate": 0.5835275835275835
+        },
+        "validation": {
+          "net": 0.014501859149403721,
+          "passive": 0.1586742077240486,
+          "passive_delta": -0.1441723485746449,
+          "median_drawdown": 0.22930318411561934,
+          "trades": 822,
+          "win_rate": 0.4878345498783455
+        }
+      },
+      "positive_validation": 5,
+      "beat_passive_validation": 0
+    },
+    "1mo": {
+      "eligible_symbols": 115,
+      "candidate_count": 40,
+      "symbol_candidate_replays": 4600,
+      "train_selected": {
+        "rule": "breakout_short",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 5,
+        "train": {
+          "net": 0.4046969346644863,
+          "passive": 2.3092254358596445,
+          "passive_delta": -1.9045285011951583,
+          "median_drawdown": 0.24437541210134803,
+          "trades": 825,
+          "win_rate": 0.5987878787878788
+        },
+        "validation": {
+          "net": 0.006525790279066839,
+          "passive": 0.1468539153537953,
+          "passive_delta": -0.14032812507472847,
+          "median_drawdown": 0.18692959875851584,
+          "trades": 321,
+          "win_rate": 0.5015576323987538
+        }
+      },
+      "highest_validation": {
+        "rule": "breakout_long",
+        "atr_stop": 1.5,
+        "atr_target": 2.5,
+        "maximum_hold_bars": 5,
+        "train": {
+          "net": 0.3752120205217111,
+          "passive": 2.3092254358596445,
+          "passive_delta": -1.9340134153379334,
+          "median_drawdown": 0.21436374134571362,
+          "trades": 694,
+          "win_rate": 0.6123919308357348
+        },
+        "validation": {
+          "net": 0.022634899909972268,
+          "passive": 0.1468539153537953,
+          "passive_delta": -0.12421901544382304,
+          "median_drawdown": 0.1367272430016028,
+          "trades": 250,
+          "win_rate": 0.516
+        }
+      },
+      "positive_validation": 11,
+      "beat_passive_validation": 0
+    }
+  },
+  "limitations": [
+    "Previously observed validation history; no fresh holdout.",
+    "Separate equal-capital stock sleeves and adjusted-price execution proxy.",
+    "Weekly/monthly drawdown is marked at bar closes and can miss larger intraperiod losses.",
+    "ETF and delisted members are included whenever the available history meets coverage."
+  ]
+}
