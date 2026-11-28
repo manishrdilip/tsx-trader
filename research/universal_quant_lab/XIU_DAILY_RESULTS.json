@@ -1,0 +1,148 @@
+{
+  "symbol": "XIU.TO",
+  "interval": "1d",
+  "scope": "provisional development",
+  "plan_sha256": "06fbe15a3e2a604fcf076a43888569632a42f03167956730c6c3ec63e6c909c6",
+  "results": {
+    "2016-01-01/2020-01-01": {
+      "passive": 0.4972965992970786,
+      "long_only": {
+        "net_return": 0.014572161455200794,
+        "max_drawdown": 0.04803013046933957,
+        "trades": 17,
+        "wins": 7,
+        "borrow_cost": 0.0,
+        "long_pnl": 72.86080727600438,
+        "short_pnl": 0
+      },
+      "monthly_trend_control": {
+        "net_return": 0.2753224179319935,
+        "max_drawdown": 0.10058455398594524,
+        "trades": 4,
+        "wins": 2
+      },
+      "short_only": {
+        "net_return": -0.05412766690895365,
+        "max_drawdown": 0.07169539746850118,
+        "trades": 6,
+        "wins": 1,
+        "borrow_cost": 24.892173652802292,
+        "long_pnl": 0,
+        "short_pnl": -270.63833454476844
+      },
+      "long_short": {
+        "net_return": -0.04055170706168543,
+        "max_drawdown": 0.07479992867485707,
+        "trades": 23,
+        "wins": 8,
+        "borrow_cost": 24.768568379382916,
+        "long_pnl": 65.63430730579512,
+        "short_pnl": -268.392842614222
+      },
+      "long_short_8pct_borrow": {
+        "net_return": -0.0488530317525705,
+        "max_drawdown": 0.07911301684934313,
+        "trades": 23,
+        "wins": 8,
+        "borrow_cost": 65.82704849897925,
+        "long_pnl": 64.70496977819039,
+        "short_pnl": -308.97012854104287
+      }
+    },
+    "2020-01-01/2022-01-01": {
+      "passive": 0.3358470821315851,
+      "long_only": {
+        "net_return": -0.02609112163986793,
+        "max_drawdown": 0.058148403830307505,
+        "trades": 14,
+        "wins": 6,
+        "borrow_cost": 0.0,
+        "long_pnl": -130.45560819933962,
+        "short_pnl": 0
+      },
+      "monthly_trend_control": {
+        "net_return": 0.16976822755610366,
+        "max_drawdown": 0.13370158454729686,
+        "trades": 3,
+        "wins": 1
+      },
+      "short_only": {
+        "net_return": -0.021322727350840287,
+        "max_drawdown": 0.04314572830392216,
+        "trades": 3,
+        "wins": 1,
+        "borrow_cost": 3.1762463250822512,
+        "long_pnl": 0,
+        "short_pnl": -106.61363675420125
+      },
+      "long_short": {
+        "net_return": -0.046964556923194456,
+        "max_drawdown": 0.07826899936943899,
+        "trades": 17,
+        "wins": 7,
+        "borrow_cost": 3.120364094948187,
+        "long_pnl": -130.8735074815486,
+        "short_pnl": -103.94927713442394
+      },
+      "long_short_8pct_borrow": {
+        "net_return": -0.0479914723707634,
+        "max_drawdown": 0.07925887717790503,
+        "trades": 17,
+        "wins": 7,
+        "borrow_cost": 8.318758084061482,
+        "long_pnl": -130.85099019879272,
+        "short_pnl": -109.1063716550243
+      }
+    },
+    "2022-01-01/2024-11-27": {
+      "passive": 0.2650280262019422,
+      "long_only": {
+        "net_return": -0.09424426294774779,
+        "max_drawdown": 0.1101968511292376,
+        "trades": 18,
+        "wins": 4,
+        "borrow_cost": 0.0,
+        "long_pnl": -471.22131473873924,
+        "short_pnl": 0
+      },
+      "monthly_trend_control": {
+        "net_return": 0.06342587022589452,
+        "max_drawdown": 0.19286434694018417,
+        "trades": 5,
+        "wins": 1
+      },
+      "short_only": {
+        "net_return": -0.13106778495444338,
+        "max_drawdown": 0.14133980600058893,
+        "trades": 12,
+        "wins": 1,
+        "borrow_cost": 24.277210538507568,
+        "long_pnl": 0,
+        "short_pnl": -655.3389247722171
+      },
+      "long_short": {
+        "net_return": -0.21380504563397007,
+        "max_drawdown": 0.22760076077444424,
+        "trades": 30,
+        "wins": 5,
+        "borrow_cost": 23.21253171518822,
+        "long_pnl": -441.11572390416586,
+        "short_pnl": -627.9095042656845
+      },
+      "long_short_8pct_borrow": {
+        "net_return": -0.2205915679737004,
+        "max_drawdown": 0.234264854448621,
+        "trades": 30,
+        "wins": 5,
+        "borrow_cost": 61.68422498802979,
+        "long_pnl": -439.4050472391327,
+        "short_pnl": -663.5527926293694
+      }
+    }
+  },
+  "limitations": [
+    "Borrow availability and borrow fees are assumptions, not observed XIU history.",
+    "Distribution-adjusted OHLC proxy for prices and the economic effect of distributions. No borrow recalls, taxes or cash yield.",
+    "Periods previously available to research. No independent forward test."
+  ]
+}
